@@ -5,7 +5,7 @@ RayCarrot.Rayman is a helper library for Rayman related programs.
 - Easily read and modify Rayman ubi.ini configuration files
 
 ## Dependencies
-The Rayman Control Panel uses these main dependencies:
+RayCarrot.Rayman uses these main dependencies:
 
 - [RayCarrot.CarrotFramework](https://github.com/RayCarrot/Carrot-Framework)
 - [ini-parser](https://github.com/rickyah/ini-parser)
