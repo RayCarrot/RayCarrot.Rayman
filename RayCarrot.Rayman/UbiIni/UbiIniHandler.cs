@@ -22,14 +22,14 @@ namespace RayCarrot.Rayman
         /// Default constructor
         /// </summary>
         /// <param name="path">The path of the ubi.ini file</param>
-        /// <param name="sectionName">The name of the section to retrieve, usually the name of the game</param>
-        protected UbiIniHandler(FileSystemPath path, string sectionName)
+        /// <param name="sectionKey">The name of the section to retrieve, usually the name of the game</param>
+        protected UbiIniHandler(FileSystemPath path, string sectionKey)
         {
             // Save the path
             Path = path;
 
             // Save the section name
-            SectionName = sectionName;
+            SectionKey = sectionKey;
 
             // Make sure the file exists
             if (!path.FileExists)
@@ -99,7 +99,7 @@ namespace RayCarrot.Rayman
         /// <summary>
         /// The section to retrieve keys from
         /// </summary>
-        protected KeyDataCollection Section => Data.Sections[SectionName];
+        protected KeyDataCollection Section => Data.Sections[SectionKey];
 
         protected const string InstalledProductsSection = "[INSTALLED PRODUCTS]";
 
@@ -110,7 +110,7 @@ namespace RayCarrot.Rayman
         /// <summary>
         /// The name of the currently handled section
         /// </summary>
-        public string SectionName { get; }
+        public string SectionKey { get; }
 
         /// <summary>
         /// True if the section exists
@@ -136,8 +136,8 @@ namespace RayCarrot.Rayman
         public void ReCreate()
         {
             if (Exists)
-                Data.Sections.RemoveSection(SectionName);
-            Data.Sections.AddSection(SectionName);
+                Data.Sections.RemoveSection(SectionKey);
+            Data.Sections.AddSection(SectionKey);
         }
 
         /// <summary>
@@ -188,7 +188,9 @@ namespace RayCarrot.Rayman
         /// </summary>
         public UbiIniDataParser() : base(new IniParserConfiguration()
         {
-            SkipInvalidLines = true
+            SkipInvalidLines = true,
+            AllowDuplicateKeys = true,
+            OverrideDuplicateKeys = true
         })
         { }
 

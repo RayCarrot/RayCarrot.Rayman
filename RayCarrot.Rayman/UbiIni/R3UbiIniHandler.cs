@@ -14,8 +14,8 @@ namespace RayCarrot.Rayman
         /// Constructor for a custom section name
         /// </summary>
         /// <param name="path">The path of the ubi.ini file</param>
-        /// <param name="sectionName">The name of the section to retrieve</param>
-        public R3UbiIniHandler(FileSystemPath path, string sectionName) : base(path, sectionName)
+        /// <param name="sectionKey">The name of the section to retrieve</param>
+        public R3UbiIniHandler(FileSystemPath path, string sectionKey) : base(path, sectionKey)
         {
         }
 

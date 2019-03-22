@@ -12,7 +12,7 @@
 
   <ItemGroup>
     <PackageReference Include="ini-parser" Version="2.5.2" />
-    <PackageReference Include="RayCarrot.CarrotFramework" Version="2.1.0" />
+    <PackageReference Include="RayCarrot.CarrotFramework" Version="2.1.1" />
   </ItemGroup>
 
 </Project>
