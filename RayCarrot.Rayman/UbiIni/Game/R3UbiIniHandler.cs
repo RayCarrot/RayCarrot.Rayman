@@ -1,12 +1,13 @@
-﻿using RayCarrot.CarrotFramework;
+﻿using RayCarrot.Extensions;
+using RayCarrot.IO;
 using System;
 
 namespace RayCarrot.Rayman
 {
     /// <summary>
-    /// Handles the Rayman M section of a ubi.ini file
+    /// Handles the Rayman 3 section of a ubi.ini file
     /// </summary>
-    public class RMUbiIniHandler : UbiIniHandler
+    public class R3UbiIniHandler : UbiIniHandler
     {
         #region Constructor
 
@@ -15,7 +16,7 @@ namespace RayCarrot.Rayman
         /// </summary>
         /// <param name="path">The path of the ubi.ini file</param>
         /// <param name="sectionKey">The name of the section to retrieve</param>
-        public RMUbiIniHandler(FileSystemPath path, string sectionKey) : base(path, sectionKey)
+        public R3UbiIniHandler(FileSystemPath path, string sectionKey) : base(path, sectionKey)
         {
         }
 
@@ -23,7 +24,7 @@ namespace RayCarrot.Rayman
         /// Default constructor
         /// </summary>
         /// <param name="path">The path of the ubi.ini file</param>
-        public RMUbiIniHandler(FileSystemPath path) : base(path, SectionName)
+        public R3UbiIniHandler(FileSystemPath path) : base(path, SectionName)
         {
         }
 
@@ -34,22 +35,13 @@ namespace RayCarrot.Rayman
         /// <summary>
         /// The section name
         /// </summary>
-        public const string SectionName = "RAYMANM";
+        public const string SectionName = "Rayman3";
 
         #endregion
 
         // TODO: Add properties for disc version
 
         #region Properties
-
-        /// <summary>
-        /// The Language key
-        /// </summary>
-        public string Language
-        {
-            get => Section?["Language"];
-            set => Section["Language"] = value;
-        }
 
         /// <summary>
         /// The Gli_Mode key
@@ -97,6 +89,24 @@ namespace RayCarrot.Rayman
         }
 
         /// <summary>
+        /// The DynamicShadows key
+        /// </summary>
+        public string DynamicShadows
+        {
+            get => Section?["DynamicShadows"];
+            set => Section["DynamicShadows"] = value;
+        }
+
+        /// <summary>
+        /// The StaticShadows key
+        /// </summary>
+        public string StaticShadows
+        {
+            get => Section?["StaticShadows"];
+            set => Section["StaticShadows"] = value;
+        }
+
+        /// <summary>
         /// The Video_BPP key
         /// </summary>
         public string Video_BPP
@@ -124,6 +134,24 @@ namespace RayCarrot.Rayman
         }
 
         /// <summary>
+        /// The Camera_VerticalAxis key
+        /// </summary>
+        public string Camera_VerticalAxis
+        {
+            get => Section?["Camera_VerticalAxis"];
+            set => Section["Camera_VerticalAxis"] = value;
+        }
+
+        /// <summary>
+        /// The Camera_HorizontalAxis key
+        /// </summary>
+        public string Camera_HorizontalAxis
+        {
+            get => Section?["Camera_HorizontalAxis"];
+            set => Section["Camera_HorizontalAxis"] = value;
+        }
+
+        /// <summary>
         /// The VignettesFile key
         /// </summary>
         public string VignettesFile
@@ -133,12 +161,12 @@ namespace RayCarrot.Rayman
         }
 
         /// <summary>
-        /// The TexturesFile key
+        /// The TexturesQuality key
         /// </summary>
-        public string TexturesFile
+        public string TexturesQuality
         {
-            get => Section?["TexturesFile"];
-            set => Section["TexturesFile"] = value;
+            get => Section?["TexturesQuality"];
+            set => Section["TexturesQuality"] = value;
         }
 
         /// <summary>
@@ -151,22 +179,17 @@ namespace RayCarrot.Rayman
         }
 
         /// <summary>
-        /// The Video_RealQuality key
+        /// The Language key
         /// </summary>
-        public string Video_RealQuality
+        public string Language
         {
-            get => Section?["Video_RealQuality"];
-            set => Section["Video_RealQuality"] = value;
+            get => Section?["Language"];
+            set => Section["Language"] = value;
         }
 
         #endregion
 
         #region Formatted Properties
-
-        /// <summary>
-        /// The formatted Language key
-        /// </summary>
-        public RMLanguages? FormattedRMLanguage => Enum.TryParse(Language, out RMLanguages r2Languages) ? r2Languages.CastTo<RMLanguages?>() : null;
 
         /// <summary>
         /// The formatted GLI_Mode key
@@ -197,6 +220,24 @@ namespace RayCarrot.Rayman
         public Guid FormattedIdentifier => new Guid(Identifier);
 
         /// <summary>
+        /// The formatted StaticShadows key
+        /// </summary>
+        public bool FormattedStaticShadows
+        {
+            get => DynamicShadows == "1";
+            set => StaticShadows = value ? "1" : "0";
+        }
+
+        /// <summary>
+        /// The formatted DynamicShadows key
+        /// </summary>
+        public bool FormattedDynamicShadows
+        {
+            get => DynamicShadows == "1";
+            set => DynamicShadows = value ? "1" : "0";
+        }
+
+        /// <summary>
         /// The formatted Video_BPP key
         /// </summary>
         public int? FormattedVideo_BPP => Int32.TryParse(Video_BPP, out int result) ? result.CastTo<int?>() : null;
@@ -216,6 +257,21 @@ namespace RayCarrot.Rayman
         }
 
         /// <summary>
+        /// The formatted Camera_VerticalAxis key
+        /// </summary>
+        public int? FormattedCamera_VerticalAxis => Int32.TryParse(Camera_VerticalAxis, out int result) ? result.CastTo<int?>() : null;
+
+        /// <summary>
+        /// The formatted Camera_HorizontalAxis key
+        /// </summary>
+        public int? FormattedCamera_HorizontalAxis => Int32.TryParse(Camera_HorizontalAxis, out int result) ? result.CastTo<int?>() : null;
+
+        /// <summary>
+        /// The formatted TexturesQuality key
+        /// </summary>
+        public int? FormattedTexturesQuality => Int32.TryParse(TexturesQuality, out int result) ? result.CastTo<int?>() : null;
+
+        /// <summary>
         /// The formatted TexturesCompressed key
         /// </summary>
         public bool FormattedTexturesCompressed
@@ -225,9 +281,9 @@ namespace RayCarrot.Rayman
         }
 
         /// <summary>
-        /// The formatted Video_RealQuality key
+        /// The formatted Language key
         /// </summary>
-        public int? FormattedVideo_RealQuality => Int32.TryParse(Video_RealQuality, out int result) ? result.CastTo<int?>() : null;
+        public R3Languages? FormattedLanguage => Enum.TryParse(Language, out R3Languages r2Languages) ? r2Languages.CastTo<R3Languages?>() : null;
 
         #endregion
     }

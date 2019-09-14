@@ -1,8 +1,7 @@
 ﻿using IniParser;
 using IniParser.Model;
-using IniParser.Model.Configuration;
-using IniParser.Parser;
-using RayCarrot.CarrotFramework;
+using RayCarrot.Extensions;
+using RayCarrot.IO;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -175,24 +174,6 @@ namespace RayCarrot.Rayman
                 }
             }
         }
-
-        #endregion
-    }
-
-    public class UbiIniDataParser : IniDataParser
-    {
-        #region Constructors
-
-        /// <summary>
-        /// Default constructor
-        /// </summary>
-        public UbiIniDataParser() : base(new IniParserConfiguration()
-        {
-            SkipInvalidLines = true,
-            AllowDuplicateKeys = true,
-            OverrideDuplicateKeys = true
-        })
-        { }
 
         #endregion
     }

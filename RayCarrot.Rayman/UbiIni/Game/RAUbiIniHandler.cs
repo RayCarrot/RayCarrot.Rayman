@@ -1,4 +1,5 @@
-﻿using RayCarrot.CarrotFramework;
+﻿using RayCarrot.Extensions;
+using RayCarrot.IO;
 using System;
 
 namespace RayCarrot.Rayman

@@ -1,9 +1,9 @@
-﻿using RayCarrot.CarrotFramework;
+﻿using RayCarrot.CarrotFramework.Abstractions;
 
 namespace RayCarrot.Rayman
 {
     /// <summary>
-    /// Extension methods for <see cref="FrameworkConstruction"/>
+    /// Extension methods for <see cref="IFrameworkConstruction"/>
     /// </summary>
     public static class FrameworkConstructionExtensions
     {
@@ -11,7 +11,7 @@ namespace RayCarrot.Rayman
         /// Adds all of the Rayman related default services
         /// </summary>
         /// <returns>The construction</returns>
-        public static FrameworkConstruction AddRaymanDefaults(this FrameworkConstruction construction)
+        public static IFrameworkConstruction AddRaymanDefaults(this IFrameworkConstruction construction)
         {
             construction.AddTransient<IRayManager, DefaultRayManager>();
 

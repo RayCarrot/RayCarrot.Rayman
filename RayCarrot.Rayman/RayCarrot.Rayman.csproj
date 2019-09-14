@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -12,7 +12,8 @@
 
   <ItemGroup>
     <PackageReference Include="ini-parser" Version="2.5.2" />
-    <PackageReference Include="RayCarrot.CarrotFramework" Version="2.1.1" />
+    <PackageReference Include="RayCarrot.CarrotFramework.Abstractions" Version="1.1.2" />
+    <PackageReference Include="RayCarrot.IO" Version="1.1.5" />
   </ItemGroup>
 
 </Project>
