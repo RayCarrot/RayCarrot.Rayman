@@ -12,8 +12,8 @@
 
   <ItemGroup>
     <PackageReference Include="ini-parser" Version="2.5.2" />
-    <PackageReference Include="RayCarrot.CarrotFramework.Abstractions" Version="1.1.2" />
-    <PackageReference Include="RayCarrot.IO" Version="1.1.5" />
+    <PackageReference Include="RayCarrot.CarrotFramework.Abstractions" Version="1.1.3" />
+    <PackageReference Include="RayCarrot.IO" Version="1.1.7" />
   </ItemGroup>
 
 </Project>
