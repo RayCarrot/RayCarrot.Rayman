@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.438
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29411.108
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RayCarrot.Rayman", "RayCarrot.Rayman\RayCarrot.Rayman.csproj", "{60E71598-D0EA-4D01-A88E-69DA66B1F541}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RayCarrot.Rayman", "RayCarrot.Rayman\RayCarrot.Rayman.csproj", "{B3C0C9EE-0ACB-4CD6-9DAB-D9F3C741300D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{60E71598-D0EA-4D01-A88E-69DA66B1F541}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{60E71598-D0EA-4D01-A88E-69DA66B1F541}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{60E71598-D0EA-4D01-A88E-69DA66B1F541}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{60E71598-D0EA-4D01-A88E-69DA66B1F541}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3C0C9EE-0ACB-4CD6-9DAB-D9F3C741300D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3C0C9EE-0ACB-4CD6-9DAB-D9F3C741300D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3C0C9EE-0ACB-4CD6-9DAB-D9F3C741300D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3C0C9EE-0ACB-4CD6-9DAB-D9F3C741300D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
