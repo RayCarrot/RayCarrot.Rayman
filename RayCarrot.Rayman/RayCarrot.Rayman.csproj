@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>8</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,6 +30,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>8</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -41,21 +43,39 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataModels\Enums\R2Languages.cs" />
-    <Compile Include="DataModels\Enums\R2ParticuleRate.cs" />
-    <Compile Include="DataModels\Enums\R3Languages.cs" />
-    <Compile Include="DataModels\Enums\RALanguages.cs" />
-    <Compile Include="DataModels\Enums\RMLanguages.cs" />
-    <Compile Include="DataModels\RayGLI_Mode.cs" />
+    <Compile Include="UbiArt\BinarySerializer\BinarySeriaizerSettings.cs" />
+    <Compile Include="UbiArt\BinarySerializableTypes\BinarySerializableDataWithUnknownEnd.cs" />
+    <Compile Include="UbiArt\BinarySerializableTypes\BinarySerializablePair.cs" />
+    <Compile Include="UbiArt\BinarySerializableTypes\BinarySerializableDictionary.cs" />
+    <Compile Include="UbiArt\BinarySerializer\IBinaryDeserializer.cs" />
+    <Compile Include="UbiArt\BinarySerializer\IBinarySerializable.cs" />
+    <Compile Include="UbiArt\Localization\DataModels\FiestaRunUbiArtLocalizationData.cs" />
+    <Compile Include="UbiArt\Localization\DataModels\FiestaRunLocalizationStringData.cs" />
+    <Compile Include="UbiArt\BinarySerializer\BinaryDataSerializer.cs" />
+    <Compile Include="UbiArt\Localization\Serializers\LegendsLocalizationSerializer.cs" />
+    <Compile Include="UbiArt\Localization\Serializers\FiestaRunLocalizationSerializer.cs" />
+    <Compile Include="UbiArt\Localization\Serializers\OriginsLocalizationSerializer.cs" />
+    <Compile Include="UbiArt\Localization\DataModels\StandardUbiArtLocalizationData.cs" />
+    <Compile Include="UbiArt\SaveData\DataModels\JungleRunSaveData.cs" />
+    <Compile Include="UbiArt\SaveData\DataModels\JungleRunSaveDataLevel.cs" />
+    <Compile Include="UbiArt\SaveData\DataModels\JungleRunSaveDataLevelCollection.cs" />
+    <Compile Include="UbiArt\SaveData\Serializers\JungleRunSaveDataSerializer.cs" />
+    <Compile Include="UbiIni\DataModels\Enums\R2Languages.cs" />
+    <Compile Include="UbiIni\DataModels\Enums\R2ParticuleRate.cs" />
+    <Compile Include="UbiIni\DataModels\Enums\R3Languages.cs" />
+    <Compile Include="UbiIni\DataModels\Enums\RALanguages.cs" />
+    <Compile Include="UbiIni\DataModels\Enums\RMLanguages.cs" />
+    <Compile Include="UbiIni\DataModels\RayGLI_Mode.cs" />
     <Compile Include="Framework\FrameworkConstructionExtensions.cs" />
     <Compile Include="Framework\Implementations\DefaultRayManager.cs" />
     <Compile Include="Framework\Interfaces\IRayManager.cs" />
     <Compile Include="Framework\RCFRay.cs" />
+    <Compile Include="UbiArt\BinarySerializer\IBinarySerializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UbiIni\Game\R2UbiIniHandler.cs" />
-    <Compile Include="UbiIni\Game\R3UbiIniHandler.cs" />
-    <Compile Include="UbiIni\Game\RAUbiIniHandler.cs" />
-    <Compile Include="UbiIni\Game\RMUbiIniHandler.cs" />
+    <Compile Include="UbiIni\Games\R2UbiIniHandler.cs" />
+    <Compile Include="UbiIni\Games\R3UbiIniHandler.cs" />
+    <Compile Include="UbiIni\Games\RAUbiIniHandler.cs" />
+    <Compile Include="UbiIni\Games\RMUbiIniHandler.cs" />
     <Compile Include="UbiIni\UbiIniDataParser.cs" />
     <Compile Include="UbiIni\UbiIniHandler.cs" />
   </ItemGroup>
@@ -64,14 +84,15 @@
       <Version>2.5.2</Version>
     </PackageReference>
     <PackageReference Include="RayCarrot.CarrotFramework.Abstractions">
-      <Version>1.4.2</Version>
+      <Version>1.5.0</Version>
     </PackageReference>
     <PackageReference Include="RayCarrot.Extensions">
-      <Version>1.1.3</Version>
+      <Version>1.2.1</Version>
     </PackageReference>
     <PackageReference Include="RayCarrot.IO">
-      <Version>1.2.2</Version>
+      <Version>1.3.1</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
