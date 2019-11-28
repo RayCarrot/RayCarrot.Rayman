@@ -45,7 +45,9 @@ namespace RayCarrot.Rayman
         /// <param name="serializer">The serializer</param>
         public void Serialize(FileStream stream, IBinarySerializer serializer)
         {
-            throw new NotImplementedException();
+            serializer.Serialize(stream, IsLocked);
+            serializer.Serialize(stream, LumsRecord);
+            serializer.Serialize(stream, (int)RecordTime.TotalMilliseconds);
         }
     }
 }

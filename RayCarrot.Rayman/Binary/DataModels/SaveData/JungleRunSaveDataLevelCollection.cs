@@ -11,8 +11,7 @@ namespace RayCarrot.Rayman
         /// <summary>
         /// Default constructor
         /// </summary>
-        /// <param name="capacity">The capacity. This should be set to 70 if running the latest version of the game.</param>
-        public JungleRunSaveDataLevelCollection(int capacity) : base(capacity)
+        public JungleRunSaveDataLevelCollection() : base(70)
         {
             
         }
@@ -41,7 +40,8 @@ namespace RayCarrot.Rayman
         /// <param name="serializer">The serializer</param>
         public void Serialize(FileStream stream, IBinarySerializer serializer)
         {
-            throw new System.NotImplementedException();
+            foreach (var levelData in this)
+                serializer.Serialize(stream, levelData);
         }
     }
 }

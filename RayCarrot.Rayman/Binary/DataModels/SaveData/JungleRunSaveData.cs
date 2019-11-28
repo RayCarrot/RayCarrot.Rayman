@@ -32,7 +32,7 @@ namespace RayCarrot.Rayman
         public void Deserialize(FileStream stream, IBinaryDeserializer deserializer)
         {
             Unknown = deserializer.Deserialize<short>(stream);
-            Levels = new JungleRunSaveDataLevelCollection(70);
+            Levels = new JungleRunSaveDataLevelCollection();
             Levels.Deserialize(stream, deserializer);
 
             // Read remaining bytes
@@ -46,7 +46,11 @@ namespace RayCarrot.Rayman
         /// <param name="serializer">The serializer</param>
         public void Serialize(FileStream stream, IBinarySerializer serializer)
         {
-            throw new NotImplementedException();
+            serializer.Serialize(stream, Unknown);
+            serializer.Serialize(stream, Levels);
+
+            // Write remaining bytes
+            stream.Write(RemainingBytes, 0, RemainingBytes.Length);
         }
     }
 }

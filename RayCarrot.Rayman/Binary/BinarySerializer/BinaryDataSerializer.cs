@@ -5,6 +5,8 @@ using RayCarrot.IO;
 
 namespace RayCarrot.Rayman
 {
+    // TODO: Log
+
     /// <summary>
     /// The binary serializer for binary serialized files
     /// </summary>
@@ -156,8 +158,14 @@ namespace RayCarrot.Rayman
             // Read the bytes into the buffer
             stream.Read(buffer, 0, size);
 
-            // Convert to a string and remove null termination
-            return Settings.StringEncoding.GetString(buffer).TrimEnd('\0');
+            // Convert to a string
+            var str = Settings.StringEncoding.GetString(buffer);
+
+            // Remove null termination
+            str = str.TrimEnd('\0');
+
+            // Return the string
+            return str;
         }
 
         /// <summary>
@@ -171,7 +179,7 @@ namespace RayCarrot.Rayman
             var bytes = Settings.StringEncoding.GetBytes(value);
 
             // Write the item size
-            WriteInt(stream, bytes.Length * Settings.CharSize);
+            WriteInt(stream, bytes.Length / Settings.CharSize);
 
             // Write the bytes to the stream
             stream.Write(bytes, 0, bytes.Length);
@@ -216,8 +224,8 @@ namespace RayCarrot.Rayman
                 WriteBool(stream, b);
             else if (obj is string s)
                 WriteString(stream, s);
-
-            obj.CastTo<IBinarySerializable>().Serialize(stream, this);
+            else
+                obj.CastTo<IBinarySerializable>().Serialize(stream, this);
         }
 
         #endregion
