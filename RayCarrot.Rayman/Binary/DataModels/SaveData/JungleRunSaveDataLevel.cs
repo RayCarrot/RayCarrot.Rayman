@@ -26,28 +26,23 @@ namespace RayCarrot.Rayman
         /// <summary>
         /// Deserializes the data from the stream into this instance
         /// </summary>
-        /// <param name="stream">The stream to deserialize from</param>
-        /// <param name="deserializer">The deserializer</param>
-        public void Deserialize(FileStream stream, IBinaryDeserializer deserializer)
+        /// <param name="reader">The reader to use to read from the stream</param>
+        public void Deserialize(BinaryDataReader reader)
         {
-            IsLocked = deserializer.Deserialize<bool>(stream);
-            LumsRecord = deserializer.Deserialize<short>(stream);
-
-            // NOTE: The actual type is an unsigned integer, but time span does not support that
-            RecordTime = new TimeSpan(0, 0, 0, 0, deserializer.Deserialize<int>(stream));
-
+            IsLocked = reader.Read<bool>();
+            LumsRecord = reader.Read<short>();
+            RecordTime = new TimeSpan(0, 0, 0, 0, (int)reader.Read<uint>());
         }
 
         /// <summary>
         /// Serializes the data from this instance to the stream
         /// </summary>
-        /// <param name="stream">The stream to serialize to</param>
-        /// <param name="serializer">The serializer</param>
-        public void Serialize(FileStream stream, IBinarySerializer serializer)
+        /// <param name="writer">The writer to use to write to the stream</param>
+        public void Serialize(BinaryDataWriter writer)
         {
-            serializer.Serialize(stream, IsLocked);
-            serializer.Serialize(stream, LumsRecord);
-            serializer.Serialize(stream, (int)RecordTime.TotalMilliseconds);
+            writer.Write(IsLocked);
+            writer.Write(LumsRecord);
+            writer.Write((uint)RecordTime.TotalMilliseconds);
         }
     }
 }

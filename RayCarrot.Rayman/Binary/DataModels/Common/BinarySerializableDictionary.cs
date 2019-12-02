@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 
 namespace RayCarrot.Rayman
@@ -13,21 +14,20 @@ namespace RayCarrot.Rayman
         /// <summary>
         /// Deserializes the data from the stream into this instance
         /// </summary>
-        /// <param name="stream">The stream to deserialize from</param>
-        /// <param name="deserializer">The deserializer</param>
-        public virtual void Deserialize(FileStream stream, IBinaryDeserializer deserializer)
+        /// <param name="reader">The reader to use to read from the stream</param>
+        public void Deserialize(BinaryDataReader reader)
         {
             // Read the dictionary length
-            var length = deserializer.Deserialize<int>(stream);
+            var length = reader.Read<int>();
 
             // Enumerate each item
             for (int i = 0; i < length; i++)
             {
                 // Get the key
-                var key = deserializer.Deserialize<TKey>(stream);
+                var key = reader.Read<TKey>();
 
                 // Get the value
-                var value = deserializer.Deserialize<TValue>(stream);
+                var value = reader.Read<TValue>();
 
                 // Add the item
                 Add(key, value);
@@ -37,21 +37,20 @@ namespace RayCarrot.Rayman
         /// <summary>
         /// Serializes the data from this instance to the stream
         /// </summary>
-        /// <param name="stream">The stream to serialize to</param>
-        /// <param name="serializer">The serializer</param>
-        public void Serialize(FileStream stream, IBinarySerializer serializer)
+        /// <param name="writer">The writer to use to write to the stream</param>
+        public void Serialize(BinaryDataWriter writer)
         {
             // Serialize the dictionary length
-            serializer.Serialize(stream, Count);
+            writer.Write(Count);
 
             // Enumerate each item
             foreach (var item in this)
             {
                 // Serialize the key
-                serializer.Serialize(stream, item.Key);
+                writer.Write(item.Key);
 
                 // Serialize the value
-                serializer.Serialize(stream, item.Value);
+                writer.Write(item.Value);
             }
         }
     }

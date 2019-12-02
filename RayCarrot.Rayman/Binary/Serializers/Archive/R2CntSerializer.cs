@@ -3,18 +3,17 @@ using System.Text;
 
 namespace RayCarrot.Rayman
 {
-    // NOTE: Origins on 3DS is encoded in little endian
     /// <summary>
-    /// The localization serializer for Rayman Origins
+    /// The serializer for Rayman 2 .cnt files
     /// </summary>
-    public class OriginsLocalizationSerializer : BinaryDataSerializer<StandardUbiArtLocalizationData>
+    public class R2CntSerializer : BinaryDataSerializer<R2CntData>
     {
         /// <summary>
         /// Gets a new binary reader to use for the specified stream
         /// </summary>
         protected override BinaryReader GetBinaryReader(Stream stream)
         {
-            return new UbiArtBinaryReader(stream, ByteOrder.BigEndian, Encoding.BigEndianUnicode);
+            return new UbiArtBinaryReader(stream, ByteOrder.LittleEndian, Encoding.UTF8);
         }
 
         /// <summary>
@@ -22,7 +21,7 @@ namespace RayCarrot.Rayman
         /// </summary>
         protected override BinaryWriter GetBinaryWriter(Stream stream)
         {
-            return new UbiArtBinaryWriter(stream, ByteOrder.BigEndian, Encoding.BigEndianUnicode);
+            return new UbiArtBinaryWriter(stream, ByteOrder.LittleEndian, Encoding.UTF8);
         }
     }
 }

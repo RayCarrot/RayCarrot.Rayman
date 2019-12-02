@@ -1,4 +1,7 @@
-﻿namespace RayCarrot.Rayman
+﻿using System.IO;
+using System.Text;
+
+namespace RayCarrot.Rayman
 {
     /// <summary>
     /// The progression data serializer for Rayman Jungle Run
@@ -6,11 +9,19 @@
     public class JungleRunSaveDataSerializer : BinaryDataSerializer<JungleRunSaveData>
     {
         /// <summary>
-        /// Default constructor
+        /// Gets a new binary reader to use for the specified stream
         /// </summary>
-        public JungleRunSaveDataSerializer() : base(new BinarySeriaizerSettings(false))
+        protected override BinaryReader GetBinaryReader(Stream stream)
         {
+            return new UbiArtBinaryReader(stream, ByteOrder.LittleEndian, Encoding.UTF8);
+        }
 
+        /// <summary>
+        /// Gets a new binary writer to use for the specified stream
+        /// </summary>
+        protected override BinaryWriter GetBinaryWriter(Stream stream)
+        {
+            return new UbiArtBinaryWriter(stream, ByteOrder.LittleEndian, Encoding.UTF8);
         }
     }
 }

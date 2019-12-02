@@ -1,27 +1,34 @@
-﻿using System.IO;
-using RayCarrot.Extensions;
-
-namespace RayCarrot.Rayman
+﻿namespace RayCarrot.Rayman
 {
     /// <summary>
-    /// The save file data used for Rayman Jungle Run in the three .dat files
+    /// The save file data used for Rayman Fiesta Run Windows 10 Edition in the .dat file
     /// </summary>
-    public class JungleRunSaveData : IBinarySerializable
+    public class FiestaRunWin10EditionSaveData : IBinarySerializable
     {
         /// <summary>
-        /// The file begins with two unknown bytes, presumably a 16-bit integer. The value is always 3.
+        /// The file begins with two unknown bytes, presumably a 16-bit integer. The value is always 2.
         /// </summary>
         public short Unknown { get; set; }
 
         /// <summary>
-        /// The data for the levels. The count is always 70.
+        /// The data for the levels. The count is always 72.
         /// </summary>
-        public JungleRunSaveDataLevelCollection Levels { get; set; }
+        public FiestaRunWin10EditionSaveDataLevelCollection Levels { get; set; }
 
         /// <summary>
-        /// The remaining bytes in the file. Currently there is 1 known remaining byte which is always 0.
+        /// Unknown bytes
         /// </summary>
-        public byte[] RemainingBytes { get; set; }
+        public byte[] Unknown1 { get; set; }
+
+        /// <summary>
+        /// The number of available Lums
+        /// </summary>
+        public int Lums { get; set; }
+
+        /// <summary>
+        /// The remaining unknown bytes in the file
+        /// </summary>
+        public byte[] Unknown2 { get; set; }
 
         /// <summary>
         /// Deserializes the data from the stream into this instance
@@ -33,10 +40,16 @@ namespace RayCarrot.Rayman
             Unknown = reader.Read<short>();
 
             // Read the level collection
-            Levels = reader.Read<JungleRunSaveDataLevelCollection>();
+            Levels = reader.Read<FiestaRunWin10EditionSaveDataLevelCollection>();
+
+            // Read unknown bytes
+            Unknown1 = reader.ReadBytes(128);
+
+            // Read Lums
+            Lums = reader.Read<int>();
 
             // Read remaining bytes
-            RemainingBytes = reader.ReadRemainingBytes();
+            Unknown2 = reader.ReadRemainingBytes();
         }
 
         /// <summary>
@@ -52,7 +65,7 @@ namespace RayCarrot.Rayman
             writer.Write(Levels);
 
             // Write remaining bytes
-            writer.Write(RemainingBytes);
+            writer.Write(Unknown2);
         }
     }
 }

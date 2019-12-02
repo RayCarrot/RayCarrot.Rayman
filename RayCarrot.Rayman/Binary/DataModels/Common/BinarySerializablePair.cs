@@ -22,23 +22,21 @@ namespace RayCarrot.Rayman
         /// <summary>
         /// Deserializes the data from the stream into this instance
         /// </summary>
-        /// <param name="stream">The stream to deserialize from</param>
-        /// <param name="deserializer">The deserializer</param>
-        public virtual void Deserialize(FileStream stream, IBinaryDeserializer deserializer)
+        /// <param name="reader">The reader to use to read from the stream</param>
+        public void Deserialize(BinaryDataReader reader)
         {
-            Item1 = deserializer.Deserialize<T1>(stream);
-            Item2 = deserializer.Deserialize<T2>(stream);
+            Item1 = reader.Read<T1>();
+            Item2 = reader.Read<T2>();
         }
 
         /// <summary>
         /// Serializes the data from this instance to the stream
         /// </summary>
-        /// <param name="stream">The stream to serialize to</param>
-        /// <param name="serializer">The serializer</param>
-        public void Serialize(FileStream stream, IBinarySerializer serializer)
+        /// <param name="writer">The writer to use to write to the stream</param>
+        public void Serialize(BinaryDataWriter writer)
         {
-            serializer.Serialize(stream, Item1);
-            serializer.Serialize(stream, Item2);
+            writer.Write(Item1);
+            writer.Write(Item2);
         }
     }
 }

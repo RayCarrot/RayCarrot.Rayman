@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.IO;
+using System.Text;
 
 namespace RayCarrot.Rayman
 {
@@ -8,15 +9,19 @@ namespace RayCarrot.Rayman
     public class LegendsLocalizationSerializer : BinaryDataSerializer<StandardUbiArtLocalizationData>
     {
         /// <summary>
-        /// Default constructor
+        /// Gets a new binary reader to use for the specified stream
         /// </summary>
-        public LegendsLocalizationSerializer() : base(new BinarySeriaizerSettings()
+        protected override BinaryReader GetBinaryReader(Stream stream)
         {
-            // Set the encoding to UTF-8
-            StringEncoding = Encoding.UTF8
-        })
-        {
+            return new UbiArtBinaryReader(stream, ByteOrder.BigEndian, Encoding.UTF8);
+        }
 
+        /// <summary>
+        /// Gets a new binary writer to use for the specified stream
+        /// </summary>
+        protected override BinaryWriter GetBinaryWriter(Stream stream)
+        {
+            return new UbiArtBinaryWriter(stream, ByteOrder.BigEndian, Encoding.UTF8);
         }
     }
 }

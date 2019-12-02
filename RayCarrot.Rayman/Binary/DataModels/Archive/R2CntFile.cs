@@ -1,0 +1,96 @@
+﻿namespace RayCarrot.Rayman
+{
+    /// <summary>
+    /// The data used for a file within Rayman 2's .cnt files
+    /// </summary>
+    public class R2CntFile : IBinarySerializable
+    {
+        #region Constructor
+
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="xorKey">The XOR key</param>
+        public R2CntFile(byte xorKey)
+        {
+            XORKey = xorKey;
+        }
+
+        #endregion
+
+        #region Public Properties
+
+        /// <summary>
+        /// The index of the file in the directory
+        /// </summary>
+        public int DirectoryIndex { get; set; }
+
+        /// <summary>
+        /// The file name, including the extension
+        /// </summary>
+        public string FileName { get; set; }
+
+        /// <summary>
+        /// The XOR key
+        /// </summary>
+        public byte XORKey { get; }
+
+        /// <summary>
+        /// The XOR key for the file
+        /// </summary>
+        public int FileXORKey { get; set; }
+
+        /// <summary>
+        /// Unknown value
+        /// </summary>
+        public int Unknown1 { get; set; }
+
+        /// <summary>
+        /// The file data pointer
+        /// </summary>
+        public int Pointer { get; set; }
+
+        /// <summary>
+        /// The file data size, in bytes
+        /// </summary>
+        public int Size { get; set; }
+
+        #endregion
+
+        #region Public Methods
+
+        /// <summary>
+        /// Deserializes the data from the stream into this instance
+        /// </summary>
+        /// <param name="reader">The reader to use to read from the stream</param>
+        public void Deserialize(BinaryDataReader reader)
+        {
+            DirectoryIndex = reader.Read<int>();
+            FileName = reader.ReadyEncryptedString(XORKey);
+            FileXORKey = reader.Read<int>();
+            Unknown1 = reader.Read<int>();
+            Pointer = reader.Read<int>();
+            Size = reader.Read<int>();
+        }
+
+        /// <summary>
+        /// Serializes the data from this instance to the stream
+        /// </summary>
+        /// <param name="writer">The writer to use to write to the stream</param>
+        public void Serialize(BinaryDataWriter writer)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        /// <summary>
+        /// Returns a string that represents the current object.
+        /// </summary>
+        /// <returns>A string that represents the current object.</returns>
+        public override string ToString()
+        {
+            return $"{DirectoryIndex}: {FileName}";
+        }
+
+        #endregion
+    }
+}
