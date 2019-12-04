@@ -5,6 +5,14 @@ VisualStudioVersion = 16.0.29411.108
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RayCarrot.Rayman", "RayCarrot.Rayman\RayCarrot.Rayman.csproj", "{B3C0C9EE-0ACB-4CD6-9DAB-D9F3C741300D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RayCarrot.Rayman.Test", "RayCarrot.Rayman.Test\RayCarrot.Rayman.Test.csproj", "{55976B69-4B7C-4629-B3D5-1A8B6189650E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Other", "Other", "{E02E624C-3A0B-4B8E-A677-12838C065CD9}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +23,10 @@ Global
 		{B3C0C9EE-0ACB-4CD6-9DAB-D9F3C741300D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B3C0C9EE-0ACB-4CD6-9DAB-D9F3C741300D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B3C0C9EE-0ACB-4CD6-9DAB-D9F3C741300D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55976B69-4B7C-4629-B3D5-1A8B6189650E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55976B69-4B7C-4629-B3D5-1A8B6189650E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55976B69-4B7C-4629-B3D5-1A8B6189650E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55976B69-4B7C-4629-B3D5-1A8B6189650E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
