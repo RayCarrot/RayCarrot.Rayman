@@ -1,4 +1,6 @@
-﻿namespace RayCarrot.Rayman
+﻿using System.IO;
+
+namespace RayCarrot.Rayman
 {
     /// <summary>
     /// The data used for a file within Rayman 2's .cnt files
@@ -38,7 +40,7 @@
         /// <summary>
         /// The XOR key for the file
         /// </summary>
-        public int FileXORKey { get; set; }
+        public byte[] FileXORKey { get; set; }
 
         /// <summary>
         /// Unknown value
@@ -60,6 +62,33 @@
         #region Public Methods
 
         /// <summary>
+        /// Gets the file bytes for the CNT file item from the stream
+        /// </summary>
+        /// <param name="fileStream">The stream to get the file bytes from</param>
+        /// <returns>The file bytes</returns>
+        public byte[] GetFileBytes(Stream fileStream)
+        {
+            // Set the position
+            fileStream.Position = Pointer;
+
+            // Create the buffer
+            byte[] buffer = new byte[Size];
+
+            // Read the bytes into the buffer
+            fileStream.Read(buffer, 0, buffer.Length);
+
+            // Enumerate each byte
+            for (int i = 0; i < Size; i++)
+            {
+                if ((Size % 4) + i < Size)
+                    buffer[i] = (byte)(buffer[i] ^ FileXORKey[i % 4]);
+            }
+
+            // Return the buffer
+            return buffer;
+        }
+
+        /// <summary>
         /// Deserializes the data from the stream into this instance
         /// </summary>
         /// <param name="reader">The reader to use to read from the stream</param>
@@ -67,7 +96,7 @@
         {
             DirectoryIndex = reader.Read<int>();
             FileName = reader.ReadyEncryptedString(XORKey);
-            FileXORKey = reader.Read<int>();
+            FileXORKey = reader.ReadBytes(4);
             Unknown1 = reader.Read<int>();
             Pointer = reader.Read<int>();
             Size = reader.Read<int>();

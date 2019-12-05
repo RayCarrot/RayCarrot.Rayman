@@ -38,11 +38,24 @@ namespace RayCarrot.Rayman
             // Create the file stream
             using var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
 
+            // Deserialize the data from the stream
+            return Deserialize(stream);
+        }
+
+        /// <summary>
+        /// Deserializes the data from the serialized file as a stream
+        /// </summary>
+        /// <param name="fileStream">The file stream to deserialize</param>
+        /// <returns>The deserialized object</returns>
+        public virtual T Deserialize(Stream fileStream)
+        {
+            RCFCore.Logger?.LogTraceSource($"The data from a stream is being deserialized");
+
             // Get the reader
-            using var reader = GetBinaryReader(stream);
+            using var reader = GetBinaryReader(fileStream);
 
             // Create the wrapper reader
-            using var dataReader = new BinaryDataReader(reader);
+            using var dataReader = new BinaryDataReader(reader, false);
 
             // Deserialize the data
             return dataReader.Read<T>();

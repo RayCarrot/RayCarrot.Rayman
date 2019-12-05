@@ -15,15 +15,21 @@ namespace RayCarrot.Rayman
         /// Default constructor
         /// </summary>
         /// <param name="reader">The underlying reader</param>
-        public BinaryDataReader(BinaryReader reader)
+        /// <param name="closeStream">Indicates if the stream should be closed when disposed</param>
+        public BinaryDataReader(BinaryReader reader, bool closeStream)
         {
             Reader = reader;
-
+            CloseStream = closeStream;
         }
 
         #endregion
 
         #region Protected Properties
+
+        /// <summary>
+        /// Indicates if the stream should be closed when disposed
+        /// </summary>
+        protected bool CloseStream { get; }
 
         /// <summary>
         /// The underlying reader
@@ -137,7 +143,8 @@ namespace RayCarrot.Rayman
 
         public void Dispose()
         {
-            Reader?.Dispose();
+            if (CloseStream)
+                Reader?.Dispose();
         }
 
         #endregion

@@ -2,6 +2,7 @@
 RayCarrot.Rayman is a helper library for Rayman managing Rayman related files.
 
 ## Features
+Documentation: https://docs.google.com/document/d/1m9pN8nrC5Ybg8F-OHxXG3OM9T-UyaOg7PfTSfTKuetc/edit?usp=sharing
 
 ### UbiIni Handlers
 Allows reading and writing to the data available in the common Rayman ubi.ini files

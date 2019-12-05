@@ -13,7 +13,7 @@ namespace RayCarrot.Rayman
         /// </summary>
         protected override BinaryReader GetBinaryReader(Stream stream)
         {
-            return new UbiArtBinaryReader(stream, ByteOrder.BigEndian, Encoding.UTF8);
+            return new UbiArtBinaryReader(stream, ByteOrder.BigEndian, Encoding.UTF8, true);
         }
 
         /// <summary>
@@ -21,7 +21,7 @@ namespace RayCarrot.Rayman
         /// </summary>
         protected override BinaryWriter GetBinaryWriter(Stream stream)
         {
-            return new UbiArtBinaryWriter(stream, ByteOrder.BigEndian, Encoding.UTF8);
+            return new UbiArtBinaryWriter(stream, ByteOrder.BigEndian, Encoding.UTF8, true);
         }
     }
 }

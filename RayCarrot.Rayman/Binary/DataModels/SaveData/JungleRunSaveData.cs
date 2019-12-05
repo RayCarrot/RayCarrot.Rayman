@@ -1,7 +1,4 @@
-﻿using System.IO;
-using RayCarrot.Extensions;
-
-namespace RayCarrot.Rayman
+﻿namespace RayCarrot.Rayman
 {
     /// <summary>
     /// The save file data used for Rayman Jungle Run in the three .dat files
