@@ -13,7 +13,8 @@ Allows reading and writing to supported binary files. Below is a list of the cur
 - Localization files for the UbiArt games (.loc, .loc8)
 - Rayman Jungle Run save files on Windows 10 (.dat)
 - Rayman Fiesta Run save files on Windows 10 (.dat) - (WIP)
-- Rayman 2 texture archives (.cnt) - (WIP)
+- Rayman 2 texture archives (.cnt)
+- Rayman 2 texture file (.gf)
 
 ## Dependencies
 RayCarrot.Rayman uses these main dependencies:

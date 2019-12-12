@@ -62,6 +62,23 @@ namespace RayCarrot.Rayman
         #region Public Methods
 
         /// <summary>
+        /// Gets the file content for the CNT file item from the stream
+        /// </summary>
+        /// <param name="fileStream">The stream to get the file content from</param>
+        /// <returns>The file content</returns>
+        public R2GFFile GetFileContent(Stream fileStream)
+        {
+            // Get the bytes and load them into a memory stream
+            using var stream = new MemoryStream(GetFileBytes(fileStream));
+
+            // Serialize the data
+            var data = new R2GfSerializer().Deserialize(stream);
+
+            // Return the data
+            return data;
+        }
+
+        /// <summary>
         /// Gets the file bytes for the CNT file item from the stream
         /// </summary>
         /// <param name="fileStream">The stream to get the file bytes from</param>

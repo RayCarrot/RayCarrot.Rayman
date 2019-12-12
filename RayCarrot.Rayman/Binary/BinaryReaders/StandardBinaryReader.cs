@@ -4,41 +4,41 @@ using System.Text;
 namespace RayCarrot.Rayman
 {
     /// <summary>
-    /// The binary reader to use for UbiArt game files
+    /// The standard binary reader to use
     /// </summary>
-    public class UbiArtBinaryReader : OrderedBinaryReader
+    public class StandardBinaryReader : OrderedBinaryReader
     {
         #region Constructors
 
         /// <summary>
-        /// Creates a new instance of <see cref="UbiArtBinaryReader"/> with a stream input and the specified byte order to use with the encoding defaulted to UTF-8
+        /// Creates a new instance of <see cref="StandardBinaryReader"/> with a stream input and the specified byte order to use with the encoding defaulted to UTF-8
         /// </summary>
         /// <param name="input">The stream input</param>
         /// <param name="byteOrder">The byte order to use</param>
-        public UbiArtBinaryReader(Stream input, ByteOrder byteOrder) : this(input, byteOrder, Encoding.UTF8)
+        public StandardBinaryReader(Stream input, ByteOrder byteOrder) : this(input, byteOrder, Encoding.UTF8)
         {
 
         }
 
         /// <summary>
-        /// Creates a new instance of <see cref="UbiArtBinaryReader"/> with a stream input, the specified byte order to use and a specific encoding
+        /// Creates a new instance of <see cref="StandardBinaryReader"/> with a stream input, the specified byte order to use and a specific encoding
         /// </summary>
         /// <param name="input">The stream input</param>
         /// <param name="byteOrder">The byte order to use</param>
         /// <param name="encoding">The encoding to use</param>
-        public UbiArtBinaryReader(Stream input, ByteOrder byteOrder, Encoding encoding) : this(input, byteOrder, encoding, false)
+        public StandardBinaryReader(Stream input, ByteOrder byteOrder, Encoding encoding) : this(input, byteOrder, encoding, false)
         {
 
         }
 
         /// <summary>
-        /// Creates a new instance of <see cref="UbiArtBinaryReader"/> with a stream input, the specified byte order to use, a specific encoding and a value indicating if the stream should be kept open when disposing
+        /// Creates a new instance of <see cref="StandardBinaryReader"/> with a stream input, the specified byte order to use, a specific encoding and a value indicating if the stream should be kept open when disposing
         /// </summary>
         /// <param name="input">The stream input</param>
         /// <param name="byteOrder">The byte order to use</param>
         /// <param name="encoding">The encoding to use</param>
         /// <param name="leaveOpen">Indicates if the stream should be kept open when disposing</param>
-        public UbiArtBinaryReader(Stream input, ByteOrder byteOrder, Encoding encoding, bool leaveOpen) : base(input, byteOrder, encoding, leaveOpen)
+        public StandardBinaryReader(Stream input, ByteOrder byteOrder, Encoding encoding, bool leaveOpen) : base(input, byteOrder, encoding, leaveOpen)
         {
 
         }

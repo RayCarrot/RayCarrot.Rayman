@@ -13,7 +13,7 @@ namespace RayCarrot.Rayman
         /// </summary>
         protected override BinaryReader GetBinaryReader(Stream stream)
         {
-            return new UbiArtBinaryReader(stream, ByteOrder.BigEndian, Encoding.BigEndianUnicode, true);
+            return new StandardBinaryReader(stream, ByteOrder.BigEndian, Encoding.BigEndianUnicode, true);
         }
 
         /// <summary>

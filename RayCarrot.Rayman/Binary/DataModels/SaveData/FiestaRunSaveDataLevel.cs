@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-
-namespace RayCarrot.Rayman
+﻿namespace RayCarrot.Rayman
 {
     /// <summary>
     /// The level progression data for Rayman Fiesta Run
