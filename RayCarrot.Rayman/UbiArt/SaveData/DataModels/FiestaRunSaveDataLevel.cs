@@ -46,9 +46,7 @@
             writer.Write(Lums);
             writer.Write(TeensiesFreed);
             writer.Write(Unknown1);
-
-            foreach (byte b in Unknown2)
-                writer.Write(b);
+            writer.Write(Unknown2);
         }
 
         public override string ToString()

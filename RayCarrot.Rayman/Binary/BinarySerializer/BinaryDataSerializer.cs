@@ -1,4 +1,5 @@
-﻿using RayCarrot.IO;
+﻿using System;
+using RayCarrot.IO;
 using System.IO;
 using RayCarrot.CarrotFramework.Abstractions;
 
@@ -45,20 +46,47 @@ namespace RayCarrot.Rayman
         /// <summary>
         /// Deserializes the data from the serialized file as a stream
         /// </summary>
-        /// <param name="fileStream">The file stream to deserialize</param>
+        /// <param name="stream">The file stream to deserialize</param>
         /// <returns>The deserialized object</returns>
-        public virtual T Deserialize(Stream fileStream)
+        public virtual T Deserialize(Stream stream)
         {
             RCFCore.Logger?.LogTraceSource($"The data from a stream is being deserialized");
 
             // Get the reader
-            using var reader = GetBinaryReader(fileStream);
+            using var reader = GetBinaryReader(stream);
 
             // Create the wrapper reader
             using var dataReader = new BinaryDataReader(reader, false);
 
             // Deserialize the data
             return dataReader.Read<T>();
+        }
+
+        /// <summary>
+        /// Deserializes the data from the serialized file as a stream to an existing instance
+        /// </summary>
+        /// <param name="stream">The file stream to deserialize</param>
+        /// <param name="instance">The object instance to deserialize to</param>
+        /// <returns>The deserialized object</returns>
+        public virtual T Deserialize<I>(Stream stream, I instance)
+            where I : T, IBinarySerializable
+        {
+            if (instance == null) 
+                throw new ArgumentNullException(nameof(instance));
+
+            RCFCore.Logger?.LogTraceSource($"The data from a stream is being deserialized to an existing instance");
+
+            // Get the reader
+            using var reader = GetBinaryReader(stream);
+
+            // Create the wrapper reader
+            using var dataReader = new BinaryDataReader(reader, false);
+
+            // Deserialize the data
+            instance.Deserialize(dataReader);
+
+            // Return the instance
+            return instance;
         }
 
         /// <summary>
@@ -72,6 +100,19 @@ namespace RayCarrot.Rayman
 
             // Create the file stream
             using var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write);
+
+            // Deserialize the data
+            Serialize(stream, obj);
+        }
+
+        /// <summary>
+        /// Serializes the data to the stream
+        /// </summary>
+        /// <param name="stream">The stream to serialize to</param>
+        /// <param name="obj">The object to serialize</param>
+        public virtual void Serialize(Stream stream, T obj)
+        {
+            RCFCore.Logger?.LogTraceSource($"Data is being serialized to a specified stream");
 
             // Create the writer
             using var writer = GetBinaryWriter(stream);

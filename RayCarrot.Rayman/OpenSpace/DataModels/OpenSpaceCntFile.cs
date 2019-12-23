@@ -1,11 +1,13 @@
 ﻿using System.IO;
+using System.Linq;
+using RayCarrot.CarrotFramework.Abstractions;
 
 namespace RayCarrot.Rayman
 {
     /// <summary>
-    /// The data used for a file within Rayman 2's .cnt files
+    /// The data used for a file within the .cnt files for OpenSpace games
     /// </summary>
-    public class R2CntFile : IBinarySerializable
+    public class OpenSpaceCntFile : IBinarySerializable
     {
         #region Constructor
 
@@ -13,7 +15,7 @@ namespace RayCarrot.Rayman
         /// Default constructor
         /// </summary>
         /// <param name="xorKey">The XOR key</param>
-        public R2CntFile(byte xorKey)
+        public OpenSpaceCntFile(byte xorKey)
         {
             XORKey = xorKey;
         }
@@ -65,14 +67,17 @@ namespace RayCarrot.Rayman
         /// Gets the file content for the CNT file item from the stream
         /// </summary>
         /// <param name="fileStream">The stream to get the file content from</param>
+        /// <param name="settings">The settings when serializing the data</param>
         /// <returns>The file content</returns>
-        public R2GFFile GetFileContent(Stream fileStream)
+        public OpenSpaceGFFile GetFileContent(Stream fileStream, OpenSpaceSettings settings)
         {
             // Get the bytes and load them into a memory stream
             using var stream = new MemoryStream(GetFileBytes(fileStream));
-
+            
             // Serialize the data
-            var data = new R2GfSerializer().Deserialize(stream);
+            var data = new OpenSpaceGfSerializer(settings).Deserialize(stream, new OpenSpaceGFFile(settings));
+
+            RCFCore.Logger?.LogWarningSource($"{data.RepeatByte}");
 
             // Return the data
             return data;
@@ -82,8 +87,9 @@ namespace RayCarrot.Rayman
         /// Gets the file bytes for the CNT file item from the stream
         /// </summary>
         /// <param name="fileStream">The stream to get the file bytes from</param>
+        /// <param name="decrypt">Indicates if the bytes should be decrypted</param>
         /// <returns>The file bytes</returns>
-        public byte[] GetFileBytes(Stream fileStream)
+        public byte[] GetFileBytes(Stream fileStream, bool decrypt = true)
         {
             // Set the position
             fileStream.Position = Pointer;
@@ -94,11 +100,15 @@ namespace RayCarrot.Rayman
             // Read the bytes into the buffer
             fileStream.Read(buffer, 0, buffer.Length);
 
-            // Enumerate each byte
-            for (int i = 0; i < Size; i++)
+            // Decrypt if set to do so and there is an encryption
+            if (decrypt && FileXORKey.Any(x => x != 0))
             {
-                if ((Size % 4) + i < Size)
-                    buffer[i] = (byte)(buffer[i] ^ FileXORKey[i % 4]);
+                // Enumerate each byte
+                for (int i = 0; i < Size; i++)
+                {
+                    if ((Size % 4) + i < Size)
+                        buffer[i] = (byte)(buffer[i] ^ FileXORKey[i % 4]);
+                }
             }
 
             // Return the buffer
@@ -112,7 +122,7 @@ namespace RayCarrot.Rayman
         public void Deserialize(BinaryDataReader reader)
         {
             DirectoryIndex = reader.Read<int>();
-            FileName = reader.ReadyEncryptedString(XORKey);
+            FileName = reader.ReadEncryptedString(XORKey);
             FileXORKey = reader.ReadBytes(4);
             Unknown1 = reader.Read<int>();
             Pointer = reader.Read<int>();
@@ -125,7 +135,12 @@ namespace RayCarrot.Rayman
         /// <param name="writer">The writer to use to write to the stream</param>
         public void Serialize(BinaryDataWriter writer)
         {
-            throw new System.NotImplementedException();
+            writer.Write(DirectoryIndex);
+            writer.WriteEncryptedString(FileName, XORKey);
+            writer.Write(FileXORKey);
+            writer.Write(Unknown1);
+            writer.Write(Pointer);
+            writer.Write(Size);
         }
 
         /// <summary>

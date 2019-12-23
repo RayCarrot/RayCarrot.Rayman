@@ -13,7 +13,7 @@ namespace RayCarrot.Rayman
         /// <param name="reader">The reader to use to read the string</param>
         /// <param name="XORKey">The XOR key</param>
         /// <returns>The string value</returns>
-        public static string ReadyEncryptedString(this BinaryDataReader reader, int XORKey)
+        public static string ReadEncryptedString(this BinaryDataReader reader, int XORKey)
         {
             // Create the output
             string output = String.Empty;

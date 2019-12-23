@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace RayCarrot.Rayman
+﻿namespace RayCarrot.Rayman
 {
     /// <summary>
     /// A pair of two items which implements <see cref="IBinarySerializable"/>

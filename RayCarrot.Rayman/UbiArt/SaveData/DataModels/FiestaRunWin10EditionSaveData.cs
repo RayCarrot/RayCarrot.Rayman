@@ -64,6 +64,12 @@
             // Serialize the level collection
             writer.Write(Levels);
 
+            // Write unknown bytes
+            writer.Write(Unknown1);
+
+            // Write Lums
+            writer.Write(Lums);
+
             // Write remaining bytes
             writer.Write(Unknown2);
         }

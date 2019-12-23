@@ -33,6 +33,15 @@ namespace RayCarrot.Rayman
         #region Public Methods
 
         /// <summary>
+        /// Sets the position of the stream
+        /// </summary>
+        /// <param name="position">The position</param>
+        public void SetPosition(long position)
+        {
+            Writer.BaseStream.Position = position;
+        }
+
+        /// <summary>
         /// Writes the specified type
         /// </summary>
         /// <typeparam name="T">The type of the value to write. This is either a supported value type or implements <see cref="IBinarySerializable"/></typeparam>
