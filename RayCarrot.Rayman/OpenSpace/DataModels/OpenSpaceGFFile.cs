@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using RayCarrot.CarrotFramework.Abstractions;
@@ -108,7 +107,7 @@ namespace RayCarrot.Rayman
         /// <returns>The bitmap</returns>
         public Bitmap GetBitmapThumbnail(int width)
         {
-            return GetBitmapThumbnail(width, (int)(Height / (Width / width)));
+            return GetBitmapThumbnail(width, (int)(Height / ((double)Width / width)));
         }
 
         /// <summary>
@@ -164,13 +163,36 @@ namespace RayCarrot.Rayman
             Width = (uint)bmp.Width;
             Height = (uint)bmp.Height;
 
+            var isTransparent = false;
+
             // Set each pixel
             for (int x = 0; x < Width; x++)
             {
                 for (int y = 0; y < Height; y++)
                 {
-                    Pixels[x, y] = bmp.GetPixel(x, y);
+                    // Get the pixel data
+                    var pixel = bmp.GetPixel(x, y);
+                    
+                    // Set the pixel
+                    Pixels[x, y] = pixel;
+
+                    // Check if it's transparent
+                    if (pixel.A != 0)
+                        isTransparent = true;
                 }
+            }
+
+            // Check if the transparency value should be updated
+            if (IsTransparent != isTransparent)
+            {
+                // Update channels if they are 3 or more
+                if (Channels == 3)
+                    Channels = 4;
+                else if (Channels == 4)
+                    Channels = 3;
+
+                // Update transparency
+                IsTransparent = isTransparent;
             }
         }
 
@@ -427,19 +449,12 @@ namespace RayCarrot.Rayman
         /// <param name="writer">The writer to use to write to the stream</param>
         public void Serialize(BinaryDataWriter writer)
         {
-            // Write the format
+            // Write the format or version
             if (Settings.EngineVersion == OpenSpaceEngineVersion.Montreal)
-            {
                 writer.Write(Version);
-            }
-            else if (Settings.Platform == OpenSpacePlatform.iOS || Settings.Game == OpenSpaceGame.TonicTroubleSpecialEdition)
-            {
 
-            }
-            else
-            {
+            else if (Settings.Platform != OpenSpacePlatform.iOS && Settings.Game != OpenSpaceGame.TonicTroubleSpecialEdition)
                 writer.Write(Format);
-            }
 
             // Write the size
             writer.Write(Width);
@@ -453,7 +468,7 @@ namespace RayCarrot.Rayman
 
             if (Settings.EngineVersion == OpenSpaceEngineVersion.Rayman3 && Settings.Game != OpenSpaceGame.Dinosaur && Settings.Game != OpenSpaceGame.LargoWinch)
                 writer.Write(EnlargeValue);
-
+            
             writer.Write(RepeatByte);
 
             if (Settings.EngineVersion == OpenSpaceEngineVersion.Montreal)
@@ -497,6 +512,8 @@ namespace RayCarrot.Rayman
 
                         writer.Write(pixelData);
 
+                        // TODO: Change this to take less space - only use repeat byte when same byte is used more than twice & set repeat byte to most common value
+
                         if (pixelData == RepeatByte)
                         {
                             writer.Write(pixelData);
@@ -520,7 +537,6 @@ namespace RayCarrot.Rayman
                         }
                         else
                         {
-
                             pixel++;
                         }
                     }
@@ -537,13 +553,13 @@ namespace RayCarrot.Rayman
                 {
                     for (int y = 0; y < Height; y++)
                     {
-                        // TODO: This is reversing it by the y-axis!    
-                        blueChannel[Width * y + x] = Pixels[x, y].B;
-                        greenChannel[Width * y + x] = Pixels[x, y].G;
-                        redChannel[Width * y + x] = Pixels[x, y].R;
+                        // NOTE: We for some reason have to reverse the y-axis    
+                        blueChannel[Width * y + x] = Pixels[x, Height - y - 1].B;
+                        greenChannel[Width * y + x] = Pixels[x, Height - y - 1].G;
+                        redChannel[Width * y + x] = Pixels[x, Height - y - 1].R;
 
                         if (IsTransparent)
-                            alphaChannel[Width * y + x] = Pixels[x, y].A;
+                            alphaChannel[Width * y + x] = Pixels[x, Height - y - 1].A;
                     }
                 }
 
@@ -553,7 +569,7 @@ namespace RayCarrot.Rayman
                 WriteChannel(redChannel);
 
                 if (IsTransparent)
-                    WriteChannel(blueChannel);
+                    WriteChannel(alphaChannel);
             }
             else if (Channels == 2)
             {

@@ -149,11 +149,13 @@ namespace RayCarrot.Rayman
         /// <returns>The size in bytes</returns>
         public int GetHeaderSize()
         {
-            // TODO: Clean up
-            using var stream = new MemoryStream(new byte[10000]);
+            // Create a temporary memory stream to determine the size
+            using var stream = new MemoryStream();
 
+            // Serialize the header only
             SerializeHeader(new BinaryDataWriter(new BinaryWriter(stream)));
 
+            // Get the position, which will be the size of the header
             return (int)stream.Position;
         }
 

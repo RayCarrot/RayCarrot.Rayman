@@ -77,8 +77,6 @@ namespace RayCarrot.Rayman
             // Serialize the data
             var data = new OpenSpaceGfSerializer(settings).Deserialize(stream, new OpenSpaceGFFile(settings));
 
-            RCFCore.Logger?.LogWarningSource($"{data.RepeatByte}");
-
             // Return the data
             return data;
         }
