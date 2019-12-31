@@ -68,7 +68,7 @@
     <Compile Include="OpenSpace\Settings\OpenSpaceSettings.cs" />
     <Compile Include="UbiArt\Localization\DataModels\FiestaRunUbiArtLocalizationData.cs" />
     <Compile Include="UbiArt\Localization\DataModels\FiestaRunLocalizationStringData.cs" />
-    <Compile Include="Binary\BinarySerializer\BinaryDataSerializer.cs" />
+    <Compile Include="Binary\BinaryDataSerializer.cs" />
     <Compile Include="UbiArt\SaveData\DataModels\FiestaRunWin10EditionSaveData.cs" />
     <Compile Include="UbiArt\SaveData\DataModels\FiestaRunWin10EditionSaveDataLevelCollection.cs" />
     <Compile Include="UbiArt\SaveData\DataModels\FiestaRunSaveDataLevel.cs" />
@@ -91,15 +91,11 @@
     <Compile Include="UbiIni\DataModels\Enums\RALanguages.cs" />
     <Compile Include="UbiIni\DataModels\Enums\RMLanguages.cs" />
     <Compile Include="UbiIni\DataModels\RayGLI_Mode.cs" />
-    <Compile Include="Framework\FrameworkConstructionExtensions.cs" />
-    <Compile Include="Framework\Implementations\DefaultRayManager.cs" />
-    <Compile Include="Framework\Interfaces\IRayManager.cs" />
-    <Compile Include="Framework\RCFRay.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UbiIni\Games\R2UbiIniHandler.cs" />
-    <Compile Include="UbiIni\Games\R3UbiIniHandler.cs" />
-    <Compile Include="UbiIni\Games\RAUbiIniHandler.cs" />
-    <Compile Include="UbiIni\Games\RMUbiIniHandler.cs" />
+    <Compile Include="UbiIni\Handlers\R2UbiIniHandler.cs" />
+    <Compile Include="UbiIni\Handlers\R3UbiIniHandler.cs" />
+    <Compile Include="UbiIni\Handlers\RAUbiIniHandler.cs" />
+    <Compile Include="UbiIni\Handlers\RMUbiIniHandler.cs" />
     <Compile Include="UbiIni\UbiIniDataParser.cs" />
     <Compile Include="UbiIni\UbiIniHandler.cs" />
   </ItemGroup>
@@ -111,10 +107,10 @@
       <Version>1.5.1</Version>
     </PackageReference>
     <PackageReference Include="RayCarrot.Extensions">
-      <Version>1.2.4</Version>
+      <Version>1.2.5</Version>
     </PackageReference>
     <PackageReference Include="RayCarrot.IO">
-      <Version>1.3.6</Version>
+      <Version>1.3.7</Version>
     </PackageReference>
     <PackageReference Include="System.Drawing.Common">
       <Version>4.7.0</Version>

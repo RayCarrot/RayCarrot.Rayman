@@ -1,4 +1,7 @@
-﻿namespace RayCarrot.Rayman
+﻿using System;
+using RayCarrot.CarrotFramework.Abstractions;
+
+namespace RayCarrot.Rayman
 {
     /// <summary>
     /// Formats a Rayman GLI_Mode key
@@ -37,6 +40,45 @@
         public override string ToString()
         {
             return $"{Windowed} - {ResX} x {ResY} x {ColorMode}";
+        }
+
+        /// <summary>
+        /// Creates a <see cref="RayGLI_Mode"/> from a string
+        /// </summary>
+        /// <param name="value">The value from a INI key</param>
+        /// <returns>The <see cref="RayGLI_Mode"/> or null if it could not be parsed</returns>
+        public static RayGLI_Mode Parse(string value)
+        {
+            if (value == null)
+                return null;
+
+            try
+            {
+                // Template:
+                // 1 - 1920 x 1080 x 16
+
+                // Split the values
+                var values = value.Split('x', '-');
+
+                // Trim the values
+                for (int i = 0; i < values.Length; i++)
+                    values[i] = values[i].Trim(' ');
+
+                return new RayGLI_Mode()
+                {
+                    Windowed = Int32.Parse(values[0]),
+                    ResX = Int32.Parse(values[1]),
+                    ResY = Int32.Parse(values[2]),
+                    ColorMode = Int32.Parse(values[3]),
+                };
+
+            }
+            catch (Exception ex)
+            {
+                ex.HandleUnexpected("Parsing GLI_Mode from string");
+
+                return null;
+            }
         }
     }
 }

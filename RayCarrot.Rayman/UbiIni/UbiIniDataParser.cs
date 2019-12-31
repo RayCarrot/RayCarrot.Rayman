@@ -17,7 +17,8 @@ namespace RayCarrot.Rayman
         {
             SkipInvalidLines = true,
             AllowDuplicateKeys = true,
-            OverrideDuplicateKeys = true
+            OverrideDuplicateKeys = true,
+            CaseInsensitive = true
         })
         { }
 

@@ -18,6 +18,7 @@ namespace RayCarrot.Rayman
             // Set the properties
             Game = game;
             Platform = platform;
+            DeserializeMipmaps = true;
 
             // Set the byte order based on platform
             switch (platform)
@@ -71,5 +72,10 @@ namespace RayCarrot.Rayman
         /// The platform
         /// </summary>
         public OpenSpacePlatform Platform { get; }
+
+        /// <summary>
+        /// Indicates if mipmaps should be deserialized (if available). Setting this to false will improve deserializing performance for certain games, but will not allow the deserialized file to be serialized without new mipmaps being generated
+        /// </summary>
+        public bool DeserializeMipmaps { get; set; }
     }
 }

@@ -39,7 +39,7 @@ namespace RayCarrot.Rayman
 
         #endregion
 
-        // TODO: Add properties for disc version
+        // IDEA: Add properties for disc version installer
 
         #region Properties
 
@@ -172,7 +172,7 @@ namespace RayCarrot.Rayman
         /// <summary>
         /// The formatted GLI_Mode key
         /// </summary>
-        public RayGLI_Mode FormattedGLI_Mode => RCFRay.RayManager.ToRayGLI_Mode(GLI_Mode);
+        public RayGLI_Mode FormattedGLI_Mode => RayGLI_Mode.Parse(GLI_Mode);
 
         /// <summary>
         /// The formatted TnL key

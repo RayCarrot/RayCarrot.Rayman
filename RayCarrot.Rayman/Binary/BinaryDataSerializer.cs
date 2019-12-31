@@ -34,8 +34,6 @@ namespace RayCarrot.Rayman
         /// <returns>The deserialized object</returns>
         public virtual T Deserialize(FileSystemPath filePath)
         {
-            RCFCore.Logger?.LogTraceSource($"The data from {filePath} is being deserialized");
-
             // Create the file stream
             using var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
 
@@ -50,8 +48,6 @@ namespace RayCarrot.Rayman
         /// <returns>The deserialized object</returns>
         public virtual T Deserialize(Stream stream)
         {
-            RCFCore.Logger?.LogTraceSource($"The data from a stream is being deserialized");
-
             // Get the reader
             using var reader = GetBinaryReader(stream);
 
@@ -74,8 +70,6 @@ namespace RayCarrot.Rayman
             if (instance == null) 
                 throw new ArgumentNullException(nameof(instance));
 
-            RCFCore.Logger?.LogTraceSource($"The data from a stream is being deserialized to an existing instance");
-
             // Get the reader
             using var reader = GetBinaryReader(stream);
 
@@ -96,8 +90,6 @@ namespace RayCarrot.Rayman
         /// <param name="obj">The object to serialize</param>
         public virtual void Serialize(FileSystemPath filePath, T obj)
         {
-            RCFCore.Logger?.LogTraceSource($"Data is being serialized to {filePath}");
-
             // Create the file stream
             using var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write);
 
@@ -112,8 +104,6 @@ namespace RayCarrot.Rayman
         /// <param name="obj">The object to serialize</param>
         public virtual void Serialize(Stream stream, T obj)
         {
-            RCFCore.Logger?.LogTraceSource($"Data is being serialized to a specified stream");
-
             // Create the writer
             using var writer = GetBinaryWriter(stream);
 

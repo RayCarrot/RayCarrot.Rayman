@@ -111,7 +111,7 @@ namespace RayCarrot.Rayman
         /// <summary>
         /// The formatted GLI_Mode key
         /// </summary>
-        public RayGLI_Mode FormattedGLI_Mode => RCFRay.RayManager.ToRayGLI_Mode(GLI_Mode);
+        public RayGLI_Mode FormattedGLI_Mode => RayGLI_Mode.Parse(GLI_Mode);
 
         /// <summary>
         /// The formatted Language key

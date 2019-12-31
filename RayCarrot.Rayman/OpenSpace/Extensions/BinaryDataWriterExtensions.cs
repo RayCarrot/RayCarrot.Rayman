@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace RayCarrot.Rayman
+﻿namespace RayCarrot.Rayman
 {
     /// <summary>
     /// Extension methods for <see cref="BinaryDataWriter"/>
