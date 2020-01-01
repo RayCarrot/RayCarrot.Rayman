@@ -66,6 +66,12 @@
     <Compile Include="OpenSpace\DataModels\OpenSpaceCntData.cs" />
     <Compile Include="Binary\DataModels\BinarySerializablePair.cs" />
     <Compile Include="OpenSpace\Settings\OpenSpaceSettings.cs" />
+    <Compile Include="Rayman1\Level\DataModels\Rayman1LevData.cs" />
+    <Compile Include="Rayman1\Level\DataModels\Rayman1LevMapCell.cs" />
+    <Compile Include="Rayman1\Level\DataModels\Rayman1LevMapCellTransparencyMode.cs" />
+    <Compile Include="Rayman1\Level\Serializers\Rayman1LevSerializer.cs" />
+    <Compile Include="Rayman1\Level\DataModels\Rayman1LevTexture.cs" />
+    <Compile Include="Rayman1\Level\DataModels\Rayman1LevTransparentTexture.cs" />
     <Compile Include="UbiArt\Localization\DataModels\FiestaRunUbiArtLocalizationData.cs" />
     <Compile Include="UbiArt\Localization\DataModels\FiestaRunLocalizationStringData.cs" />
     <Compile Include="Binary\BinaryDataSerializer.cs" />
