@@ -30,16 +30,16 @@ namespace RayCarrot.Rayman
 
         #endregion
 
-        #region Public Methods
+        #region Public Properties
 
         /// <summary>
-        /// Sets the position of the stream
+        /// The underlying stream
         /// </summary>
-        /// <param name="position">The position</param>
-        public void SetPosition(long position)
-        {
-            Writer.BaseStream.Position = position;
-        }
+        public Stream BaseStream => Writer.BaseStream;
+
+        #endregion
+
+        #region Public Methods
 
         /// <summary>
         /// Writes the specified type

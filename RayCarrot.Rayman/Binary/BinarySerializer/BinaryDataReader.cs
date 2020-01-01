@@ -38,6 +38,16 @@ namespace RayCarrot.Rayman
 
         #endregion
 
+        #region Public Properties
+
+        /// <summary>
+        /// The underlying stream
+        /// </summary>
+        public Stream BaseStream => Reader.BaseStream;
+
+        #endregion
+
+
         #region Public Methods
 
         /// <summary>

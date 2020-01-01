@@ -133,7 +133,7 @@ namespace RayCarrot.Rayman
             foreach (var file in Files)
             {
                 // Set the position to the pointer
-                writer.SetPosition(file.Pointer);
+                writer.BaseStream.Position = file.Pointer;
 
                 // Get the full path
                 var fullPath = Path.Combine(file.DirectoryIndex == -1 ? String.Empty : Directories[file.DirectoryIndex], file.FileName);
