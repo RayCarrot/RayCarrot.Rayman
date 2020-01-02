@@ -13,7 +13,7 @@ namespace RayCarrot.Rayman
         public const int Size = 16;
 
         /// <summary>
-        /// The offset for this texture, as defines in the <see cref="TexturesOffsetTable"/>. This value is not a part of the texture and has to be set manually.
+        /// The offset for this texture, as defines in the textures offset table. This value is not a part of the texture and has to be set manually.
         /// </summary>
         public uint Offset { get; set; }
 
@@ -53,7 +53,15 @@ namespace RayCarrot.Rayman
         /// <param name="writer">The writer to use to write to the stream</param>
         public virtual void Serialize(BinaryDataWriter writer)
         {
-            throw new NotImplementedException();
+            for (int y = 0; y < Size; y++)
+            {
+                for (int x = 0; x < Size; x++)
+                {
+                    writer.Write(ColorIndexes[x, y]);
+                }
+            }
+
+            writer.Write(Unknown1);
         }
     }
 }

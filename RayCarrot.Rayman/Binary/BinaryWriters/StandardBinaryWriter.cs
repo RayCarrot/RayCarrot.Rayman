@@ -4,41 +4,41 @@ using System.Text;
 namespace RayCarrot.Rayman
 {
     /// <summary>
-    /// The binary writer to use for UbiArt game files
+    /// The standard binary writer to use
     /// </summary>
-    public class UbiArtBinaryWriter : OrderedBinaryWriter
+    public class StandardBinaryWriter : OrderedBinaryWriter
     {
         #region Constructors
 
         /// <summary>
-        /// Creates a new instance of <see cref="UbiArtBinaryWriter"/> with a stream input and the specified byte order to use with the encoding defaulted to UTF-8
+        /// Creates a new instance of <see cref="StandardBinaryWriter"/> with a stream input and the specified byte order to use with the encoding defaulted to UTF-8
         /// </summary>
         /// <param name="output">The stream output</param>
         /// <param name="byteOrder">The byte order to use</param>
-        public UbiArtBinaryWriter(Stream output, ByteOrder byteOrder) : this(output, byteOrder, Encoding.UTF8)
+        public StandardBinaryWriter(Stream output, ByteOrder byteOrder) : this(output, byteOrder, Encoding.UTF8)
         {
 
         }
 
         /// <summary>
-        /// Creates a new instance of <see cref="UbiArtBinaryWriter"/> with a stream input, the specified byte order to use and a specific encoding
+        /// Creates a new instance of <see cref="StandardBinaryWriter"/> with a stream input, the specified byte order to use and a specific encoding
         /// </summary>
         /// <param name="output">The stream output</param>
         /// <param name="byteOrder">The byte order to use</param>
         /// <param name="encoding">The encoding to use</param>
-        public UbiArtBinaryWriter(Stream output, ByteOrder byteOrder, Encoding encoding) : this(output, byteOrder, encoding, false)
+        public StandardBinaryWriter(Stream output, ByteOrder byteOrder, Encoding encoding) : this(output, byteOrder, encoding, false)
         {
 
         }
 
         /// <summary>
-        /// Creates a new instance of <see cref="UbiArtBinaryWriter"/> with a stream input, the specified byte order to use, a specific encoding and a value indicating if the stream should be kept open when disposing
+        /// Creates a new instance of <see cref="StandardBinaryWriter"/> with a stream input, the specified byte order to use, a specific encoding and a value indicating if the stream should be kept open when disposing
         /// </summary>
         /// <param name="output">The stream output</param>
         /// <param name="byteOrder">The byte order to use</param>
         /// <param name="encoding">The encoding to use</param>
         /// <param name="leaveOpen">Indicates if the stream should be kept open when disposing</param>
-        public UbiArtBinaryWriter(Stream output, ByteOrder byteOrder, Encoding encoding, bool leaveOpen) : base(output, byteOrder, encoding, leaveOpen)
+        public StandardBinaryWriter(Stream output, ByteOrder byteOrder, Encoding encoding, bool leaveOpen) : base(output, byteOrder, encoding, leaveOpen)
         {
 
         }

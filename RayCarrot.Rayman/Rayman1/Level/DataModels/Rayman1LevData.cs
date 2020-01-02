@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using RayCarrot.Extensions;
@@ -74,11 +75,11 @@ namespace RayCarrot.Rayman
         /// </summary>
         public uint Unknown3Count { get; set; }
 
-        // TODO: Instead of int, each item is a texture with ONLY the ColorIndexes property
+        // WIP: Instead of int, each item is a texture with ONLY the ColorIndexes property
         /// <summary>
         /// The color indexes for the rough textures
         /// </summary>
-        public int[][,] RoughTextures { get; set; }
+        public byte[][,] RoughTextures { get; set; }
 
         /// <summary>
         /// The checksum for the <see cref="RoughTextures"/>
@@ -145,6 +146,12 @@ namespace RayCarrot.Rayman
         /// </summary>
         public byte TexturesChecksum { get; set; }
 
+        // WIP: Deserialize into properties
+        /// <summary>
+        /// Data for the events
+        /// </summary>
+        public byte[] EventData { get; set; }
+
         /// <summary>
         /// Gets a bitmap for the map cell textures
         /// </summary>
@@ -201,17 +208,64 @@ namespace RayCarrot.Rayman
         }
 
         /// <summary>
+        /// Gets a bitmap for the map cell types
+        /// </summary>
+        /// <returns>The bitmap for the map cell types</returns>
+        public Bitmap GetTypeBitmap()
+        {
+            // Create the bitmap
+            Bitmap bmp = new Bitmap(Rayman1LevTexture.Size * MapWidth, Rayman1LevTexture.Size * MapHeight);
+
+            // Enumerate each cell
+            for (int cellY = 0; cellY < MapHeight; cellY++)
+            {
+                for (int cellX = 0; cellX < MapWidth; cellX++)
+                {
+                    // Get the cell
+                    var cell = MapCells[cellX, cellY];
+
+                    // Get the type bitmap
+                    using var typeBmp = Rayman1LevIcons.ResourceManager.GetObject(cell.CellType.ToString()).CastTo<Bitmap>();
+
+                    // Write each pixel for the texture
+                    for (int x = 0; x < Rayman1LevTexture.Size; x++)
+                    {
+                        for (int y = 0; y < Rayman1LevTexture.Size; y++)
+                        {
+                            if (typeBmp == null)
+                                Console.WriteLine((int)cell.CellType);
+
+                            // Get the pixel
+                            var c = typeBmp?.GetPixel(x, y) ?? Color.Red;
+
+                            // Set the pixel
+                            bmp.SetPixel(Rayman1LevTexture.Size * cellX + x, Rayman1LevTexture.Size * cellY + y, c);
+                        }
+                    }
+                }
+            }
+
+            // Return the bitmap
+            return bmp;
+        }
+
+        /// <summary>
         /// Deserializes the data from the stream into this instance
         /// </summary>
         /// <param name="reader">The reader to use to read from the stream</param>
         public void Deserialize(BinaryDataReader reader)
         {
+            // HEADER BLOCK
+
+            // Read block pointer
             EventBlockPointer = reader.Read<uint>();
             TextureOffsetTablePointer = reader.Read<uint>();
 
+            // Read map size
             MapWidth = reader.Read<ushort>();
             MapHeight = reader.Read<ushort>();
 
+            // Create the palettes
             ColorPalettes = new Color[][]
             {
                 new Color[256], 
@@ -219,23 +273,33 @@ namespace RayCarrot.Rayman
                 new Color[256], 
             };
 
-            foreach (var colorCollection in ColorPalettes)
+            // Read each palette color
+            for (var paletteIndex = 0; paletteIndex < ColorPalettes.Length; paletteIndex++)
             {
-                for (int i = 0; i < colorCollection.Length; i++)
+                // Get the palette
+                var palette = ColorPalettes[paletteIndex];
+
+                // Read each color
+                for (int i = 0; i < palette.Length; i++)
                 {
-                    colorCollection[i] = Color.FromArgb(reader.Read<byte>() * 4, reader.Read<byte>() * 4, reader.Read<byte>() * 4);
+                    // Read the palette color as RGB and multiply by 4 (as the values are between 0-64)
+                    palette[i] = Color.FromArgb(reader.Read<byte>() * 4, reader.Read<byte>() * 4,
+                        reader.Read<byte>() * 4);
                 }
+
+                // Reverse the palette
+                ColorPalettes[paletteIndex] = palette.Reverse().ToArray();
             }
 
-            ColorPalettes[0] = ColorPalettes[1].Reverse().ToArray();
-
+            // Read unknown byte
             Unknown1 = reader.Read<byte>();
 
-            if (reader.BaseStream.Position != 2317)
-                throw new Exception("Header block length is incorrect");
+            // MAP BLOCK
 
+            // Create the collection of map cells
             MapCells = new Rayman1LevMapCell[MapWidth, MapHeight];
 
+            // Read each map cell
             for (int y = 0; y < MapHeight; y++)
             {
                 for (int x = 0; x < MapWidth; x++)
@@ -244,92 +308,134 @@ namespace RayCarrot.Rayman
                 }
             }
             
+            // Read unknown byte
             Unknown2 = reader.Read<byte>();
+            
+            // Read the background data
             BackgroundIndex = reader.Read<byte>();
             BackgroundSpritesDES = reader.Read<uint>();
 
+            // Read the rough textures count
             RoughTextureCount = reader.Read<uint>();
+            
+            // Read the length of the third unknown value
             Unknown3Count = reader.Read<uint>();
 
-            RoughTextures = new int[RoughTextureCount][,];
+            // Create the collection of rough textures
+            RoughTextures = new byte[RoughTextureCount][,];
 
+            // Read each rough texture
             for (int i = 0; i < RoughTextureCount; i++)
             {
-                RoughTextures[i] = new int[16, 16];
+                RoughTextures[i] = new byte[16, 16];
 
-                for (int x = 0; x < 16; x++)
+                for (int y = 0; y < 16; y++)
                 {
-                    for (int y = 0; y < 16; y++)
+                    for (int x = 0; x < 16; x++)
                     {
                         RoughTextures[i][x, y] = reader.Read<byte>();
                     }
                 }
             }
 
+            // Read the checksum for the rough textures
             RoughTexturesChecksum = reader.Read<byte>();
+
+            // Create the index table for the rough textures
             RoughTexturesIndexTable = new uint[1200];
 
+            // Read the index table for the rough textures
             for (int i = 0; i < RoughTexturesIndexTable.Length; i++)
                 RoughTexturesIndexTable[i] = reader.Read<uint>();
 
+            // Create the collection for the third unknown value
             Unknown3 = new byte[Unknown3Count];
 
+            // Read the items for the third unknown value
             for (int i = 0; i < Unknown3.Length; i++)
                 Unknown3[i] = reader.Read<byte>();
 
+            // Read the checksum for the third unknown value
             Unknown3Checksum = reader.Read<byte>();
 
+            // Create the offset table for the third unknown value
             Unknown3OffsetTable = new uint[1200];
 
+            // Read the offset table for the third unknown value
             for (int i = 0; i < Unknown3OffsetTable.Length; i++)
                 Unknown3OffsetTable[i] = reader.Read<uint>();
 
-            // NOTE: At this point the stream position should match the texture block offset
+            // TEXTURE BLOCK
 
+            // At this point the stream position should match the texture block offset
             if (reader.BaseStream.Position != TextureOffsetTablePointer)
                 throw new Exception("Texture block offset is incorrect");
 
+            // Create the offset table for the textures
             TexturesOffsetTable = new uint[1200];
 
+            // Read the offset table for the textures
             for (int i = 0; i < TexturesOffsetTable.Length; i++)
                 TexturesOffsetTable[i] = reader.Read<uint>();
 
+            // Read the textures count
             TexturesCount = reader.Read<uint>();
             NonTransparentTexturesCount = reader.Read<uint>();
             TexturesDataTableCount = reader.Read<uint>();
 
-            var textureOffset = reader.BaseStream.Position;
+            // Get the current offset to use for the texture offsets
+            var textureBaseOffset = reader.BaseStream.Position;
 
+            // Create the collection of non-transparent textures
             NonTransparentTextures = new Rayman1LevTexture[NonTransparentTexturesCount];
 
+            // Read the non-transparent textures
             for (int i = 0; i < NonTransparentTextures.Length; i++)
             {
+                // Create the texture
                 var t = new Rayman1LevTexture()
                 {
-                    Offset = (uint)(reader.BaseStream.Position - textureOffset)
+                    // Set the offset
+                    Offset = (uint)(reader.BaseStream.Position - textureBaseOffset)
                 };
 
+                // Deserialize the texture
                 t.Deserialize(reader);
 
+                // Add the texture to the collection
                 NonTransparentTextures[i] = t;
             }
 
+            // Create the collection of transparent textures
             TransparentTextures = new Rayman1LevTransparentTexture[TexturesCount - NonTransparentTexturesCount];
 
+            // Read the transparent textures
             for (int i = 0; i < TransparentTextures.Length; i++)
             {
+                // Create the texture
                 var t = new Rayman1LevTransparentTexture()
                 {
-                    Offset = (uint)(reader.BaseStream.Position - textureOffset)
+                    // Set the offset
+                    Offset = (uint)(reader.BaseStream.Position - textureBaseOffset)
                 };
 
+                // Deserialize the texture
                 t.Deserialize(reader);
 
+                // Add the texture to the collection
                 TransparentTextures[i] = t;
             }
 
+            // Read the fourth unknown value
             Unknown4 = reader.ReadBytes(32);
+
+            // Read the checksum for the textures
             TexturesChecksum = reader.Read<byte>();
+
+            // EVENT BLOCK
+
+            // Read the event data
+            EventData = reader.ReadRemainingBytes();
         }
 
         /// <summary>
@@ -338,7 +444,116 @@ namespace RayCarrot.Rayman
         /// <param name="writer">The writer to use to write to the stream</param>
         public void Serialize(BinaryDataWriter writer)
         {
-            throw new NotImplementedException();
+            // HEADER BLOCK
+
+            // Write block pointer
+            writer.Write(EventBlockPointer);
+            writer.Write(TextureOffsetTablePointer);
+
+            // Write map size
+            writer.Write(MapWidth);
+            writer.Write(MapHeight);
+
+            // Write each palette
+            foreach (var palette in ColorPalettes)
+            {
+                foreach (var color in palette.Reverse())
+                {
+                    // Write the palette color as RGB and divide by 4 (as the values are between 0-64)
+                    writer.Write((byte)(color.R / 4));
+                    writer.Write((byte)(color.G / 4));
+                    writer.Write((byte)(color.B / 4));
+                }
+            }
+
+            // Write unknown byte
+            writer.Write(Unknown1);
+
+            // MAP BLOCK
+
+            // Write each map cell
+            for (int y = 0; y < MapHeight; y++)
+            {
+                for (int x = 0; x < MapWidth; x++)
+                {
+                    writer.Write(MapCells[x, y]);
+                }
+            }
+
+            // Write unknown byte
+            writer.Write(Unknown2);
+
+            // Write the background data
+            writer.Write(BackgroundIndex);
+            writer.Write(BackgroundSpritesDES);
+
+            // Write the rough textures count
+            writer.Write(RoughTextureCount);
+
+            // Write the length of the third unknown value
+            writer.Write(Unknown3Count);
+
+            // Write each rough texture
+            for (int i = 0; i < RoughTextureCount; i++)
+            {
+                for (int y = 0; y < 16; y++)
+                {
+                    for (int x = 0; x < 16; x++)
+                    {
+                        writer.Write(RoughTextures[i][x, y]);
+                    }
+                }
+            }
+
+            // Write the checksum for the rough textures
+            writer.Write(RoughTexturesChecksum);
+
+            // Write the index table for the rough textures
+            foreach (var t in RoughTexturesIndexTable)
+                writer.Write(t);
+
+            // Write the items for the third unknown value
+            foreach (var item in Unknown3)
+                writer.Write(item);
+
+            // Write the checksum for the third unknown value
+            writer.Write(Unknown3Checksum);
+
+            // Write the offset table for the third unknown value
+            foreach (var offset in Unknown3OffsetTable)
+                writer.Write(offset);
+
+            // TEXTURE BLOCK
+
+            // Write the offset table for the textures
+            foreach (var offset in TexturesOffsetTable)
+                writer.Write(offset);
+
+            // Write the textures count
+            writer.Write(TexturesCount);
+            writer.Write(NonTransparentTexturesCount);
+            writer.Write(TexturesDataTableCount);
+
+            // Write the non-transparent textures
+            foreach (var texture in NonTransparentTextures)
+                // Write the texture
+                writer.Write(texture);
+
+            // Write the transparent textures
+            foreach (var texture in TransparentTextures)
+                // Write the texture
+                writer.Write(texture);
+
+            // Write the fourth unknown value
+            writer.Write(Unknown4);
+
+            // Write the checksum for the textures
+            writer.Write(TexturesChecksum);
+
+            // EVENT BLOCK
+
+            // Write the event data
+            writer.Write(EventData);
         }
     }
 }

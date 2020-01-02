@@ -12,11 +12,10 @@ namespace RayCarrot.Rayman
         /// </summary>
         public ushort TextureIndex { get; set; }
 
-        // TODO: Change to enum - find all types (same as in Mapper?)
         /// <summary>
         /// The cell type
         /// </summary>
-        public byte CellType { get; set; }
+        public Rayman1LevMapCellType CellType { get; set; }
 
         /// <summary>
         /// An unknown byte
@@ -40,7 +39,7 @@ namespace RayCarrot.Rayman
         public void Deserialize(BinaryDataReader reader)
         {
             TextureIndex = reader.Read<ushort>();
-            CellType = reader.Read<byte>();
+            CellType = (Rayman1LevMapCellType)reader.Read<byte>();
             Unknown1 = reader.Read<byte>();
             TransparencyMode = (Rayman1LevMapCellTransparencyMode)reader.Read<byte>();
             Unknown2 = reader.Read<byte>();
@@ -52,7 +51,11 @@ namespace RayCarrot.Rayman
         /// <param name="writer">The writer to use to write to the stream</param>
         public void Serialize(BinaryDataWriter writer)
         {
-            throw new NotImplementedException();
+            writer.Write(TextureIndex);
+            writer.Write((byte)CellType);
+            writer.Write(Unknown1);
+            writer.Write((byte)TransparencyMode);
+            writer.Write(Unknown2);
         }
     }
 }

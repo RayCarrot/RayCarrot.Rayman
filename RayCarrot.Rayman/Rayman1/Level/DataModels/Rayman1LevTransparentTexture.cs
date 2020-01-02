@@ -47,7 +47,23 @@ namespace RayCarrot.Rayman
         /// <param name="writer">The writer to use to write to the stream</param>
         public override void Serialize(BinaryDataWriter writer)
         {
-            throw new NotImplementedException();
+            for (int y = 0; y < Size; y++)
+            {
+                for (int x = 0; x < Size; x++)
+                {
+                    writer.Write(ColorIndexes[x, y]);
+                }
+            }
+
+            for (int y = 0; y < Size; y++)
+            {
+                for (int x = 0; x < Size; x++)
+                {
+                    writer.Write(Alpha[x, y]);
+                }
+            }
+
+            writer.Write(Unknown1);
         }
     }
 }

@@ -21,7 +21,7 @@ namespace RayCarrot.Rayman
         /// </summary>
         protected override BinaryWriter GetBinaryWriter(Stream stream)
         {
-            return new UbiArtBinaryWriter(stream, ByteOrder.BigEndian, Encoding.BigEndianUnicode, true);
+            return new StandardBinaryWriter(stream, ByteOrder.BigEndian, Encoding.BigEndianUnicode, true);
         }
     }
 }

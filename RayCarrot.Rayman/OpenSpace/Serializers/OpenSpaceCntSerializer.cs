@@ -28,7 +28,7 @@ namespace RayCarrot.Rayman
         /// </summary>
         protected override BinaryWriter GetBinaryWriter(Stream stream)
         {
-            return new UbiArtBinaryWriter(stream, Settings.ByteOrder, Encoding.UTF8, true);
+            return new StandardBinaryWriter(stream, Settings.ByteOrder, Encoding.UTF8, true);
         }
     }
 }

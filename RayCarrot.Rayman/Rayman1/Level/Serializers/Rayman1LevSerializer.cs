@@ -22,7 +22,7 @@ namespace RayCarrot.Rayman
         /// </summary>
         protected override BinaryWriter GetBinaryWriter(Stream stream)
         {
-            throw new NotImplementedException();
+            return new StandardBinaryWriter(stream, ByteOrder.LittleEndian, Encoding.Unicode);
         }
     }
 }

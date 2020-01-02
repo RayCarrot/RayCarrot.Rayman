@@ -2,7 +2,7 @@
 RayCarrot.Rayman is a helper library for Rayman managing Rayman related files.
 
 ## Features
-Documentation: https://docs.google.com/document/d/1m9pN8nrC5Ybg8F-OHxXG3OM9T-UyaOg7PfTSfTKuetc/edit?usp=sharing
+Documentation (outdated): https://docs.google.com/document/d/1m9pN8nrC5Ybg8F-OHxXG3OM9T-UyaOg7PfTSfTKuetc/edit?usp=sharing
 
 ### UbiIni Handlers
 Allows reading and writing to the data available in the common Rayman ubi.ini files
@@ -10,11 +10,12 @@ Allows reading and writing to the data available in the common Rayman ubi.ini fi
 ### Binary serializers/deserializers
 Allows reading and writing to supported binary files. Below is a list of the currently supported files.
 
-- Localization files for the UbiArt games (.loc, .loc8)
+- UbiArt localization files (.loc, .loc8)
 - Rayman Jungle Run save files on Windows 10 (.dat)
 - Rayman Fiesta Run save files on Windows 10 (.dat) - (WIP)
-- Rayman 2 texture archives (.cnt)
-- Rayman 2 texture file (.gf)
+- OpenSpace texture archives (.cnt)
+- OpenSpace texture files (.gf)
+- Rayman 1 level files (.gf) - (WIP)
 
 ## Dependencies
 RayCarrot.Rayman uses these main dependencies:
