@@ -76,9 +76,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Rayman1LevIcons.resx</DependentUpon>
     </Compile>
+    <Compile Include="Binary\BinarySerializer\ConfigurableSerializer.cs" />
     <Compile Include="Rayman1\Level\Serializers\Rayman1LevSerializer.cs" />
     <Compile Include="Rayman1\Level\DataModels\Rayman1LevTexture.cs" />
     <Compile Include="Rayman1\Level\DataModels\Rayman1LevTransparentTexture.cs" />
+    <Compile Include="Rayman1\Settings\Rayman1GameMode.cs" />
+    <Compile Include="Rayman1\Settings\Rayman1Settings.cs" />
     <Compile Include="UbiArt\Localization\DataModels\FiestaRunUbiArtLocalizationData.cs" />
     <Compile Include="UbiArt\Localization\DataModels\FiestaRunLocalizationStringData.cs" />
     <Compile Include="Binary\BinaryDataSerializer.cs" />
@@ -165,5 +168,6 @@
     <Content Include="Rayman1\Level\Icons\Water.png" />
     <Content Include="Rayman1\Level\Icons\WaterNoSplash.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

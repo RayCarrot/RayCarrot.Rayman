@@ -15,7 +15,7 @@ Allows reading and writing to supported binary files. Below is a list of the cur
 - Rayman Fiesta Run save files on Windows 10 (.dat) - (WIP)
 - OpenSpace texture archives (.cnt)
 - OpenSpace texture files (.gf)
-- Rayman 1 level files (.gf) - (WIP)
+- Rayman 1 level files (.lev) - (WIP)
 
 ## Dependencies
 RayCarrot.Rayman uses these main dependencies:

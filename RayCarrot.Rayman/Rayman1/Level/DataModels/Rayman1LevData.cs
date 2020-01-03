@@ -6,13 +6,28 @@ using RayCarrot.Extensions;
 
 namespace RayCarrot.Rayman
 {
-    // TODO: Serialize event info
+    // TODO: Instead of using arrays, use a custom list which can be serialized
 
     /// <summary>
     /// The data for a Rayman 1 .lev file
     /// </summary>
     public class Rayman1LevData : IBinarySerializable
     {
+        ///// <summary>
+        ///// Default constructor
+        ///// </summary>
+        ///// <param name="settings">The settings to use when serializing</param>
+        //public Rayman1LevData(Rayman1Settings settings)
+        //{
+        //    Settings = settings;
+        //}
+
+        // TODO: Use these settings to support Designer etc.
+        ///// <summary>
+        ///// The settings to use when serializing
+        ///// </summary>
+        //public Rayman1Settings Settings { get; }
+
         public uint EventBlockPointer { get; set; }
 
         /// <summary>
@@ -145,6 +160,26 @@ namespace RayCarrot.Rayman
         /// The checksum for <see cref="NonTransparentTextures"/>, <see cref="TransparentTextures"/> and <see cref="Unknown4"/>
         /// </summary>
         public byte TexturesChecksum { get; set; }
+
+        ///// <summary>
+        ///// The number of available events in the map
+        ///// </summary>
+        //public ushort EventCount { get; set; }
+
+        ///// <summary>
+        ///// Data table for event linking
+        ///// </summary>
+        //public ushort[] EventLinkingTable { get; set; }
+
+        ///// <summary>
+        ///// The events in the map
+        ///// </summary>
+        //public Rayman1LevEvent[] Events { get; set; }
+
+        ///// <summary>
+        ///// The event commands in the map
+        ///// </summary>
+        //public Rayman1LevEventCommand[] EventCommands { get; set; }
 
         // WIP: Deserialize into properties
         /// <summary>
@@ -554,6 +589,110 @@ namespace RayCarrot.Rayman
 
             // Write the event data
             writer.Write(EventData);
+        }
+    }
+
+    public class Rayman1LevEvent
+    {
+        public uint DES { get; set; }
+
+        public uint DES2 { get; set; }
+
+        public uint DES3 { get; set; }
+
+        public uint ETA { get; set; }
+
+        public uint Unknown1 { get; set; }
+
+        public uint Unknown2 { get; set; }
+        
+        // Length is 16
+        public byte[] Unknown3 { get; set; }
+
+        public uint XPosition { get; set; }
+        
+        public uint YPosition { get; set; }
+
+        // Length is 20
+        public byte[] Unknown4 { get; set; }
+
+        // Length is 28
+        public byte[] Unknown5 { get; set; }
+
+        public uint Type { get; set; }
+
+        public uint Unknown6 { get; set; }
+
+        public byte OffsetBX { get; set; }
+
+        public byte OffsetBY { get; set; }
+        
+        public ushort Unknown7 { get; set; }
+
+        public byte SubEtat { get; set; }
+
+        public byte Etat { get; set; }
+
+        public ushort Unknown8 { get; set; }
+
+        public uint Unknown9 { get; set; }
+
+        public byte OffsetHY { get; set; }
+
+        public byte FollowSprite { get; set; }
+
+        public ushort HitPoints { get; set; }
+
+        public byte Group { get; set; }
+
+        public byte HitSprite { get; set; }
+
+        // Length is 6
+        public byte[] Unknown10 { get; set; }
+
+        public byte Unknown11 { get; set; }
+
+        public byte FollowEnabled { get; set; }
+
+        public ushort Unknown12 { get; set; }
+    }
+
+    public class Rayman1LevEventCommand : IBinarySerializable
+    {
+        public ushort CodeCount { get; set; }
+
+        public ushort LabelOffsetCount { get; set; }
+
+        public byte[] EventCode { get; set; }
+
+        public ushort[] LabelOffsetTable { get; set; }
+
+        public void Deserialize(BinaryDataReader reader)
+        {
+            CodeCount = reader.Read<ushort>();
+            LabelOffsetCount = reader.Read<ushort>();
+
+            EventCode = new byte[CodeCount];
+
+            for (int i = 0; i < EventCode.Length; i++)
+                EventCode[i] = reader.Read<byte>();
+
+            LabelOffsetTable = new ushort[LabelOffsetCount];
+
+            for (int i = 0; i < LabelOffsetTable.Length; i++)
+                LabelOffsetTable[i] = reader.Read<ushort>();
+        }
+
+        public void Serialize(BinaryDataWriter writer)
+        {
+            writer.Write(CodeCount);
+            writer.Write(LabelOffsetCount);
+
+            foreach (var b in EventCode)
+                writer.Write(b);
+
+            foreach (var b in LabelOffsetTable)
+                writer.Write(b);
         }
     }
 }
