@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace RayCarrot.Rayman
 {
@@ -9,6 +10,29 @@ namespace RayCarrot.Rayman
     /// </summary>
     public class OpenSpaceCntData : IBinarySerializable
     {
+        #region Constructor
+
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="settings">The settings when serializing the data</param>
+        public OpenSpaceCntData(OpenSpaceSettings settings)
+        {
+            // Set properties
+            Settings = settings;
+        }
+
+        #endregion
+
+        #region Protected Properties
+
+        /// <summary>
+        /// The settings when serializing the data
+        /// </summary>
+        protected OpenSpaceSettings Settings { get; }
+
+        #endregion
+
         #region Public Properties
 
         /// <summary>
@@ -153,7 +177,7 @@ namespace RayCarrot.Rayman
             using var stream = new MemoryStream();
 
             // Serialize the header only
-            SerializeHeader(new BinaryDataWriter(new BinaryWriter(stream)));
+            SerializeHeader(new BinaryDataWriter(new StandardBinaryWriter(stream, Settings.ByteOrder, Encoding.UTF8, true)));
 
             // Get the position, which will be the size of the header
             return (int)stream.Position;

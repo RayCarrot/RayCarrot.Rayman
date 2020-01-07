@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace RayCarrot.Rayman
+﻿namespace RayCarrot.Rayman
 {
     /// <summary>
     /// The data for a map cell for a Rayman 1 .lev file

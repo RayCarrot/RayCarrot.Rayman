@@ -6,7 +6,7 @@ namespace RayCarrot.Rayman
     /// <summary>
     /// The progression data serializer for Rayman Jungle Run
     /// </summary>
-    public class JungleRunSaveDataSerializer : BinaryDataSerializer<JungleRunSaveData>
+    public class JungleRunSaveDataSerializer : StandardBinaryDataSerializer<JungleRunSaveData>
     {
         /// <summary>
         /// Gets a new binary reader to use for the specified stream

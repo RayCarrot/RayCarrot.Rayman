@@ -51,9 +51,12 @@
     <Compile Include="Binary\BinaryWriters\OrderedBinaryWriter.cs" />
     <Compile Include="Binary\BinaryReaders\StandardBinaryReader.cs" />
     <Compile Include="Binary\BinaryWriters\StandardBinaryWriter.cs" />
+    <Compile Include="Binary\BinaryDataSerializers\ConfigurableBinaryDataSerializer.cs" />
+    <Compile Include="Binary\BinaryDataSerializers\StandardBinaryDataSerializer.cs" />
     <Compile Include="OpenSpace\Attributes\OpenSpaceGameModeInfoAttribute.cs" />
     <Compile Include="OpenSpace\Extensions\BinaryDataWriterExtensions.cs" />
     <Compile Include="OpenSpace\Extensions\OpenSpaceGameModeExtensions.cs" />
+    <Compile Include="Binary\Configurable\IBinarySerializableSettings.cs" />
     <Compile Include="OpenSpace\Settings\OpenSpaceGameMode.cs" />
     <Compile Include="OpenSpace\Settings\OpenSpaceEngineVersion.cs" />
     <Compile Include="OpenSpace\Settings\OpenSpacePlatform.cs" />
@@ -68,6 +71,8 @@
     <Compile Include="Binary\DataModels\BinarySerializablePair.cs" />
     <Compile Include="OpenSpace\Settings\OpenSpaceSettings.cs" />
     <Compile Include="Rayman1\Level\DataModels\Rayman1LevData.cs" />
+    <Compile Include="Rayman1\Level\DataModels\Rayman1LevEvent.cs" />
+    <Compile Include="Rayman1\Level\DataModels\Rayman1LevEventCommand.cs" />
     <Compile Include="Rayman1\Level\DataModels\Rayman1LevMapCell.cs" />
     <Compile Include="Rayman1\Level\DataModels\Rayman1LevMapCellTransparencyMode.cs" />
     <Compile Include="Rayman1\Level\DataModels\Rayman1LevMapCellType.cs" />
@@ -76,7 +81,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Rayman1LevIcons.resx</DependentUpon>
     </Compile>
-    <Compile Include="Binary\BinarySerializer\ConfigurableSerializer.cs" />
     <Compile Include="Rayman1\Level\Serializers\Rayman1LevSerializer.cs" />
     <Compile Include="Rayman1\Level\DataModels\Rayman1LevTexture.cs" />
     <Compile Include="Rayman1\Level\DataModels\Rayman1LevTransparentTexture.cs" />
@@ -84,12 +88,11 @@
     <Compile Include="Rayman1\Settings\Rayman1Settings.cs" />
     <Compile Include="UbiArt\Localization\DataModels\FiestaRunUbiArtLocalizationData.cs" />
     <Compile Include="UbiArt\Localization\DataModels\FiestaRunLocalizationStringData.cs" />
-    <Compile Include="Binary\BinaryDataSerializer.cs" />
+    <Compile Include="Binary\BinaryDataSerializers\BinaryDataSerializer.cs" />
     <Compile Include="UbiArt\SaveData\DataModels\FiestaRunWin10EditionSaveData.cs" />
     <Compile Include="UbiArt\SaveData\DataModels\FiestaRunWin10EditionSaveDataLevelCollection.cs" />
     <Compile Include="UbiArt\SaveData\DataModels\FiestaRunSaveDataLevel.cs" />
     <Compile Include="UbiArt\SaveData\DataModels\JungleRunSaveDataLevelCollection.cs" />
-    <Compile Include="OpenSpace\Serializers\OpenSpaceDataSerializer.cs" />
     <Compile Include="OpenSpace\Serializers\OpenSpaceGfSerializer.cs" />
     <Compile Include="OpenSpace\Serializers\OpenSpaceCntSerializer.cs" />
     <Compile Include="UbiArt\Localization\Serializers\LegendsLocalizationSerializer.cs" />

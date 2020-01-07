@@ -1,7 +1,6 @@
 ﻿using System;
 using RayCarrot.IO;
 using System.IO;
-using RayCarrot.CarrotFramework.Abstractions;
 
 namespace RayCarrot.Rayman
 {
@@ -25,6 +24,17 @@ namespace RayCarrot.Rayman
 
         #endregion
 
+        #region Public Abstract Methods
+
+        /// <summary>
+        /// Deserializes the data from the serialized file as a stream
+        /// </summary>
+        /// <param name="stream">The file stream to deserialize</param>
+        /// <returns>The deserialized object</returns>
+        public abstract T Deserialize(Stream stream);
+
+        #endregion
+
         #region Public Methods
 
         /// <summary>
@@ -42,23 +52,6 @@ namespace RayCarrot.Rayman
         }
 
         /// <summary>
-        /// Deserializes the data from the serialized file as a stream
-        /// </summary>
-        /// <param name="stream">The file stream to deserialize</param>
-        /// <returns>The deserialized object</returns>
-        public virtual T Deserialize(Stream stream)
-        {
-            // Get the reader
-            using var reader = GetBinaryReader(stream);
-
-            // Create the wrapper reader
-            using var dataReader = new BinaryDataReader(reader, false);
-
-            // Deserialize the data
-            return dataReader.Read<T>();
-        }
-
-        /// <summary>
         /// Deserializes the data from the serialized file as a stream to an existing instance
         /// </summary>
         /// <param name="stream">The file stream to deserialize</param>
@@ -67,7 +60,7 @@ namespace RayCarrot.Rayman
         public virtual T Deserialize<I>(Stream stream, I instance)
             where I : T, IBinarySerializable
         {
-            if (instance == null) 
+            if (instance == null)
                 throw new ArgumentNullException(nameof(instance));
 
             // Get the reader

@@ -6,7 +6,7 @@ namespace RayCarrot.Rayman
     /// <summary>
     /// Settings for serializing OpenSpace game formats
     /// </summary>
-    public class OpenSpaceSettings
+    public class OpenSpaceSettings : IBinarySerializableSettings
     {
         /// <summary>
         /// Default constructor

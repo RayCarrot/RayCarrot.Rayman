@@ -6,15 +6,14 @@ namespace RayCarrot.Rayman
     /// <summary>
     /// The serializer for .gf files in OpenSpace games
     /// </summary>
-    public class OpenSpaceGfSerializer : OpenSpaceDataSerializer<OpenSpaceGFFile>
-    {      
+    public class OpenSpaceGfSerializer : ConfigurableBinaryDataSerializer<OpenSpaceGFFile, OpenSpaceSettings>
+    {
         /// <summary>
         /// Default constructor
         /// </summary>
         /// <param name="settings">The settings when serializing the data</param>
         public OpenSpaceGfSerializer(OpenSpaceSettings settings) : base(settings)
         { }
-
 
         /// <summary>
         /// Gets a new binary reader to use for the specified stream

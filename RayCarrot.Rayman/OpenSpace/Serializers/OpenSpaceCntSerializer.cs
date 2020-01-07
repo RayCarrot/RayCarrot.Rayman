@@ -6,7 +6,7 @@ namespace RayCarrot.Rayman
     /// <summary>
     /// The serializer for the .cnt files in OpenSpace games
     /// </summary>
-    public class OpenSpaceCntSerializer : OpenSpaceDataSerializer<OpenSpaceCntData>
+    public class OpenSpaceCntSerializer : ConfigurableBinaryDataSerializer<OpenSpaceCntData, OpenSpaceSettings>
     {
         /// <summary>
         /// Default constructor

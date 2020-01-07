@@ -13,7 +13,7 @@ namespace RayCarrot.Rayman
         /// <param name="capacity">The capacity of the list</param>
         public BinarySerializableFixedList(int capacity) : base(capacity)
         {
-            
+
         }
 
         /// <summary>

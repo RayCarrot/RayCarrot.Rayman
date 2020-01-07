@@ -74,7 +74,7 @@ namespace RayCarrot.Rayman
             using var stream = new MemoryStream(GetFileBytes(fileStream));
             
             // Serialize the data
-            var data = new OpenSpaceGfSerializer(settings).Deserialize(stream, new OpenSpaceGFFile(settings));
+            var data = new OpenSpaceGfSerializer(settings).Deserialize(stream);
 
             // Return the data
             return data;

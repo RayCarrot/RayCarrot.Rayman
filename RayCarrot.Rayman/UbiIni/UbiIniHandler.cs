@@ -145,34 +145,32 @@ namespace RayCarrot.Rayman
         public void Save()
         {
             // Create the file stream
-            using (FileStream fs = File.Open(Path, FileMode.Create, FileAccess.Write))
+            using FileStream fs = File.Open(Path, FileMode.Create, FileAccess.Write);
+
+            // Create the stream writer
+            using StreamWriter sr = new StreamWriter(fs);
+
+            // Get the ini data
+            string iniData = Data.ToString();
+
+            // Add installed products if any are saved
+            if (InstalledProducts.Length > 0)
             {
-                // Create the stream writer
-                using (StreamWriter sr = new StreamWriter(fs))
-                {
-                    // Get the ini data
-                    string iniData = Data.ToString();
+                // Create a string builder
+                StringBuilder data = new StringBuilder(iniData);
 
-                    // Add installed products if any are saved
-                    if (InstalledProducts.Length > 0)
-                    {
-                        // Create a string builder
-                        StringBuilder data = new StringBuilder(iniData);
+                // Get the index
+                int index = iniData.IndexOf(InstalledProductsSection, StringComparison.Ordinal) + InstalledProductsSection.Length;
 
-                        // Get the index
-                        int index = iniData.IndexOf(InstalledProductsSection, StringComparison.Ordinal) + InstalledProductsSection.Length;
+                // Insert the products
+                data.Insert(index, Environment.NewLine + InstalledProducts.JoinItems(Environment.NewLine));
 
-                        // Insert the products
-                        data.Insert(index, Environment.NewLine + InstalledProducts.JoinItems(Environment.NewLine));
-
-                        // Set the new data
-                        iniData = data.ToString();
-                    }
-
-                    // Write the data
-                    sr.Write(iniData);
-                }
+                // Set the new data
+                iniData = data.ToString();
             }
+
+            // Write the data
+            sr.Write(iniData);
         }
 
         #endregion

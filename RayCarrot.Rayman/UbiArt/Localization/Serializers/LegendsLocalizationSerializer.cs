@@ -6,7 +6,7 @@ namespace RayCarrot.Rayman
     /// <summary>
     /// The localization serializer for Rayman Legends
     /// </summary>
-    public class LegendsLocalizationSerializer : BinaryDataSerializer<StandardUbiArtLocalizationData>
+    public class LegendsLocalizationSerializer : StandardBinaryDataSerializer<StandardUbiArtLocalizationData>
     {
         /// <summary>
         /// Gets a new binary reader to use for the specified stream

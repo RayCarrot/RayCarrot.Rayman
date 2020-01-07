@@ -6,7 +6,7 @@ namespace RayCarrot.Rayman
     /// <summary>
     /// The localization serializer for Rayman Fiesta Run
     /// </summary>
-    public class FiestaRunLocalizationSerializer : BinaryDataSerializer<FiestaRunUbiArtLocalizationData>
+    public class FiestaRunLocalizationSerializer : StandardBinaryDataSerializer<FiestaRunUbiArtLocalizationData>
     {
         /// <summary>
         /// Gets a new binary reader to use for the specified stream
