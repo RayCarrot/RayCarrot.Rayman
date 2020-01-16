@@ -2,6 +2,7 @@
 using System;
 using System.Drawing;
 using System.Linq;
+using FastBitmapLib;
 
 namespace RayCarrot.Rayman
 {
@@ -26,7 +27,6 @@ namespace RayCarrot.Rayman
 
         #region Public Properties
 
-        // WIP: Use these settings to support Designer etc.
         /// <summary>
         /// The settings to use when serializing
         /// </summary>
@@ -196,45 +196,49 @@ namespace RayCarrot.Rayman
         public Bitmap GetBitmap()
         {
             // Create the bitmap
-            Bitmap bmp = new Bitmap(Rayman1LevTexture.Size * MapWidth, Rayman1LevTexture.Size * MapHeight);
+            var bmp = new Bitmap(Rayman1LevTexture.Size * MapWidth, Rayman1LevTexture.Size * MapHeight);
 
-            // Enumerate each cell
-            for (int cellY = 0; cellY < MapHeight; cellY++)
+            // Lock the bitmap for faster reading/writing
+            using (var lockedBmp = bmp.FastLock())
             {
-                for (int cellX = 0; cellX < MapWidth; cellX++)
+                // Enumerate each cell
+                for (int cellY = 0; cellY < MapHeight; cellY++)
                 {
-                    // Get the cell
-                    var cell = MapCells[cellX, cellY];
-
-                    // Ignore if fully transparent
-                    if (cell.TransparencyMode == Rayman1LevMapCellTransparencyMode.FullyTransparent)
-                        continue;
-
-                    // Get the offset for the texture
-                    var texOffset = TexturesOffsetTable[cell.TextureIndex];
-
-                    // Get the texture
-                    var texture = cell.TransparencyMode == Rayman1LevMapCellTransparencyMode.NoTransparency ? NonTransparentTextures.FindItem(x => x.Offset == texOffset) : TransparentTextures.FindItem(x => x.Offset == texOffset);
-
-                    // Make sure we got a texture
-                    if (texture == null)
-                        throw new Exception($"No texture found for cell ({cellX}, {cellY})");
-
-                    // Write each pixel for the texture
-                    for (int x = 0; x < Rayman1LevTexture.Size; x++)
+                    for (int cellX = 0; cellX < MapWidth; cellX++)
                     {
-                        for (int y = 0; y < Rayman1LevTexture.Size; y++)
+                        // Get the cell
+                        var cell = MapCells[cellX, cellY];
+
+                        // Ignore if fully transparent
+                        if (cell.TransparencyMode == Rayman1LevMapCellTransparencyMode.FullyTransparent)
+                            continue;
+
+                        // Get the offset for the texture
+                        var texOffset = TexturesOffsetTable[cell.TextureIndex];
+
+                        // Get the texture
+                        var texture = cell.TransparencyMode == Rayman1LevMapCellTransparencyMode.NoTransparency ? NonTransparentTextures.FindItem(x => x.Offset == texOffset) : TransparentTextures.FindItem(x => x.Offset == texOffset);
+
+                        // Make sure we got a texture
+                        if (texture == null)
+                            throw new Exception($"No texture found for cell ({cellX}, {cellY})");
+
+                        // Write each pixel for the texture
+                        for (int x = 0; x < Rayman1LevTexture.Size; x++)
                         {
-                            // TODO: The color palette isn't always correct
-                            // Get the color
-                            var c = ColorPalettes[0][texture.ColorIndexes[x, y]];
+                            for (int y = 0; y < Rayman1LevTexture.Size; y++)
+                            {
+                                // NOTE: The color palette isn't always correct - the palette changer event needs to be checked
+                                // Get the color
+                                var c = ColorPalettes[0][texture.ColorIndexes[x, y]];
 
-                            // If the texture is transparent, replace the color with one with the alpha channel
-                            if (texture is Rayman1LevTransparentTexture tt)
-                                c = Color.FromArgb(tt.Alpha[x, y], c.R, c.G, c.B);
+                                // If the texture is transparent, replace the color with one with the alpha channel
+                                if (texture is Rayman1LevTransparentTexture tt)
+                                    c = Color.FromArgb(tt.Alpha[x, y], c.R, c.G, c.B);
 
-                            // Set the pixel
-                            bmp.SetPixel(Rayman1LevTexture.Size * cellX + x, Rayman1LevTexture.Size * cellY + y, c);
+                                // Set the pixel
+                                lockedBmp.SetPixel(Rayman1LevTexture.Size * cellX + x, Rayman1LevTexture.Size * cellY + y, c);
+                            }
                         }
                     }
                 }
@@ -251,32 +255,36 @@ namespace RayCarrot.Rayman
         public Bitmap GetTypeBitmap()
         {
             // Create the bitmap
-            Bitmap bmp = new Bitmap(Rayman1LevTexture.Size * MapWidth, Rayman1LevTexture.Size * MapHeight);
+            var bmp = new Bitmap(Rayman1LevTexture.Size * MapWidth, Rayman1LevTexture.Size * MapHeight);
 
-            // Enumerate each cell
-            for (int cellY = 0; cellY < MapHeight; cellY++)
+            // Lock the bitmap for faster reading/writing
+            using (var lockedBmp = bmp.FastLock())
             {
-                for (int cellX = 0; cellX < MapWidth; cellX++)
+                // Enumerate each cell
+                for (int cellY = 0; cellY < MapHeight; cellY++)
                 {
-                    // Get the cell
-                    var cell = MapCells[cellX, cellY];
-
-                    // Get the type bitmap
-                    using var typeBmp = Rayman1LevIcons.ResourceManager.GetObject(cell.CellType.ToString()).CastTo<Bitmap>();
-
-                    // Write each pixel for the texture
-                    for (int x = 0; x < Rayman1LevTexture.Size; x++)
+                    for (int cellX = 0; cellX < MapWidth; cellX++)
                     {
-                        for (int y = 0; y < Rayman1LevTexture.Size; y++)
+                        // Get the cell
+                        var cell = MapCells[cellX, cellY];
+
+                        // Get the type bitmap
+                        using var typeBmp = Rayman1LevIcons.ResourceManager.GetObject(cell.CellType.ToString()).CastTo<Bitmap>();
+
+                        // Write each pixel for the texture
+                        for (int x = 0; x < Rayman1LevTexture.Size; x++)
                         {
-                            if (typeBmp == null)
-                                Console.WriteLine((int)cell.CellType);
+                            for (int y = 0; y < Rayman1LevTexture.Size; y++)
+                            {
+                                if (typeBmp == null)
+                                    Console.WriteLine((int)cell.CellType);
 
-                            // Get the pixel
-                            var c = typeBmp?.GetPixel(x, y) ?? Color.Red;
+                                // Get the pixel
+                                var c = typeBmp?.GetPixel(x, y) ?? Color.Red;
 
-                            // Set the pixel
-                            bmp.SetPixel(Rayman1LevTexture.Size * cellX + x, Rayman1LevTexture.Size * cellY + y, c);
+                                // Set the pixel
+                                lockedBmp.SetPixel(Rayman1LevTexture.Size * cellX + x, Rayman1LevTexture.Size * cellY + y, c);
+                            }
                         }
                     }
                 }
@@ -292,6 +300,9 @@ namespace RayCarrot.Rayman
         /// <param name="reader">The reader to use to read from the stream</param>
         public void Deserialize(BinaryDataReader reader)
         {
+            if (Settings.GameMode != Rayman1GameMode.Rayman1PC)
+                throw new NotImplementedException("Currently only Rayman 1 level files can be read");
+
             // HEADER BLOCK
 
             // Read block pointer
@@ -397,7 +408,7 @@ namespace RayCarrot.Rayman
 
             // At this point the stream position should match the texture block offset
             if (reader.BaseStream.Position != TextureOffsetTablePointer)
-                throw new Exception("Texture block offset is incorrect");
+                throw new BinarySerializableException("Texture block offset is incorrect");
 
             // Read the offset table for the textures
             TexturesOffsetTable = new BinarySerializableFixedList<uint>(1200);
@@ -481,6 +492,9 @@ namespace RayCarrot.Rayman
         /// <param name="writer">The writer to use to write to the stream</param>
         public void Serialize(BinaryDataWriter writer)
         {
+            if (Settings.GameMode != Rayman1GameMode.Rayman1PC)
+                throw new NotImplementedException("Currently only Rayman 1 level files can be written");
+
             // HEADER BLOCK
 
             // Write block pointer

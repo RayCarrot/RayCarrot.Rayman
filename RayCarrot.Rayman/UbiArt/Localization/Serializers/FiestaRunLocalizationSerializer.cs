@@ -1,27 +1,14 @@
-﻿using System.IO;
-using System.Text;
-
-namespace RayCarrot.Rayman
+﻿namespace RayCarrot.Rayman
 {
     /// <summary>
     /// The localization serializer for Rayman Fiesta Run
     /// </summary>
-    public class FiestaRunLocalizationSerializer : StandardBinaryDataSerializer<FiestaRunUbiArtLocalizationData>
+    public class FiestaRunLocalizationSerializer : StandardBinaryDataSerializer<FiestaRunLocalizationData>
     {
         /// <summary>
-        /// Gets a new binary reader to use for the specified stream
+        /// Default constructor
         /// </summary>
-        protected override BinaryReader GetBinaryReader(Stream stream)
-        {
-            return new StandardBinaryReader(stream, ByteOrder.BigEndian, Encoding.BigEndianUnicode, true);
-        }
-
-        /// <summary>
-        /// Gets a new binary writer to use for the specified stream
-        /// </summary>
-        protected override BinaryWriter GetBinaryWriter(Stream stream)
-        {
-            return new StandardBinaryWriter(stream, ByteOrder.BigEndian, Encoding.BigEndianUnicode, true);
-        }
+        public FiestaRunLocalizationSerializer() : base(ByteOrder.BigEndian, TextEncoding.BigEndianUnicode)
+        { }
     }
 }

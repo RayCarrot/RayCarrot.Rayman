@@ -10,18 +10,26 @@ Allows reading and writing to the data available in the common Rayman ubi.ini fi
 ### Binary serializers/deserializers
 Allows reading and writing to supported binary files. Below is a list of the currently supported files.
 
-- UbiArt localization files (.loc, .loc8)
-- Rayman Jungle Run save files on Windows 10 (.dat)
-- Rayman Fiesta Run save files on Windows 10 (.dat) - (WIP)
-- OpenSpace texture archives (.cnt)
-- OpenSpace texture files (.gf)
-- Rayman 1 level files (.lev) - (WIP)
+#### Rayman 1
+* Level files (.lev) - (WIP)
+
+#### OpenSpace
+* Texture archives (.cnt)
+* Texture files (.gf)
+* Rayman 3 save files on PC (.sav)
+
+#### UbiArt
+* Archives (.ipk) - (WIP)
+* Localization files (.loc, .loc8)
+* Rayman Jungle Run save files on Windows 10 (.dat)
+* Rayman Fiesta Run save files on Windows 10 (.dat) - (WIP)
 
 ## Dependencies
 RayCarrot.Rayman uses these main dependencies:
 
 - [RayCarrot.CarrotFramework](https://github.com/RayCarrot/Carrot-Framework)
 - [ini-parser](https://github.com/rickyah/ini-parser)
+- [DotNetZip](https://github.com/haf/DotNetZip.Semverd)
 
 ## Contact
 You can contact me on the following places:

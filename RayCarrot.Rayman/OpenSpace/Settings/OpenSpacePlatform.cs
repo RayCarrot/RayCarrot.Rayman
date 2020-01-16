@@ -26,11 +26,6 @@
         Nintendo3DS,
 
         /// <summary>
-        /// Sony PlayStation
-        /// </summary>
-        PlayStation1,
-
-        /// <summary>
         /// Sony PlayStation 2
         /// </summary>
         PlayStation2,

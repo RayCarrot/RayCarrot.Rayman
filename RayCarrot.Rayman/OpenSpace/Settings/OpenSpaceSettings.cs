@@ -26,7 +26,6 @@ namespace RayCarrot.Rayman
                 case OpenSpacePlatform.PC:
                 case OpenSpacePlatform.iOS:
                 case OpenSpacePlatform.DreamCast:
-                case OpenSpacePlatform.PlayStation1:
                 case OpenSpacePlatform.PlayStation2:
                 case OpenSpacePlatform.NintendoDS:
                 case OpenSpacePlatform.Nintendo3DS:

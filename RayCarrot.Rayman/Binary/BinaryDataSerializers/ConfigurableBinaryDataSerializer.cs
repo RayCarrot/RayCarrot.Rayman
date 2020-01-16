@@ -1,9 +1,10 @@
-﻿using System.IO;
-using RayCarrot.Extensions;
-using RayCarrot.IO;
+﻿using RayCarrot.Extensions;
+using System.IO;
 
 namespace RayCarrot.Rayman
 {
+    // IDEA: Data which need settings use IBinarySerializable<Settings> and gets passed into serializing methods instead
+
     /// <summary>
     /// The binary serializer to use for serializable data which requires settings to be passed in their constructor
     /// </summary>
@@ -19,10 +20,28 @@ namespace RayCarrot.Rayman
         /// Default constructor
         /// </summary>
         /// <param name="settings">The settings when serializing the data</param>
-        protected ConfigurableBinaryDataSerializer(S settings)
+        /// <param name="textEncoding">The encoding to use</param>
+        /// <param name="binaryStringEncoding">The binary string encoding to use when reading strings</param>
+        protected ConfigurableBinaryDataSerializer(S settings, TextEncoding? textEncoding = null, BinaryStringEncoding binaryStringEncoding = BinaryStringEncoding.LengthPrefixed)
         {
             Settings = settings;
+            TextEncoding = textEncoding ?? TextEncoding.UTF8;
+            BinaryStringEncoding = binaryStringEncoding;
         }
+
+        #endregion
+
+        #region Protected Properties
+
+        /// <summary>
+        /// The encoding to use
+        /// </summary>
+        protected TextEncoding TextEncoding { get; }
+
+        /// <summary>
+        /// The binary string encoding to use when reading strings
+        /// </summary>
+        protected BinaryStringEncoding BinaryStringEncoding { get; }
 
         #endregion
 
@@ -36,6 +55,16 @@ namespace RayCarrot.Rayman
         #endregion
 
         #region Public Methods
+
+        /// <summary>
+        /// Gets a new binary reader to use for the specified stream
+        /// </summary>
+        public override BinaryReader GetBinaryReader(Stream stream) => new StandardBinaryReader(stream, Settings.ByteOrder, TextEncoding.GetEncoding(), BinaryStringEncoding, true);
+
+        /// <summary>
+        /// Gets a new binary writer to use for the specified stream
+        /// </summary>
+        public override BinaryWriter GetBinaryWriter(Stream stream) => new StandardBinaryWriter(stream, Settings.ByteOrder, TextEncoding.GetEncoding(), BinaryStringEncoding, true);
 
         /// <summary>
         /// Deserializes the data from the serialized file as a stream

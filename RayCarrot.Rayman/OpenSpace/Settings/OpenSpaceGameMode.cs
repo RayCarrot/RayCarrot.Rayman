@@ -14,9 +14,6 @@
         [OpenSpaceGameModeInfo("Rayman 2 (iOS)", OpenSpaceGame.Rayman2, OpenSpacePlatform.iOS)] 
         Rayman2IOS,
 
-        [OpenSpaceGameModeInfo("Rayman 2 (PlayStation)", OpenSpaceGame.Rayman2, OpenSpacePlatform.PlayStation1)] 
-        Rayman2PS1,
-
         [OpenSpaceGameModeInfo("Rayman 2 (PlayStation 2)", OpenSpaceGame.Rayman2Revolution, OpenSpacePlatform.PlayStation2)] 
         Rayman2PS2,
 
@@ -43,9 +40,6 @@
 
         [OpenSpaceGameModeInfo("Rayman Arena (GameCube)", OpenSpaceGame.RaymanArena, OpenSpacePlatform.GameCube)] 
         RaymanArenaGC,
-
-        [OpenSpaceGameModeInfo("Rayman Rush (PlayStation)", OpenSpaceGame.RaymanRush, OpenSpacePlatform.PlayStation1)] 
-        RaymanRushPS1,
 
         [OpenSpaceGameModeInfo("Rayman 3 (PC)", OpenSpaceGame.Rayman3, OpenSpacePlatform.PC)] 
         Rayman3PC,

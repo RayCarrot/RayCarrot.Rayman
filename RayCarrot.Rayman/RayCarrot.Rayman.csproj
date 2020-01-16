@@ -44,32 +44,62 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Binary\BinarySerializer\BinaryDataReader.cs" />
-    <Compile Include="Binary\BinarySerializer\BinaryDataWriter.cs" />
-    <Compile Include="Binary\BinarySerializer\ByteOrder.cs" />
-    <Compile Include="Binary\BinaryReaders\OrderedBinaryReader.cs" />
-    <Compile Include="Binary\BinaryWriters\OrderedBinaryWriter.cs" />
-    <Compile Include="Binary\BinaryReaders\StandardBinaryReader.cs" />
-    <Compile Include="Binary\BinaryWriters\StandardBinaryWriter.cs" />
+    <Compile Include="Binary\DataModels\BinaryStringEncoding.cs" />
+    <Compile Include="Binary\BinarySerializable\BinaryDataReader.cs" />
+    <Compile Include="Binary\BinarySerializable\BinaryDataWriter.cs" />
+    <Compile Include="Binary\DataModels\ByteOrder.cs" />
+    <Compile Include="Binary\Standard\StandardBinaryReader.cs" />
+    <Compile Include="Binary\Standard\StandardBinaryWriter.cs" />
     <Compile Include="Binary\BinaryDataSerializers\ConfigurableBinaryDataSerializer.cs" />
     <Compile Include="Binary\BinaryDataSerializers\StandardBinaryDataSerializer.cs" />
-    <Compile Include="OpenSpace\Attributes\OpenSpaceGameModeInfoAttribute.cs" />
+    <Compile Include="Common\BinarySerializableException.cs" />
+    <Compile Include="Common\ImageExtensions.cs" />
+    <Compile Include="Common\GameModeBaseAttribute.cs" />
+    <Compile Include="Compression\7Zip SDK\Common\CommandLineParser.cs" />
+    <Compile Include="Compression\7Zip SDK\Common\CRC.cs" />
+    <Compile Include="Compression\7Zip SDK\Common\InBuffer.cs" />
+    <Compile Include="Compression\7Zip SDK\Common\OutBuffer.cs" />
+    <Compile Include="Compression\7Zip SDK\Compress\LZMA\LzmaBase.cs" />
+    <Compile Include="Compression\7Zip SDK\Compress\LZMA\LzmaDecoder.cs" />
+    <Compile Include="Compression\7Zip SDK\Compress\LZMA\LzmaEncoder.cs" />
+    <Compile Include="Compression\7Zip SDK\Compress\LZ\IMatchFinder.cs" />
+    <Compile Include="Compression\7Zip SDK\Compress\LZ\LzBinTree.cs" />
+    <Compile Include="Compression\7Zip SDK\Compress\LZ\LzInWindow.cs" />
+    <Compile Include="Compression\7Zip SDK\Compress\LZ\LzOutWindow.cs" />
+    <Compile Include="Compression\7Zip SDK\Compress\RangeCoder\RangeCoder.cs" />
+    <Compile Include="Compression\7Zip SDK\Compress\RangeCoder\RangeCoderBit.cs" />
+    <Compile Include="Compression\7Zip SDK\Compress\RangeCoder\RangeCoderBitTree.cs" />
+    <Compile Include="Compression\7Zip SDK\ICoder.cs" />
+    <Compile Include="Compression\7Zip SDK\SevenZipHelper.cs" />
+    <Compile Include="OpenSpace\SaveData\DataModels\Rayman3SaveData.cs" />
+    <Compile Include="OpenSpace\SaveData\DataModels\Rayman3SaveDataLevel.cs" />
+    <Compile Include="OpenSpace\SaveData\Serializers\Rayman3SaveDataSerializer.cs" />
+    <Compile Include="OpenSpace\SaveData\Rayman3SaveDataStream.cs" />
+    <Compile Include="OpenSpace\Settings\OpenSpaceGameModeInfoAttribute.cs" />
     <Compile Include="OpenSpace\Extensions\BinaryDataWriterExtensions.cs" />
-    <Compile Include="OpenSpace\Extensions\OpenSpaceGameModeExtensions.cs" />
+    <Compile Include="OpenSpace\Settings\OpenSpaceGameModeExtensions.cs" />
     <Compile Include="Binary\Configurable\IBinarySerializableSettings.cs" />
-    <Compile Include="OpenSpace\Settings\OpenSpaceGameMode.cs" />
+    <Compile Include="Common\ArchiveFileGenerator.cs" />
+    <Compile Include="UbiArt\IPK\DataModels\UbiArtTEXFile.cs" />
+    <Compile Include="UbiArt\IPK\Serializers\UbiArtTextureSerializer.cs" />
+    <Compile Include="Binary\TextEncoding\TextEncoding.cs" />
+    <Compile Include="Binary\TextEncoding\TextEncodingExtensions.cs" />
+    <Compile Include="UbiArt\Localization\DataModels\BaseUbiArtLocalizationData.cs" />
+    <Compile Include="UbiArt\Localization\DataModels\FiestaRunLocalizationData.cs" />
+    <Compile Include="UbiArt\Localization\DataModels\UbiArtLocalizationAudio.cs" />
+    <Compile Include="UbiArt\Settings\UbiArtGameModeExtensions.cs" />
+    <Compile Include="UbiArt\Settings\UbiArtGameMode.cs" />
     <Compile Include="OpenSpace\Settings\OpenSpaceEngineVersion.cs" />
-    <Compile Include="OpenSpace\Settings\OpenSpacePlatform.cs" />
-    <Compile Include="OpenSpace\Settings\OpenSpaceGame.cs" />
+    <Compile Include="UbiArt\Settings\UbiArtPlatform.cs" />
+    <Compile Include="UbiArt\Settings\UbiArtGame.cs" />
     <Compile Include="OpenSpace\Extensions\BinaryDataReaderExtensions.cs" />
-    <Compile Include="OpenSpace\DataModels\OpenSpaceCntFile.cs" />
-    <Compile Include="OpenSpace\DataModels\OpenSpaceGFFile.cs" />
-    <Compile Include="Binary\DataModels\BinarySerializableDataWithUnknownEnd.cs" />
+    <Compile Include="OpenSpace\CNT\DataModels\OpenSpaceCntFile.cs" />
+    <Compile Include="OpenSpace\GF\DataModels\OpenSpaceGFFile.cs" />
     <Compile Include="Binary\DataModels\BinarySerializableDictionary.cs" />
-    <Compile Include="Binary\BinarySerializer\IBinarySerializable.cs" />
-    <Compile Include="OpenSpace\DataModels\OpenSpaceCntData.cs" />
+    <Compile Include="Binary\BinarySerializable\IBinarySerializable.cs" />
+    <Compile Include="OpenSpace\CNT\DataModels\OpenSpaceCntData.cs" />
     <Compile Include="Binary\DataModels\BinarySerializablePair.cs" />
-    <Compile Include="OpenSpace\Settings\OpenSpaceSettings.cs" />
+    <Compile Include="UbiArt\Settings\UbiArtSettings.cs" />
     <Compile Include="Rayman1\Level\DataModels\Rayman1LevData.cs" />
     <Compile Include="Rayman1\Level\DataModels\Rayman1LevEvent.cs" />
     <Compile Include="Rayman1\Level\DataModels\Rayman1LevEventCommand.cs" />
@@ -86,24 +116,29 @@
     <Compile Include="Rayman1\Level\DataModels\Rayman1LevTransparentTexture.cs" />
     <Compile Include="Rayman1\Settings\Rayman1GameMode.cs" />
     <Compile Include="Rayman1\Settings\Rayman1Settings.cs" />
-    <Compile Include="UbiArt\Localization\DataModels\FiestaRunUbiArtLocalizationData.cs" />
-    <Compile Include="UbiArt\Localization\DataModels\FiestaRunLocalizationStringData.cs" />
+    <Compile Include="UbiArt\IPK\DataModels\UbiArtIpkData.cs" />
+    <Compile Include="UbiArt\IPK\DataModels\UbiArtIPKFile.cs" />
+    <Compile Include="UbiArt\IPK\Serializers\UbiArtIpkSerializer.cs" />
     <Compile Include="Binary\BinaryDataSerializers\BinaryDataSerializer.cs" />
     <Compile Include="UbiArt\SaveData\DataModels\FiestaRunWin10EditionSaveData.cs" />
     <Compile Include="UbiArt\SaveData\DataModels\FiestaRunWin10EditionSaveDataLevelCollection.cs" />
     <Compile Include="UbiArt\SaveData\DataModels\FiestaRunSaveDataLevel.cs" />
     <Compile Include="UbiArt\SaveData\DataModels\JungleRunSaveDataLevelCollection.cs" />
-    <Compile Include="OpenSpace\Serializers\OpenSpaceGfSerializer.cs" />
-    <Compile Include="OpenSpace\Serializers\OpenSpaceCntSerializer.cs" />
-    <Compile Include="UbiArt\Localization\Serializers\LegendsLocalizationSerializer.cs" />
+    <Compile Include="OpenSpace\GF\Serializers\OpenSpaceGfSerializer.cs" />
+    <Compile Include="OpenSpace\CNT\Serializers\OpenSpaceCntSerializer.cs" />
     <Compile Include="UbiArt\Localization\Serializers\FiestaRunLocalizationSerializer.cs" />
-    <Compile Include="UbiArt\Localization\Serializers\OriginsLocalizationSerializer.cs" />
-    <Compile Include="UbiArt\Localization\DataModels\StandardUbiArtLocalizationData.cs" />
+    <Compile Include="UbiArt\Localization\Serializers\UbiArtLocalizationSerializer.cs" />
+    <Compile Include="UbiArt\Localization\DataModels\UbiArtLocalizationData.cs" />
     <Compile Include="UbiArt\SaveData\DataModels\JungleRunSaveData.cs" />
     <Compile Include="UbiArt\SaveData\DataModels\JungleRunSaveDataLevel.cs" />
     <Compile Include="Binary\DataModels\BinarySerializableFixedList.cs" />
     <Compile Include="UbiArt\SaveData\Serializers\FiestaRunWin10EditionSaveDataSerializer.cs" />
     <Compile Include="UbiArt\SaveData\Serializers\JungleRunSaveDataSerializer.cs" />
+    <Compile Include="OpenSpace\Settings\OpenSpaceGame.cs" />
+    <Compile Include="OpenSpace\Settings\OpenSpaceGameMode.cs" />
+    <Compile Include="UbiArt\Settings\UbiArtGameModeInfoAttribute.cs" />
+    <Compile Include="OpenSpace\Settings\OpenSpacePlatform.cs" />
+    <Compile Include="OpenSpace\Settings\OpenSpaceSettings.cs" />
     <Compile Include="UbiIni\DataModels\Enums\R2Languages.cs" />
     <Compile Include="UbiIni\DataModels\Enums\R2ParticuleRate.cs" />
     <Compile Include="UbiIni\DataModels\Enums\R3Languages.cs" />
@@ -119,6 +154,12 @@
     <Compile Include="UbiIni\UbiIniHandler.cs" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="DotNetZip">
+      <Version>1.13.5</Version>
+    </PackageReference>
+    <PackageReference Include="FastBitmapLib">
+      <Version>2.0.0</Version>
+    </PackageReference>
     <PackageReference Include="ini-parser">
       <Version>2.5.2</Version>
     </PackageReference>
@@ -126,10 +167,10 @@
       <Version>1.5.1</Version>
     </PackageReference>
     <PackageReference Include="RayCarrot.Extensions">
-      <Version>1.2.5</Version>
+      <Version>1.2.7</Version>
     </PackageReference>
     <PackageReference Include="RayCarrot.IO">
-      <Version>1.3.7</Version>
+      <Version>1.4.4</Version>
     </PackageReference>
     <PackageReference Include="System.Drawing.Common">
       <Version>4.7.0</Version>

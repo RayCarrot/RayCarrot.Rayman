@@ -15,12 +15,12 @@ namespace RayCarrot.Rayman
         /// <summary>
         /// Gets a new binary reader to use for the specified stream
         /// </summary>
-        protected abstract BinaryReader GetBinaryReader(Stream stream);
+        public abstract BinaryReader GetBinaryReader(Stream stream);
 
         /// <summary>
         /// Gets a new binary writer to use for the specified stream
         /// </summary>
-        protected abstract BinaryWriter GetBinaryWriter(Stream stream);
+        public abstract BinaryWriter GetBinaryWriter(Stream stream);
 
         #endregion
 
