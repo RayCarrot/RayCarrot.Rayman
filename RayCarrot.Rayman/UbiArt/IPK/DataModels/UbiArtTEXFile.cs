@@ -1,4 +1,6 @@
-﻿namespace RayCarrot.Rayman
+﻿using RayCarrot.CarrotFramework.Abstractions;
+
+namespace RayCarrot.Rayman
 {
     /// <summary>
     /// Data for a UbiArt TEX file
@@ -51,7 +53,7 @@
         public uint HdrSize { get; set; }
 
         /// <summary>
-        /// The size of the actual texture data, in bytes. This is always 0 on PS Vita.
+        /// The size of the actual texture data, in bytes. This is always 0 on PS Vita. On Wii U this does not match the actual size.
         /// </summary>
         public uint TextureSize { get; set; }
 
@@ -135,6 +137,9 @@
                 Unknown5 = reader.Read<uint>();
 
             TextureData = reader.ReadRemainingBytes();
+
+            if (TextureData.Length != TextureSize && TextureSize != 0)
+                RCFCore.Logger?.LogDebugSource($"The TEX file length {TextureData.Length} doesn't match the set size of {TextureSize} and {TextureSize2}");
         }
 
         public void Serialize(BinaryDataWriter writer)

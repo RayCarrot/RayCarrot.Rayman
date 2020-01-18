@@ -2,6 +2,22 @@
 
 namespace RayCarrot.Rayman
 {
+
+/*
+Game:                                 Version:    Unk1:    Unk2:    Unk3:    Unk4:    Unk5:    Unk6:    Unk11:    Unk7:    Unk8:    Unk9:    Unk10:
+
+Rayman Origins (PC, Wii, PS3, PS Vita):      3        0        -        0        1        1        0         -   877930951     0        -         -
+Rayman Origins (3DS):                        4        5        -        0        1        1        0         -   1635089726    0        -         -
+Rayman Legends (PC, Wii U, PS Vita, Switch): 5        0        -        0        1        1        0         -   1274838019    0        -         -
+Just Dance 2017 (Wii U):                     5        8        -        0        0        0        0         -   3346979248   241478    -         -
+Valiant Hearts (Android):                    7       10        -        0        1        1        0         0   3713665533    0        0         0
+Child of Light (PC, PS Vita):                7        0        -        0        1        1        0         -   3669482532   30765     0         0
+Rayman Legends (PS4):                        7        8        -        0        1        1        0         -   3669482532   30765     0         0
+Gravity Falls (3DS):                         7       10        -        0        1        1        0         -   4160251604    0        0         0
+Rayman Adventures (Android, iOS):            8        2       11        1        1        1        0         -   285844061     0        0         0
+Rayman Mini (Mac):                           8       12       12        1        1        1     3771         -   800679911    3771      0         0
+*/
+
     /// <summary>
     /// The archive data used for the .ipk files from UbiArt games
     /// </summary>
@@ -86,7 +102,7 @@ namespace RayCarrot.Rayman
         public uint Unknown6 { get; set; }
 
         /// <summary>
-        /// Unknown value
+        /// Unknown value, probably a checksum
         /// </summary>
         public uint Unknown7 { get; set; }
 
@@ -144,6 +160,10 @@ namespace RayCarrot.Rayman
             Unknown4 = reader.Read<uint>();
             Unknown5 = reader.Read<uint>();
             Unknown6 = reader.Read<uint>();
+
+            if (Settings.Game == UbiArtGame.ValiantHearts)
+                Unknown11 = reader.Read<uint>();
+
             Unknown7 = reader.Read<uint>();
             Unknown8 = reader.Read<uint>();
 
@@ -151,10 +171,6 @@ namespace RayCarrot.Rayman
             {
                 Unknown9 = reader.Read<uint>();
                 Unknown10 = reader.Read<uint>();
-
-                // TODO: Check based on previous values rather than game is possible
-                if (Version < 8 && Settings.Game == UbiArtGame.ValiantHearts)
-                    Unknown11 = reader.Read<uint>();
             }
 
             // Get the file count (for the file array)
@@ -206,9 +222,23 @@ namespace RayCarrot.Rayman
             writer.Write(BaseOffset);
             writer.Write(FilesCount);
 
-            // TODO: Update this
-            // Write third unknown value
+            // Write unknown values
             writer.Write(Unknown3);
+            writer.Write(Unknown4);
+            writer.Write(Unknown5);
+            writer.Write(Unknown6);
+
+            if (Settings.Game == UbiArtGame.ValiantHearts)
+                writer.Write(Unknown11);
+
+            writer.Write(Unknown7);
+            writer.Write(Unknown8);
+
+            if (Version >= 6)
+            {
+                writer.Write(Unknown9);
+                writer.Write(Unknown10);
+            }
 
             // Write the file count (for the file array)
             writer.Write(Files.Length);

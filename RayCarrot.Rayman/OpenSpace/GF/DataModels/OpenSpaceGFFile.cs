@@ -459,7 +459,7 @@ namespace RayCarrot.Rayman
                         break;
 
                     // Resize the bitmap
-                    using var resizedBmp = bmp.ResizeImage(size.Width, size.Height);
+                    using var resizedBmp = bmp.ResizeImage(size.Width, size.Height, false);
 
                     // Add the pixels from the resized image
                     SetPixels(MipmapPixels[mipmapIndex], size.Width, size.Height, resizedBmp);

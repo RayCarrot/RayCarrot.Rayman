@@ -19,7 +19,6 @@
         /// </summary>
         public Rayman1GameMode GameMode { get; }
 
-        // WIP: Set based on platform?
         /// <summary>
         /// The byte order to use
         /// </summary>

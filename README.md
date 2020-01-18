@@ -30,6 +30,7 @@ RayCarrot.Rayman uses these main dependencies:
 - [RayCarrot.CarrotFramework](https://github.com/RayCarrot/Carrot-Framework)
 - [ini-parser](https://github.com/rickyah/ini-parser)
 - [DotNetZip](https://github.com/haf/DotNetZip.Semverd)
+- [FastBitmap](https://github.com/LuizZak/FastBitmap)
 
 ## Contact
 You can contact me on the following places:
