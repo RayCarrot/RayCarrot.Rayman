@@ -1,4 +1,6 @@
-﻿namespace RayCarrot.Rayman
+﻿using System.Dynamic;
+
+namespace RayCarrot.Rayman
 {
     // WIP: There are more values in the save file than this (button mapping, current level score etc.) - figure out what they are for
     /// <summary>
@@ -47,9 +49,30 @@
         public byte[] Unknown2 { get; set; }
 
         /// <summary>
+        /// Same as <see cref="TotalScore"/>
+        /// </summary>
+        public int TotalScore2 { get; set; }
+
+        /// <summary>
+        /// Unknown value
+        /// </summary>
+        public int Unknown4 { get; set; }
+
+        /// <summary>
+        /// Unknown value
+        /// </summary>
+        public int Unknown5 { get; set; }
+
+        /// <summary>
         /// The current level to load, or "endgame" if the game has been finished
         /// </summary>
         public string CurrentLevel { get; set; }
+
+        //// Offset 212
+        ///// <summary>
+        ///// The last unlocked level, only set if it differs from <see cref="CurrentLevel"/>
+        ///// </summary>
+        //public string LastLevel { get; set; }
 
         /// <summary>
         /// Unknown values
@@ -74,7 +97,12 @@
             IsHorizontalInversionEnabled = reader.Read<bool>();
             IsVerticalInversionEnabled = reader.Read<bool>();
 
-            Unknown2 = reader.ReadBytes(76);
+            Unknown2 = reader.ReadBytes(64);
+
+            TotalScore2 = reader.Read<int>();
+
+            Unknown4 = reader.Read<int>();
+            Unknown5 = reader.Read<int>();
 
             CurrentLevel = reader.Read<string>();
 
@@ -98,6 +126,11 @@
             writer.Write(IsVerticalInversionEnabled);
 
             writer.Write(Unknown2);
+
+            writer.Write(TotalScore2);
+
+            writer.Write(Unknown4);
+            writer.Write(Unknown5);
 
             writer.Write(CurrentLevel);
 

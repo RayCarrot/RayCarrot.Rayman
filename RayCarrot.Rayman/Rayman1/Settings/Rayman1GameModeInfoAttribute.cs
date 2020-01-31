@@ -1,16 +1,20 @@
-﻿namespace RayCarrot.Rayman
+﻿using System;
+
+namespace RayCarrot.Rayman
 {
     /// <summary>
-    /// Settings for serializing Rayman 1 game formats
+    /// Attribute to use on <see cref="Rayman1GameMode"/> fields, specifying the settings and data
     /// </summary>
-    public class Rayman1Settings : IBinarySerializableSettings
+    [AttributeUsage(AttributeTargets.Field)]
+    public sealed class Rayman1GameModeInfoAttribute : GameModeBaseAttribute
     {
         /// <summary>
         /// Default constructor
         /// </summary>
+        /// <param name="displayName">The game mode display name</param>
         /// <param name="game">The game</param>
         /// <param name="platform">The platform</param>
-        public Rayman1Settings(Rayman1Game game, Rayman1Platform platform)
+        public Rayman1GameModeInfoAttribute(string displayName, Rayman1Game game, Rayman1Platform platform) : base(displayName)
         {
             Game = game;
             Platform = platform;
@@ -25,10 +29,5 @@
         /// The platform
         /// </summary>
         public Rayman1Platform Platform { get; }
-
-        /// <summary>
-        /// The byte order to use
-        /// </summary>
-        public ByteOrder ByteOrder => ByteOrder.LittleEndian;
     }
 }

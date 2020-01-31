@@ -20,7 +20,7 @@ namespace RayCarrot.Rayman
         /// </summary>
         public override BinaryReader GetBinaryReader(Stream stream)
         {
-            return new StandardBinaryReader(new Rayman3SaveDataStream(stream, true), ByteOrder, TextEncoding.GetEncoding(), BinaryStringEncoding.NullTerminated, false);
+            return new StandardBinaryReader(new EnumerationStream(new Rayman3SaveDataEncoder().Decode(stream)), ByteOrder, TextEncoding.GetEncoding(), BinaryStringEncoding.NullTerminated, false);
         }
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace RayCarrot.Rayman
         /// </summary>
         public override BinaryWriter GetBinaryWriter(Stream stream)
         {
-            return new StandardBinaryWriter(new Rayman3SaveDataStream(stream, true), ByteOrder, TextEncoding.GetEncoding(), BinaryStringEncoding.NullTerminated, false);
+            return new StandardBinaryWriter(new EnumerationStream(new Rayman3SaveDataEncoder().Encode(stream)), ByteOrder, TextEncoding.GetEncoding(), BinaryStringEncoding.NullTerminated, false);
         }
     }
 }

@@ -71,15 +71,23 @@
     <Compile Include="Compression\7Zip SDK\Compress\RangeCoder\RangeCoderBitTree.cs" />
     <Compile Include="Compression\7Zip SDK\ICoder.cs" />
     <Compile Include="Compression\7Zip SDK\SevenZipHelper.cs" />
+    <Compile Include="Encoder\DataEncoderExtensions.cs" />
+    <Compile Include="Encoder\IDataEncoder.cs" />
+    <Compile Include="Encoder\Rayman2SNADataEncoder.cs" />
     <Compile Include="OpenSpace\SaveData\DataModels\Rayman3SaveData.cs" />
     <Compile Include="OpenSpace\SaveData\DataModels\Rayman3SaveDataLevel.cs" />
+    <Compile Include="Encoder\Rayman3SaveDataEncoder.cs" />
     <Compile Include="OpenSpace\SaveData\Serializers\Rayman3SaveDataSerializer.cs" />
-    <Compile Include="OpenSpace\SaveData\Rayman3SaveDataStream.cs" />
+    <Compile Include="Encoder\EnumerationStream.cs" />
     <Compile Include="OpenSpace\Settings\OpenSpaceGameModeInfoAttribute.cs" />
     <Compile Include="OpenSpace\Extensions\BinaryDataWriterExtensions.cs" />
     <Compile Include="OpenSpace\Settings\OpenSpaceGameModeExtensions.cs" />
     <Compile Include="Binary\Configurable\IBinarySerializableSettings.cs" />
     <Compile Include="Common\ArchiveFileGenerator.cs" />
+    <Compile Include="Rayman1\Settings\Rayman1GameModeExtensions.cs" />
+    <Compile Include="Rayman1\Settings\Rayman1GameModeInfoAttribute.cs" />
+    <Compile Include="Rayman1\Settings\Rayman1Game.cs" />
+    <Compile Include="Rayman1\Settings\Rayman1Platform.cs" />
     <Compile Include="UbiArt\IPK\DataModels\UbiArtTEXFile.cs" />
     <Compile Include="UbiArt\IPK\Serializers\UbiArtTextureSerializer.cs" />
     <Compile Include="Binary\TextEncoding\TextEncoding.cs" />
@@ -149,6 +157,7 @@
     <Compile Include="UbiIni\Handlers\R2UbiIniHandler.cs" />
     <Compile Include="UbiIni\Handlers\R3UbiIniHandler.cs" />
     <Compile Include="UbiIni\Handlers\RAUbiIniHandler.cs" />
+    <Compile Include="UbiIni\Handlers\RMDemoUbiIniHandler.cs" />
     <Compile Include="UbiIni\Handlers\RMUbiIniHandler.cs" />
     <Compile Include="UbiIni\UbiIniDataParser.cs" />
     <Compile Include="UbiIni\UbiIniHandler.cs" />
@@ -164,13 +173,13 @@
       <Version>2.5.2</Version>
     </PackageReference>
     <PackageReference Include="RayCarrot.CarrotFramework.Abstractions">
-      <Version>1.5.1</Version>
+      <Version>1.5.2</Version>
     </PackageReference>
     <PackageReference Include="RayCarrot.Extensions">
-      <Version>1.2.7</Version>
+      <Version>1.2.9</Version>
     </PackageReference>
     <PackageReference Include="RayCarrot.IO">
-      <Version>1.4.5</Version>
+      <Version>1.4.7</Version>
     </PackageReference>
     <PackageReference Include="System.Drawing.Common">
       <Version>4.7.0</Version>

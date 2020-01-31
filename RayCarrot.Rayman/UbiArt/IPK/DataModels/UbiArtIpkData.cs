@@ -15,7 +15,8 @@ Child of Light (PC, PS Vita):                7        0        -        0       
 Rayman Legends (PS4):                        7        8        -        0        1        1        0         -   3669482532   30765     0         0
 Gravity Falls (3DS):                         7       10        -        0        1        1        0         -   4160251604    0        0         0
 Rayman Adventures (Android, iOS):            8        2       11        1        1        1        0         -   285844061     0        0         0
-Rayman Mini (Mac):                           8       12       12        1        1        1     3771         -   800679911    3771      0         0
+Rayman Mini 1.0 (Mac):                       8       12       12        1        1        1     3771         -   800679911    3771      0         0
+Rayman Mini 1.1 (Mac):                       8       12       12        1        1        1     3826         -   2057063881   3826      0         0
 */
 
     /// <summary>

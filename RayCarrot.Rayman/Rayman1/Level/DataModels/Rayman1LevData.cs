@@ -300,7 +300,7 @@ namespace RayCarrot.Rayman
         /// <param name="reader">The reader to use to read from the stream</param>
         public void Deserialize(BinaryDataReader reader)
         {
-            if (Settings.GameMode != Rayman1GameMode.Rayman1PC)
+            if (Settings.Game != Rayman1Game.Rayman1)
                 throw new NotImplementedException("Currently only Rayman 1 level files can be read");
 
             // HEADER BLOCK
@@ -492,7 +492,7 @@ namespace RayCarrot.Rayman
         /// <param name="writer">The writer to use to write to the stream</param>
         public void Serialize(BinaryDataWriter writer)
         {
-            if (Settings.GameMode != Rayman1GameMode.Rayman1PC)
+            if (Settings.Game != Rayman1Game.Rayman1)
                 throw new NotImplementedException("Currently only Rayman 1 level files can be written");
 
             // HEADER BLOCK
