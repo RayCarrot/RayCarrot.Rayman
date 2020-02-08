@@ -42,7 +42,7 @@ namespace RayCarrot.Rayman
             }
 
             // Get the engine version
-            foreach (var version in OpenSpaceEngineVersion.TonicTrouble.GetValues())
+            foreach (var version in EnumHelpers.GetValues<OpenSpaceEngineVersion>())
             {
                 if ((int) game > (int) version) 
                     continue;

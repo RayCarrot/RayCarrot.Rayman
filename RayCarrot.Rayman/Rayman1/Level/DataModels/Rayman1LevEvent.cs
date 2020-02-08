@@ -17,15 +17,15 @@
 
         public uint Unknown2 { get; set; }
         
-        public BinarySerializableFixedList<byte> Unknown3 { get; set; }
+        public BinarySerializableList<byte> Unknown3 { get; set; }
 
         public uint XPosition { get; set; }
         
         public uint YPosition { get; set; }
 
-        public BinarySerializableFixedList<byte> Unknown4 { get; set; }
+        public BinarySerializableList<byte> Unknown4 { get; set; }
 
-        public BinarySerializableFixedList<byte> Unknown5 { get; set; }
+        public BinarySerializableList<byte> Unknown5 { get; set; }
 
         public uint Type { get; set; }
 
@@ -55,7 +55,7 @@
 
         public byte HitSprite { get; set; }
 
-        public BinarySerializableFixedList<byte> Unknown10 { get; set; }
+        public BinarySerializableList<byte> Unknown10 { get; set; }
 
         public byte Unknown11 { get; set; }
 
@@ -73,16 +73,16 @@
             Unknown1 = reader.Read<uint>();
             Unknown2 = reader.Read<uint>();
 
-            Unknown3 = new BinarySerializableFixedList<byte>(16);
+            Unknown3 = new BinarySerializableList<byte>(16);
             Unknown3.Deserialize(reader);
 
             XPosition = reader.Read<uint>();
             YPosition = reader.Read<uint>();
 
-            Unknown4 = new BinarySerializableFixedList<byte>(20);
+            Unknown4 = new BinarySerializableList<byte>(20);
             Unknown4.Deserialize(reader);
 
-            Unknown5 = new BinarySerializableFixedList<byte>(28);
+            Unknown5 = new BinarySerializableList<byte>(28);
             Unknown5.Deserialize(reader);
 
             Type = reader.Read<uint>();
@@ -105,7 +105,7 @@
             Group = reader.Read<byte>();
             HitSprite = reader.Read<byte>();
 
-            Unknown10 = new BinarySerializableFixedList<byte>(6);
+            Unknown10 = new BinarySerializableList<byte>(6);
             Unknown10.Deserialize(reader);
             
             Unknown11 = reader.Read<byte>();

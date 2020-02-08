@@ -21,7 +21,7 @@ namespace RayCarrot.Rayman
         /// <summary>
         /// The data for each of the available levels. Count is always 9.
         /// </summary>
-        public BinarySerializableFixedList<Rayman3SaveDataLevel> Levels { get; set; }
+        public BinarySerializableList<Rayman3SaveDataLevel> Levels { get; set; }
 
         /// <summary>
         /// Unknown values
@@ -88,7 +88,7 @@ namespace RayCarrot.Rayman
             TotalCages = reader.Read<int>();
             TotalScore = reader.Read<int>();
 
-            Levels = new BinarySerializableFixedList<Rayman3SaveDataLevel>(9);
+            Levels = new BinarySerializableList<Rayman3SaveDataLevel>(9);
             Levels.Deserialize(reader);
 
             Unknown1 = reader.ReadBytes(33);

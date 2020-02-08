@@ -6,13 +6,13 @@ namespace RayCarrot.Rayman
     /// Base attribute to use on game mode enum fields, specifying the data
     /// </summary>
     [AttributeUsage(AttributeTargets.Field)]
-    public abstract class GameModeBaseAttribute : Attribute
+    public class GameModeBaseAttribute : Attribute
     {
         /// <summary>
         /// Default constructor
         /// </summary>
         /// <param name="displayName">The game mode display name</param>
-        protected GameModeBaseAttribute(string displayName)
+        public GameModeBaseAttribute(string displayName)
         {
             DisplayName = displayName;
         }

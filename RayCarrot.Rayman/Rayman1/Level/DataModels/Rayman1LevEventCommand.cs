@@ -9,19 +9,19 @@
 
         public ushort LabelOffsetCount { get; set; }
 
-        public BinarySerializableFixedList<byte> EventCode { get; set; }
+        public BinarySerializableList<byte> EventCode { get; set; }
 
-        public BinarySerializableFixedList<ushort> LabelOffsetTable { get; set; }
+        public BinarySerializableList<ushort> LabelOffsetTable { get; set; }
 
         public void Deserialize(BinaryDataReader reader)
         {
             CodeCount = reader.Read<ushort>();
             LabelOffsetCount = reader.Read<ushort>();
 
-            EventCode = new BinarySerializableFixedList<byte>(CodeCount);
+            EventCode = new BinarySerializableList<byte>(CodeCount);
             EventCode.Deserialize(reader);
 
-            LabelOffsetTable = new BinarySerializableFixedList<ushort>(LabelOffsetCount);
+            LabelOffsetTable = new BinarySerializableList<ushort>(LabelOffsetCount);
             LabelOffsetTable.Deserialize(reader);
         }
 

@@ -67,6 +67,59 @@ namespace RayCarrot.Rayman
 
         #endregion
 
+        // TODO: Use this
+        /// <summary>
+        /// Common settings for serializing
+        /// </summary>
+        public class BinarySerializerSettings
+        {
+            /// <summary>
+            /// The byte order to use
+            /// </summary>
+            public ByteOrder ByteOrder { get; set; }
+
+            /// <summary>
+            /// The encoding to use
+            /// </summary>
+            public Encoding Encoding { get; set; }
+
+            /// <summary>
+            /// The binary string encoding to use when serializing strings
+            /// </summary>
+            public BinaryStringEncoding StringEncoding { get; set; }
+
+            /// <summary>
+            /// The binary boolean encoding to use when serializing booleans
+            /// </summary>
+            public BinaryBoolEncoding BoolEncoding { get; set; }
+
+            /// <summary>
+            /// Defines the available ways to serialize a boolean
+            /// </summary>
+            public enum BinaryBoolEncoding
+            {
+                /// <summary>
+                /// As a byte
+                /// </summary>
+                Byte,
+
+                /// <summary>
+                /// As a 16-bit integer
+                /// </summary>
+                Int16,
+
+                /// <summary>
+                /// As a 32-bit integer
+                /// </summary>
+                Int32,
+
+                /// <summary>
+                /// As a 64-bit integer
+                /// </summary>
+                Int64
+            }
+        }
+
         #region Protected Properties
 
         /// <summary>
@@ -134,6 +187,15 @@ namespace RayCarrot.Rayman
         #endregion
 
         #region Public Override Methods
+
+        /// <summary>
+        /// Reads a boolean as the specified integer length
+        /// </summary>
+        /// <returns>True if the value is 1 or false if it is 0</returns>
+        public override bool ReadBoolean()
+        {
+            return base.ReadBoolean();
+        }
 
         /// <summary>
         /// Reads a string from the current stream based on the selected <see cref="BinaryStringEncoding"/>

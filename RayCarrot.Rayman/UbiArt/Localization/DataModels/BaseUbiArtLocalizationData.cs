@@ -22,7 +22,7 @@ namespace RayCarrot.Rayman
         /// <summary>
         /// Unknown list of paths
         /// </summary>
-        public BinarySerializableFixedList<string> Paths { get; set; }
+        public BinarySerializableList<string> Paths { get; set; }
 
         /// <summary>
         /// Unknown values, used in Legends and later
@@ -37,7 +37,7 @@ namespace RayCarrot.Rayman
         {
             Strings = reader.Read<BinarySerializableDictionary<int, BinarySerializableDictionary<int, LocStringType>>>();
             Audio = reader.Read<BinarySerializableDictionary<int, UbiArtLocalizationAudio>>();
-            Paths = reader.Read<BinarySerializableFixedList<string>>();
+            Paths = reader.Read<BinarySerializableList<string>>();
 
             Unknown = new List<int>();
             while (reader.BaseStream.Position < reader.BaseStream.Length)

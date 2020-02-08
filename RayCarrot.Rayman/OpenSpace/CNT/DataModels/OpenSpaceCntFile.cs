@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using RayCarrot.CarrotFramework.Abstractions;
 
 namespace RayCarrot.Rayman
 {
@@ -77,16 +78,35 @@ namespace RayCarrot.Rayman
         /// <summary>
         /// Gets the file content for the CNT file item from the stream
         /// </summary>
-        /// <param name="fileStream">The stream to get the file content from</param>
+        /// <param name="cntStream">The stream to get the file content from</param>
         /// <param name="settings">The settings when serializing the data</param>
         /// <returns>The file content</returns>
-        public OpenSpaceGFFile GetFileContent(Stream fileStream, OpenSpaceSettings settings)
+        public OpenSpaceGFFile GetFileContent(Stream cntStream, OpenSpaceSettings settings)
         {
-            // Get the bytes and load them into a memory stream
-            using var stream = new MemoryStream(GetFileBytes(fileStream));
+            // Get the bytes
+            var bytes = GetFileBytes(cntStream);
+
+            // Return the content
+            return GetFileContent(bytes, settings);
+        }
+
+        /// <summary>
+        /// Gets the file content for the CNT file item from the file bytes
+        /// </summary>
+        /// <param name="fileBytes">The bytes to get the file content from</param>
+        /// <param name="settings">The settings when serializing the data</param>
+        /// <returns>The file content</returns>
+        public OpenSpaceGFFile GetFileContent(byte[] fileBytes, OpenSpaceSettings settings)
+        {
+            // Load the bytes into a memory stream
+            using var stream = new MemoryStream(fileBytes);
             
             // Serialize the data
             var data = new OpenSpaceGfSerializer(settings).Deserialize(stream);
+
+            // Make sure we read the entire file
+            if (stream.Position != stream.Length)
+                RCFCore.Logger?.LogWarningSource($"The GF file {FileName} was not fully read");
 
             // Return the data
             return data;

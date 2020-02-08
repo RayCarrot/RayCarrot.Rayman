@@ -74,6 +74,8 @@
     <Compile Include="Encoder\DataEncoderExtensions.cs" />
     <Compile Include="Encoder\IDataEncoder.cs" />
     <Compile Include="Encoder\Rayman2SNADataEncoder.cs" />
+    <Compile Include="Encoder\SegmentedDataEncoder.cs" />
+    <Compile Include="Encoder\XORDataEncoder.cs" />
     <Compile Include="OpenSpace\SaveData\DataModels\Rayman3SaveData.cs" />
     <Compile Include="OpenSpace\SaveData\DataModels\Rayman3SaveDataLevel.cs" />
     <Compile Include="Encoder\Rayman3SaveDataEncoder.cs" />
@@ -95,6 +97,7 @@
     <Compile Include="UbiArt\Localization\DataModels\BaseUbiArtLocalizationData.cs" />
     <Compile Include="UbiArt\Localization\DataModels\FiestaRunLocalizationData.cs" />
     <Compile Include="UbiArt\Localization\DataModels\UbiArtLocalizationAudio.cs" />
+    <Compile Include="UbiArt\SaveData\DataModels\LegendsSaveData.cs" />
     <Compile Include="UbiArt\Settings\UbiArtGameModeExtensions.cs" />
     <Compile Include="UbiArt\Settings\UbiArtGameMode.cs" />
     <Compile Include="OpenSpace\Settings\OpenSpaceEngineVersion.cs" />
@@ -139,7 +142,7 @@
     <Compile Include="UbiArt\Localization\DataModels\UbiArtLocalizationData.cs" />
     <Compile Include="UbiArt\SaveData\DataModels\JungleRunSaveData.cs" />
     <Compile Include="UbiArt\SaveData\DataModels\JungleRunSaveDataLevel.cs" />
-    <Compile Include="Binary\DataModels\BinarySerializableFixedList.cs" />
+    <Compile Include="Binary\DataModels\BinarySerializableList.cs" />
     <Compile Include="UbiArt\SaveData\Serializers\FiestaRunWin10EditionSaveDataSerializer.cs" />
     <Compile Include="UbiArt\SaveData\Serializers\JungleRunSaveDataSerializer.cs" />
     <Compile Include="OpenSpace\Settings\OpenSpaceGame.cs" />
@@ -176,10 +179,10 @@
       <Version>1.5.2</Version>
     </PackageReference>
     <PackageReference Include="RayCarrot.Extensions">
-      <Version>1.2.9</Version>
+      <Version>1.2.10</Version>
     </PackageReference>
     <PackageReference Include="RayCarrot.IO">
-      <Version>1.4.7</Version>
+      <Version>1.5.1</Version>
     </PackageReference>
     <PackageReference Include="System.Drawing.Common">
       <Version>4.7.0</Version>

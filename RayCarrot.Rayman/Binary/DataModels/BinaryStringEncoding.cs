@@ -4,7 +4,7 @@ using System.IO;
 namespace RayCarrot.Rayman
 {
     /// <summary>
-    /// Defines the available ways to read a binary encoded string
+    /// Defines the available ways to serialize a binary encoded string
     /// </summary>
     public enum BinaryStringEncoding
     {

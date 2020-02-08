@@ -5,12 +5,12 @@ namespace RayCarrot.Rayman
     /// <summary>
     /// A list with a fixed size which implements <see cref="IBinarySerializable"/>
     /// </summary>
-    public class BinarySerializableFixedList<T> : List<T>, IBinarySerializable
+    public class BinarySerializableList<T> : List<T>, IBinarySerializable
     {
         /// <summary>
         /// Default constructor for a fixed list where the first 4 bytes represent the capacity
         /// </summary>
-        public BinarySerializableFixedList()
+        public BinarySerializableList()
         {
             ReadCapacity = true;
         }
@@ -19,7 +19,7 @@ namespace RayCarrot.Rayman
         /// Default constructor for a fixed list with a set capacity
         /// </summary>
         /// <param name="capacity">The capacity of the list</param>
-        public BinarySerializableFixedList(int capacity) : base(capacity)
+        public BinarySerializableList(int capacity) : base(capacity)
         {
             ReadCapacity = false;
         }

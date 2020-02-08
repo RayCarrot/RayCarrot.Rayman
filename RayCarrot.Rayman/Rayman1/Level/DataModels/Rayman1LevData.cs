@@ -108,12 +108,12 @@ namespace RayCarrot.Rayman
         /// <summary>
         /// The index table for the <see cref="RoughTextures"/>
         /// </summary>
-        public BinarySerializableFixedList<uint> RoughTexturesIndexTable { get; set; }
+        public BinarySerializableList<uint> RoughTexturesIndexTable { get; set; }
 
         /// <summary>
         /// Unknown array of bytes
         /// </summary>
-        public BinarySerializableFixedList<byte> Unknown3 { get; set; }
+        public BinarySerializableList<byte> Unknown3 { get; set; }
 
         /// <summary>
         /// The checksum for <see cref="Unknown3"/>
@@ -123,12 +123,12 @@ namespace RayCarrot.Rayman
         /// <summary>
         /// Offset table for <see cref="Unknown3"/>
         /// </summary>
-        public BinarySerializableFixedList<uint> Unknown3OffsetTable { get; set; }
+        public BinarySerializableList<uint> Unknown3OffsetTable { get; set; }
 
         /// <summary>
         /// The offset table for the <see cref="NonTransparentTextures"/> and <see cref="TransparentTextures"/>
         /// </summary>
-        public BinarySerializableFixedList<uint> TexturesOffsetTable { get; set; }
+        public BinarySerializableList<uint> TexturesOffsetTable { get; set; }
 
         /// <summary>
         /// The total amount of textures for <see cref="NonTransparentTextures"/> and <see cref="TransparentTextures"/>
@@ -173,17 +173,17 @@ namespace RayCarrot.Rayman
         /// <summary>
         /// Data table for event linking
         /// </summary>
-        public BinarySerializableFixedList<ushort> EventLinkingTable { get; set; }
+        public BinarySerializableList<ushort> EventLinkingTable { get; set; }
 
         /// <summary>
         /// The events in the map
         /// </summary>
-        public BinarySerializableFixedList<Rayman1LevEvent> Events { get; set; }
+        public BinarySerializableList<Rayman1LevEvent> Events { get; set; }
 
         /// <summary>
         /// The event commands in the map
         /// </summary>
-        public BinarySerializableFixedList<Rayman1LevEventCommand> EventCommands { get; set; }
+        public BinarySerializableList<Rayman1LevEventCommand> EventCommands { get; set; }
 
         #endregion
 
@@ -390,18 +390,18 @@ namespace RayCarrot.Rayman
             RoughTexturesChecksum = reader.Read<byte>();
 
             // Read the index table for the rough textures
-            RoughTexturesIndexTable = new BinarySerializableFixedList<uint>(1200);
+            RoughTexturesIndexTable = new BinarySerializableList<uint>(1200);
             RoughTexturesIndexTable.Deserialize(reader);
 
             // Read the items for the third unknown value
-            Unknown3 = new BinarySerializableFixedList<byte>((int)Unknown3Count);
+            Unknown3 = new BinarySerializableList<byte>((int)Unknown3Count);
             Unknown3.Deserialize(reader);
 
             // Read the checksum for the third unknown value
             Unknown3Checksum = reader.Read<byte>();
 
             // Read the offset table for the third unknown value
-            Unknown3OffsetTable = new BinarySerializableFixedList<uint>(1200);
+            Unknown3OffsetTable = new BinarySerializableList<uint>(1200);
             Unknown3OffsetTable.Deserialize(reader);
 
             // TEXTURE BLOCK
@@ -411,7 +411,7 @@ namespace RayCarrot.Rayman
                 throw new BinarySerializableException("Texture block offset is incorrect");
 
             // Read the offset table for the textures
-            TexturesOffsetTable = new BinarySerializableFixedList<uint>(1200);
+            TexturesOffsetTable = new BinarySerializableList<uint>(1200);
             TexturesOffsetTable.Deserialize(reader);
 
             // Read the textures count
@@ -474,15 +474,15 @@ namespace RayCarrot.Rayman
             EventCount = reader.Read<ushort>();
 
             // Read the event linking table
-            EventLinkingTable = new BinarySerializableFixedList<ushort>(EventCount);
+            EventLinkingTable = new BinarySerializableList<ushort>(EventCount);
             EventLinkingTable.Deserialize(reader);
 
             // Read the events
-            Events = new BinarySerializableFixedList<Rayman1LevEvent>(EventCount);
+            Events = new BinarySerializableList<Rayman1LevEvent>(EventCount);
             Events.Deserialize(reader);
 
             // Read the event commands
-            EventCommands = new BinarySerializableFixedList<Rayman1LevEventCommand>(EventCount);
+            EventCommands = new BinarySerializableList<Rayman1LevEventCommand>(EventCount);
             EventCommands.Deserialize(reader);
         }
 

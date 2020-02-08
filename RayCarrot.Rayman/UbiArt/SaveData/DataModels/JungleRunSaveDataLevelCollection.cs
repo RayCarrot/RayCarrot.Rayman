@@ -3,7 +3,7 @@
     /// <summary>
     /// The collection of the levels in Rayman Jungle Run with the fixed size of 70
     /// </summary>
-    public class JungleRunSaveDataLevelCollection : BinarySerializableFixedList<JungleRunSaveDataLevel>
+    public class JungleRunSaveDataLevelCollection : BinarySerializableList<JungleRunSaveDataLevel>
     {
         /// <summary>
         /// Default constructor

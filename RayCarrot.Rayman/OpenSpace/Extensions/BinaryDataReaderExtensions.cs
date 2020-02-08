@@ -7,6 +7,7 @@ namespace RayCarrot.Rayman
     /// </summary>
     public static class BinaryDataReaderExtensions
     {
+        // TODO: Move out of here and use decoders instead
         /// <summary>
         /// Reads an encrypted string based on the provided XOR key
         /// </summary>
