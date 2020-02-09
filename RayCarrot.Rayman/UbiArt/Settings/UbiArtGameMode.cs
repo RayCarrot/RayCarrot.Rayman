@@ -47,6 +47,8 @@
 
     */
 
+    // TODO: Different files in the games use different text encoding & byte order. Perhaps use multiple attributes for different file types?
+
     /// <summary>
     /// The UbiArt game modes
     /// </summary>

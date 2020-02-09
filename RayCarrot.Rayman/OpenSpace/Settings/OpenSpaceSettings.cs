@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using RayCarrot.Extensions;
 
 namespace RayCarrot.Rayman
@@ -6,7 +7,7 @@ namespace RayCarrot.Rayman
     /// <summary>
     /// Settings for serializing OpenSpace game formats
     /// </summary>
-    public class OpenSpaceSettings : IBinarySerializableSettings
+    public class OpenSpaceSettings : BinarySerializerSettings
     {
         /// <summary>
         /// Default constructor
@@ -15,6 +16,11 @@ namespace RayCarrot.Rayman
         /// <param name="platform">The platform</param>
         public OpenSpaceSettings(OpenSpaceGame game, OpenSpacePlatform platform)
         {
+            // Set base properties
+            Encoding = Encoding.UTF8;
+            StringEncoding = BinaryStringEncoding.LengthPrefixed;
+            BoolEncoding = BinaryBoolEncoding.Int32;
+
             // Set the properties
             Game = game;
             Platform = platform;
@@ -51,11 +57,6 @@ namespace RayCarrot.Rayman
                 break;
             }
         }
-
-        /// <summary>
-        /// The byte order to use
-        /// </summary>
-        public ByteOrder ByteOrder { get; }
 
         /// <summary>
         /// The game

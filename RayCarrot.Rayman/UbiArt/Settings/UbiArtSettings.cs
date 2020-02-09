@@ -3,7 +3,7 @@
     /// <summary>
     /// Settings for serializing UbiArt game formats
     /// </summary>
-    public class UbiArtSettings : IBinarySerializableSettings
+    public class UbiArtSettings : BinarySerializerSettings
     {
         /// <summary>
         /// Default constructor
@@ -14,28 +14,22 @@
         /// <param name="textEncoding">The text encoding to use</param>
         public UbiArtSettings(UbiArtGame game, UbiArtPlatform platform, ByteOrder byteOrder, TextEncoding textEncoding)
         {
-            // Set the properties
+            // Set base properties
+            ByteOrder = byteOrder;
+            Encoding = textEncoding.GetEncoding();
+            StringEncoding = BinaryStringEncoding.LengthPrefixed;
+            BoolEncoding = BinaryBoolEncoding.Int32;
+
+            // Set properties
             Game = game;
             Platform = platform;
             DeserializeMipmaps = true;
-            ByteOrder = byteOrder;
-            TextEncoding = textEncoding;
         }
 
         /// <summary>
         /// The current IPK version. This value gets set automatically when deserializing the IPK and is used for deserializing the IPK contents.
         /// </summary>
         public uint IPKVersion { get; set; }
-
-        /// <summary>
-        /// The byte order to use
-        /// </summary>
-        public ByteOrder ByteOrder { get; }
-
-        /// <summary>
-        /// The text encoding to use
-        /// </summary>
-        public TextEncoding TextEncoding { get; }
 
         /// <summary>
         /// The game
