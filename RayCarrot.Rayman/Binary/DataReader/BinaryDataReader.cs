@@ -107,7 +107,7 @@ namespace RayCarrot.Rayman
                         return Reader.ReadInt64();
 
                     case TypeCode.UInt64:
-                        return Reader.ReadUInt16();
+                        return Reader.ReadUInt64();
 
                     case TypeCode.Single:
                         return Reader.ReadSingle();

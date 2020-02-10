@@ -161,12 +161,12 @@ namespace RayCarrot.Rayman
         }
 
         /// <summary>
-        /// The TexturesQuality key
+        /// The TexturesFile key
         /// </summary>
-        public string TexturesQuality
+        public string TexturesFile
         {
-            get => Section?["TexturesQuality"];
-            set => Section["TexturesQuality"] = value;
+            get => Section?["TexturesFile"];
+            set => Section["TexturesFile"] = value;
         }
 
         /// <summary>
@@ -265,11 +265,6 @@ namespace RayCarrot.Rayman
         /// The formatted Camera_HorizontalAxis key
         /// </summary>
         public int? FormattedCamera_HorizontalAxis => Int32.TryParse(Camera_HorizontalAxis, out int result) ? result.CastTo<int?>() : null;
-
-        /// <summary>
-        /// The formatted TexturesQuality key
-        /// </summary>
-        public int? FormattedTexturesQuality => Int32.TryParse(TexturesQuality, out int result) ? result.CastTo<int?>() : null;
 
         /// <summary>
         /// The formatted TexturesCompressed key
