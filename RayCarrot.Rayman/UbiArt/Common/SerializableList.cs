@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 
-namespace RayCarrot.Rayman
+namespace RayCarrot.Rayman.UbiArt
 {
     /// <summary>
     /// A list which implements <see cref="IBinarySerializable{Settings}"/>, with the capacity determined by a 32-bit integer
     /// </summary>
-    public class UbiArtSerializableList<T> : List<T>, IBinarySerializable<BinarySerializerSettings>
+    public class SerializableList<T> : List<T>, IBinarySerializable<BinarySerializerSettings>
     {
         /// <summary>
         /// Deserializes the data from the stream into this instance

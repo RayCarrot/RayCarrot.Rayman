@@ -1,4 +1,4 @@
-﻿namespace RayCarrot.Rayman
+﻿namespace RayCarrot.Rayman.UbiIni
 {
     /// <summary>
     /// The commonly available Rayman M languages

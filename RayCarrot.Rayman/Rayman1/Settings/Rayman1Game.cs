@@ -1,4 +1,4 @@
-﻿namespace RayCarrot.Rayman
+﻿namespace RayCarrot.Rayman.Rayman1
 {
     /// <summary>
     /// The Rayman 1 games

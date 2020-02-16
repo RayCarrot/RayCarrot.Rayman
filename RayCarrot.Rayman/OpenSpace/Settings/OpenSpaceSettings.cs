@@ -2,7 +2,7 @@
 using System.Text;
 using RayCarrot.Extensions;
 
-namespace RayCarrot.Rayman
+namespace RayCarrot.Rayman.OpenSpace
 {
     /// <summary>
     /// Settings for serializing OpenSpace game formats

@@ -1,4 +1,4 @@
-﻿namespace RayCarrot.Rayman
+﻿namespace RayCarrot.Rayman.Rayman1
 {
     /// <summary>
     /// The cell types for a <see cref="Rayman1PCLevMapCell"/>, 32 in total. Some are unused, while others are used in specific levels but appear to have no function. Some only function in the spin-offs (Designer etc.).

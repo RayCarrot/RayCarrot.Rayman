@@ -1,6 +1,6 @@
 ﻿using RayCarrot.Extensions;
 
-namespace RayCarrot.Rayman
+namespace RayCarrot.Rayman.UbiArt
 {
     /// <summary>
     /// Extension methods for <see cref="UbiArtGameMode"/>

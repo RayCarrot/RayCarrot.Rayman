@@ -1,9 +1,4 @@
-﻿using RayCarrot.Extensions;
-using System;
-using System.ComponentModel;
-using System.Globalization;
-
-namespace RayCarrot.Rayman
+﻿namespace RayCarrot.Rayman.UbiArt
 {
     /// <summary>
     /// The save file data used for Rayman Legends on PC
@@ -70,9 +65,15 @@ namespace RayCarrot.Rayman
 
         #region Save Data Classes
 
+        /// <summary>
+        /// The main save data for a Rayman Legends save slot
+        /// </summary>
         public class PersistentGameData_Universe : IBinarySerializable<UbiArtSettings>
         {
-            public UbiArtSerializableDictionary<UbiArtStringID, UbiArtGeneric<PersistentGameData_Level>> Levels;
+            /// <summary>
+            /// The save data for each level
+            /// </summary>
+            public SerializableDictionary<UbiArtStringID, UbiArtGeneric<PersistentGameData_Level>> Levels { get; set; }
 
             public SaveSession Rewards { get; set; }
 
@@ -82,11 +83,11 @@ namespace RayCarrot.Rayman
 
             public PersistentGameData_BubbleDreamerData BubbleDreamer { get; set; }
 
-            public UbiArtSerializableList<int> UnlockedPets { get; set; }
+            public SerializableList<int> UnlockedPets { get; set; }
 
-            public UbiArtSerializableList<PetRewardData> PetsDailyReward { get; set; }
+            public SerializableList<PetRewardData> PetsDailyReward { get; set; }
 
-            public UbiArtSerializableList<St_petCups> UnlockedCupsForPets { get; set; }
+            public SerializableList<St_petCups> UnlockedCupsForPets { get; set; }
 
             public uint GivenPetCount { get; set; }
 
@@ -96,7 +97,7 @@ namespace RayCarrot.Rayman
 
             public bool HasShownMessageAllPet { get; set; }
 
-            public UbiArtSerializableList<Message> Messages { get; set; }
+            public SerializableList<Message> Messages { get; set; }
 
             public uint MessagesTotalCount { get; set; }
 
@@ -132,21 +133,21 @@ namespace RayCarrot.Rayman
 
             public uint RetroMapUnlockedCounter { get; set; }
 
-            public UbiArtSerializableList<UbiArtStringID> MrDarkUnlockCount { get; set; }
+            public SerializableList<UbiArtStringID> MrDarkUnlockCount { get; set; }
 
             public uint CatchEmAllIndex { get; set; }
 
-            public UbiArtSerializableList<UbiArtStringID> NewCostumes { get; set; }
+            public SerializableList<UbiArtStringID> NewCostumes { get; set; }
 
-            public UbiArtSerializableList<UbiArtStringID> CostumeUnlockSeen { get; set; }
+            public SerializableList<UbiArtStringID> CostumeUnlockSeen { get; set; }
 
-            public UbiArtSerializableList<UbiArtStringID> RetroUnlocks { get; set; }
+            public SerializableList<UbiArtStringID> RetroUnlocks { get; set; }
 
-            public UbiArtSerializableList<UnlockedDoor> NewUnlockedDoor { get; set; }
+            public SerializableList<UnlockedDoor> NewUnlockedDoor { get; set; }
 
-            public UbiArtSerializableList<RO2_LuckyTicketReward> LuckyTicketRewardList { get; set; }
+            public SerializableList<RO2_LuckyTicketReward> LuckyTicketRewardList { get; set; }
 
-            public UbiArtSerializableList<NodeDataStruct> NodeData { get; set; }
+            public SerializableList<NodeDataStruct> NodeData { get; set; }
 
             public uint LuckyTicketsRewardGivenCounter { get; set; }
 
@@ -172,13 +173,13 @@ namespace RayCarrot.Rayman
 
             public bool UplayDoneReward3 { get; set; }
 
-            public UbiArtSerializableList<UbiArtStringID> PlayedDiamondCupSequence { get; set; }
+            public SerializableList<UbiArtStringID> PlayedDiamondCupSequence { get; set; }
 
-            public UbiArtSerializableList<UbiArtStringID> Costumes { get; set; }
+            public SerializableList<UbiArtStringID> Costumes { get; set; }
 
-            public UbiArtSerializableList<uint> PlayedChallenge { get; set; }
+            public SerializableList<uint> PlayedChallenge { get; set; }
 
-            public UbiArtSerializableList<UbiArtStringID> PlayedInvasion { get; set; }
+            public SerializableList<UbiArtStringID> PlayedInvasion { get; set; }
 
             public uint TvOffOptionEnabledNb { get; set; }
 
@@ -186,7 +187,7 @@ namespace RayCarrot.Rayman
 
             public bool BarbaraCostumeUnlockSeen { get; set; }
 
-            public UbiArtSerializableList<UbiArtStringID> WorldUnlockMessagesSeen { get; set; }
+            public SerializableList<UbiArtStringID> WorldUnlockMessagesSeen { get; set; }
 
             public bool RetroWorldUnlockMessageSeen { get; set; }
 
@@ -202,9 +203,9 @@ namespace RayCarrot.Rayman
 
             public bool ChallengeWorldUnlockMessageSeen { get; set; }
 
-            public UbiArtSerializableList<UbiArtStringID> DoorUnlockMessageSeen { get; set; }
+            public SerializableList<UbiArtStringID> DoorUnlockMessageSeen { get; set; }
 
-            public UbiArtSerializableList<UbiArtStringID> DoorUnlockDRCMessageRequired { get; set; }
+            public SerializableList<UbiArtStringID> DoorUnlockDRCMessageRequired { get; set; }
 
             public UbiArtStringID LuckyTicketRewardWorldName { get; set; }
 
@@ -230,19 +231,19 @@ namespace RayCarrot.Rayman
 
             public void Deserialize(IBinaryDataReader<UbiArtSettings> reader)
             {
-                Levels = reader.Read<UbiArtSerializableDictionary<UbiArtStringID, UbiArtGeneric<PersistentGameData_Level>>>();
+                Levels = reader.Read<SerializableDictionary<UbiArtStringID, UbiArtGeneric<PersistentGameData_Level>>>();
                 Rewards = reader.Read<SaveSession>();
                 Score = reader.Read<PersistentGameData_Score>();
                 Profile = reader.Read<ProfileData>();
                 BubbleDreamer = reader.Read<PersistentGameData_BubbleDreamerData>();
-                UnlockedPets = reader.Read<UbiArtSerializableList<int>>();
-                PetsDailyReward = reader.Read<UbiArtSerializableList<PetRewardData>>();
-                UnlockedCupsForPets = reader.Read<UbiArtSerializableList<St_petCups>>();
+                UnlockedPets = reader.Read<SerializableList<int>>();
+                PetsDailyReward = reader.Read<SerializableList<PetRewardData>>();
+                UnlockedCupsForPets = reader.Read<SerializableList<St_petCups>>();
                 GivenPetCount = reader.Read<uint>();
                 NewPetsUnlocked = reader.Read<bool>();
                 FirstPetShown = reader.Read<bool>();
                 HasShownMessageAllPet = reader.Read<bool>();
-                Messages = reader.Read<UbiArtSerializableList<Message>>();
+                Messages = reader.Read<SerializableList<Message>>();
                 MessagesTotalCount = reader.Read<uint>();
                 Messages_onlineDate = reader.Read<UbiArtDateTime>();
                 Messages_localDate = reader.Read<UbiArtDateTime>();
@@ -260,14 +261,14 @@ namespace RayCarrot.Rayman
                 LuckyTicketsCounter = reader.Read<uint>();
                 LuckyTicketLevelCount = reader.Read<uint>();
                 RetroMapUnlockedCounter = reader.Read<uint>();
-                MrDarkUnlockCount = reader.Read<UbiArtSerializableList<UbiArtStringID>>();
+                MrDarkUnlockCount = reader.Read<SerializableList<UbiArtStringID>>();
                 CatchEmAllIndex = reader.Read<uint>();
-                NewCostumes = reader.Read<UbiArtSerializableList<UbiArtStringID>>();
-                CostumeUnlockSeen = reader.Read<UbiArtSerializableList<UbiArtStringID>>();
-                RetroUnlocks = reader.Read<UbiArtSerializableList<UbiArtStringID>>();
-                NewUnlockedDoor = reader.Read<UbiArtSerializableList<UnlockedDoor>>();
-                LuckyTicketRewardList = reader.Read<UbiArtSerializableList<RO2_LuckyTicketReward>>();
-                NodeData = reader.Read<UbiArtSerializableList<NodeDataStruct>>();
+                NewCostumes = reader.Read<SerializableList<UbiArtStringID>>();
+                CostumeUnlockSeen = reader.Read<SerializableList<UbiArtStringID>>();
+                RetroUnlocks = reader.Read<SerializableList<UbiArtStringID>>();
+                NewUnlockedDoor = reader.Read<SerializableList<UnlockedDoor>>();
+                LuckyTicketRewardList = reader.Read<SerializableList<RO2_LuckyTicketReward>>();
+                NodeData = reader.Read<SerializableList<NodeDataStruct>>();
                 LuckyTicketsRewardGivenCounter = reader.Read<uint>();
                 ConsecutiveLuckyTicketCount = reader.Read<uint>();
                 TicketReminderMessageCount = reader.Read<uint>();
@@ -280,14 +281,14 @@ namespace RayCarrot.Rayman
                 UplayDoneReward1 = reader.Read<bool>();
                 UplayDoneReward2 = reader.Read<bool>();
                 UplayDoneReward3 = reader.Read<bool>();
-                PlayedDiamondCupSequence = reader.Read<UbiArtSerializableList<UbiArtStringID>>();
-                Costumes = reader.Read<UbiArtSerializableList<UbiArtStringID>>();
-                PlayedChallenge = reader.Read<UbiArtSerializableList<uint>>();
-                PlayedInvasion = reader.Read<UbiArtSerializableList<UbiArtStringID>>();
+                PlayedDiamondCupSequence = reader.Read<SerializableList<UbiArtStringID>>();
+                Costumes = reader.Read<SerializableList<UbiArtStringID>>();
+                PlayedChallenge = reader.Read<SerializableList<uint>>();
+                PlayedInvasion = reader.Read<SerializableList<UbiArtStringID>>();
                 TvOffOptionEnabledNb = reader.Read<uint>();
                 TvOffOptionActivatedTime = reader.Read<uint>();
                 BarbaraCostumeUnlockSeen = reader.Read<bool>();
-                WorldUnlockMessagesSeen = reader.Read<UbiArtSerializableList<UbiArtStringID>>();
+                WorldUnlockMessagesSeen = reader.Read<SerializableList<UbiArtStringID>>();
                 RetroWorldUnlockMessageSeen = reader.Read<bool>();
                 FreedAllTeensiesMessageSeen = reader.Read<bool>();
                 MisterDarkCompletionMessageSeen = reader.Read<bool>();
@@ -295,8 +296,8 @@ namespace RayCarrot.Rayman
                 InvitationTutoSeen = reader.Read<bool>();
                 MessageSeen8Bit = reader.Read<bool>();
                 ChallengeWorldUnlockMessageSeen = reader.Read<bool>();
-                DoorUnlockMessageSeen = reader.Read<UbiArtSerializableList<UbiArtStringID>>();
-                DoorUnlockDRCMessageRequired = reader.Read<UbiArtSerializableList<UbiArtStringID>>();
+                DoorUnlockMessageSeen = reader.Read<SerializableList<UbiArtStringID>>();
+                DoorUnlockDRCMessageRequired = reader.Read<SerializableList<UbiArtStringID>>();
                 LuckyTicketRewardWorldName = reader.Read<UbiArtStringID>();
                 IsUGCMiiverseWarningSet = reader.Read<bool>();
                 Reward39Failed = reader.Read<int>();
@@ -425,11 +426,11 @@ namespace RayCarrot.Rayman
 
             public bool LockedAfterInteract { get; set; }
 
-            public UbiArtSerializableList<SmartLocId> Buttons { get; set; }
+            public SerializableList<SmartLocId> Buttons { get; set; }
 
-            public UbiArtSerializableList<Attribute> Attributes { get; set; }
+            public SerializableList<Attribute> Attributes { get; set; }
 
-            public UbiArtSerializableList<Marker> Markers { get; set; }
+            public SerializableList<Marker> Markers { get; set; }
 
             public class Marker : IBinarySerializable<UbiArtSettings>
             {
@@ -490,9 +491,9 @@ namespace RayCarrot.Rayman
                 HasBeenInteract = reader.Read<bool>();
                 RemoveAfterInteract = reader.Read<bool>();
                 LockedAfterInteract = reader.Read<bool>();
-                Buttons = reader.Read<UbiArtSerializableList<SmartLocId>>();
-                Attributes = reader.Read<UbiArtSerializableList<Attribute>>();
-                Markers = reader.Read<UbiArtSerializableList<Marker>>();
+                Buttons = reader.Read<SerializableList<SmartLocId>>();
+                Attributes = reader.Read<SerializableList<Attribute>>();
+                Markers = reader.Read<SerializableList<Marker>>();
             }
 
             public void Serialize(IBinaryDataWriter<UbiArtSettings> writer)
@@ -530,7 +531,7 @@ namespace RayCarrot.Rayman
 
             public float BestTime { get; set; }
 
-            public UbiArtSerializableList<PrisonerData> FreedPrisoners { get; set; }
+            public SerializableList<PrisonerData> FreedPrisoners { get; set; }
 
             public uint Cups { get; set; }
 
@@ -546,7 +547,7 @@ namespace RayCarrot.Rayman
 
             public uint LuckyTicketsLeft { get; set; }
 
-            public UbiArtSerializableList<ObjectPath> SequenceAlreadySeen { get; set; }
+            public SerializableList<ObjectPath> SequenceAlreadySeen { get; set; }
 
             public int OnlineSynced { get; set; }
 
@@ -560,7 +561,7 @@ namespace RayCarrot.Rayman
                 BestLumsTaken = reader.Read<uint>();
                 BestDistance = reader.Read<float>();
                 BestTime = reader.Read<float>();
-                FreedPrisoners = reader.Read<UbiArtSerializableList<PrisonerData>>();
+                FreedPrisoners = reader.Read<SerializableList<PrisonerData>>();
                 Cups = reader.Read<uint>();
                 Medals = reader.Read<uint>();
                 Completed = reader.Read<bool>();
@@ -568,7 +569,7 @@ namespace RayCarrot.Rayman
                 BestTimeSent = reader.Read<bool>();
                 Type = reader.Read<uint>();
                 LuckyTicketsLeft = reader.Read<uint>();
-                SequenceAlreadySeen = reader.Read<UbiArtSerializableList<ObjectPath>>();
+                SequenceAlreadySeen = reader.Read<SerializableList<ObjectPath>>();
                 OnlineSynced = reader.Read<int>();
             }
 
@@ -595,17 +596,17 @@ namespace RayCarrot.Rayman
 
         public class SaveSession : IBinarySerializable<UbiArtSettings>
         {
-            public UbiArtSerializableList<float> Tags { get; set; }
+            public SerializableList<float> Tags { get; set; }
 
-            public UbiArtSerializableList<float> Timers { get; set; }
+            public SerializableList<float> Timers { get; set; }
 
-            public UbiArtSerializableDictionary<UbiArtStringID, bool> RewardsState { get; set; }
+            public SerializableDictionary<UbiArtStringID, bool> RewardsState { get; set; }
 
             public void Deserialize(IBinaryDataReader<UbiArtSettings> reader)
             {
-                Tags = reader.Read<UbiArtSerializableList<float>>();
-                Timers = reader.Read<UbiArtSerializableList<float>>();
-                RewardsState = reader.Read<UbiArtSerializableDictionary<UbiArtStringID, bool>>();
+                Tags = reader.Read<SerializableList<float>>();
+                Timers = reader.Read<SerializableList<float>>();
+                RewardsState = reader.Read<SerializableDictionary<UbiArtStringID, bool>>();
             }
 
             public void Serialize(IBinaryDataWriter<UbiArtSettings> writer)
@@ -616,55 +617,13 @@ namespace RayCarrot.Rayman
             }
         }
 
-        public class ObjectPath : IBinarySerializable<UbiArtSettings>
-        {
-            public UbiArtSerializableList<Level> Levels { get; set; }
-
-            public string Id { get; set; }
-
-            public bool Absolute { get; set; }
-
-            public class Level : IBinarySerializable<UbiArtSettings>
-            {
-                public string Name { get; set; }
-
-                public bool Parent { get; set; }
-
-                public void Deserialize(IBinaryDataReader<UbiArtSettings> reader)
-                {
-                    Name = reader.Read<string>();
-                    Parent = reader.Read<bool>();
-                }
-
-                public void Serialize(IBinaryDataWriter<UbiArtSettings> writer)
-                {
-                    writer.Write(Name);
-                    writer.Write(Parent);
-                }
-            }
-
-            public void Deserialize(IBinaryDataReader<UbiArtSettings> reader)
-            {
-                Levels = reader.Read<UbiArtSerializableList<Level>>();
-                Id = reader.Read<string>();
-                Absolute = reader.Read<bool>();
-            }
-
-            public void Serialize(IBinaryDataWriter<UbiArtSettings> writer)
-            {
-                writer.Write(Levels);
-                writer.Write(Id);
-                writer.Write(Absolute);
-            }
-        }
-
         public class PersistentGameData_Score : IBinarySerializable<UbiArtSettings>
         {
             #region Public Properties
 
-            public UbiArtSerializableList<uint> PlayersLumCount { get; set; }
+            public SerializableList<uint> PlayersLumCount { get; set; }
 
-            public UbiArtSerializableList<uint> TreasuresLumCount { get; set; }
+            public SerializableList<uint> TreasuresLumCount { get; set; }
 
             public int LocalLumsCount { get; set; }
 
@@ -678,8 +637,8 @@ namespace RayCarrot.Rayman
 
             public void Deserialize(IBinaryDataReader<UbiArtSettings> reader)
             {
-                PlayersLumCount = reader.Read<UbiArtSerializableList<uint>>();
-                TreasuresLumCount = reader.Read<UbiArtSerializableList<uint>>();
+                PlayersLumCount = reader.Read<SerializableList<uint>>();
+                TreasuresLumCount = reader.Read<SerializableList<uint>>();
                 LocalLumsCount = reader.Read<int>();
                 PendingLumsCount = reader.Read<int>();
                 TempLumsCount = reader.Read<int>();
@@ -826,7 +785,7 @@ namespace RayCarrot.Rayman
 
             public uint TutoCount { get; set; }
 
-            public UbiArtSerializableList<bool> DisplayQuoteStates { get; set; }
+            public SerializableList<bool> DisplayQuoteStates { get; set; }
 
             #endregion
 
@@ -840,7 +799,7 @@ namespace RayCarrot.Rayman
                 TeensyLocksOpened = reader.Read<uint>();
                 ChallengeLocksOpened = reader.Read<uint>();
                 TutoCount = reader.Read<uint>();
-                DisplayQuoteStates = reader.Read<UbiArtSerializableList<bool>>();
+                DisplayQuoteStates = reader.Read<SerializableList<bool>>();
             }
 
             public void Serialize(IBinaryDataWriter<UbiArtSettings> writer)
@@ -1055,197 +1014,6 @@ namespace RayCarrot.Rayman
             }
 
             #endregion
-        }
-
-        #endregion
-
-        // IDEA: Move elsewhere
-        #region UbiArt Classes
-
-        public class SmartLocId : IBinarySerializable<UbiArtSettings>
-        {
-            public string DefaultText { get; set; }
-
-            public LocalisationId LocId { get; set; }
-
-            public bool UseText { get; set; }
-
-            public void Deserialize(IBinaryDataReader<UbiArtSettings> reader)
-            {
-                DefaultText = reader.Read<string>();
-                LocId = reader.Read<LocalisationId>();
-                UseText = reader.Read<bool>();
-            }
-
-            public void Serialize(IBinaryDataWriter<UbiArtSettings> writer)
-            {
-                writer.Write(DefaultText);
-                writer.Write(LocId);
-                writer.Write(UseText);
-            }
-        }
-
-        public class LocalisationId : IBinarySerializable<UbiArtSettings>
-        {
-            public uint ID { get; set; }
-
-            public void Deserialize(IBinaryDataReader<UbiArtSettings> reader)
-            {
-                ID = reader.Read<uint>();
-            }
-
-            public void Serialize(IBinaryDataWriter<UbiArtSettings> writer)
-            {
-                writer.Write(ID);
-            }
-        }
-
-        public class UbiArtPath : IBinarySerializable<UbiArtSettings>
-        {
-            #region Public Properties
-
-            public string Folder { get; set; }
-
-            public string Filename { get; set; }
-
-            public UbiArtStringID StringID { get; set; }
-
-            public uint Flags { get; set; }
-
-            #endregion
-
-            #region Public Methods
-
-            public void Deserialize(IBinaryDataReader<UbiArtSettings> reader)
-            {
-                Folder = reader.Read<string>();
-                Filename = reader.Read<string>();
-                StringID = reader.Read<UbiArtStringID>();
-                Flags = reader.Read<uint>();
-            }
-
-            public void Serialize(IBinaryDataWriter<UbiArtSettings> writer)
-            {
-                writer.Write(Folder);
-                writer.Write(Filename);
-                writer.Write(StringID);
-                writer.Write(Flags);
-            }
-
-            #endregion
-        }
-
-        [TypeConverter(typeof(UbiArtStringIDTypeConverter))]
-        public class UbiArtStringID : IBinarySerializable<UbiArtSettings>
-        {
-            #region Public Properties
-
-            public uint ID { get; set; }
-
-            #endregion
-
-            #region Public Methods
-
-            public void Deserialize(IBinaryDataReader<UbiArtSettings> reader)
-            {
-                ID = reader.Read<uint>();
-            }
-
-            public void Serialize(IBinaryDataWriter<UbiArtSettings> writer)
-            {
-                writer.Write(ID);
-            }
-
-            #endregion
-
-            #region Type Converter
-
-            public class UbiArtStringIDTypeConverter : TypeConverter
-            {
-                public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
-                {
-                    if (sourceType == typeof(string) || sourceType == typeof(uint))
-                        return true;
-                    else
-                        return false;
-                }
-
-                public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
-                {
-                    if (destinationType == typeof(string) || destinationType == typeof(uint))
-                        return true;
-                    else
-                        return false;
-                }
-
-                public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
-                {
-                    if (value is string s)
-                        return new UbiArtStringID()
-                        {
-                            ID = UInt32.Parse(s)
-                        };
-                    else if (value is uint u)
-                        return new UbiArtStringID()
-                        {
-                            ID = u
-                        };
-                    else
-                        return null;
-                }
-
-                public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
-                {
-                    var v = value.CastTo<UbiArtStringID>();
-
-                    if (destinationType == typeof(string))
-                        return v.ID.ToString();
-                    else if (destinationType == typeof(uint))
-                        return v.ID;
-                    else
-                        return null;
-                }
-            }
-
-            #endregion
-        }
-
-        /// <summary>
-        /// Date time data for a UbiArt game
-        /// </summary>
-        public class UbiArtDateTime : IBinarySerializable<UbiArtSettings>
-        {
-            public ulong Value { get; set; }
-
-            public void Deserialize(IBinaryDataReader<UbiArtSettings> reader)
-            {
-                Value = reader.Read<ulong>();
-            }
-
-            public void Serialize(IBinaryDataWriter<UbiArtSettings> writer)
-            {
-                writer.Write(Value);
-            }
-        }
-
-        public class UbiArtGeneric<T> : IBinarySerializable<UbiArtSettings>
-            where T : IBinarySerializable<UbiArtSettings>
-        {
-            public UbiArtStringID Name { get; set; }
-
-            public T Object { get; set; }
-
-            public void Deserialize(IBinaryDataReader<UbiArtSettings> reader)
-            {
-                Name = reader.Read<UbiArtStringID>();
-                Object = reader.Read<T>();
-            }
-
-            public void Serialize(IBinaryDataWriter<UbiArtSettings> writer)
-            {
-                writer.Write(Name);
-                writer.Write(Object);
-            }
         }
 
         #endregion

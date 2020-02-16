@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RayCarrot.Rayman
+namespace RayCarrot.Rayman.UbiArt
 {
     /// <summary>
     /// Attribute to use on <see cref="UbiArtGameMode"/> fields, specifying the settings and data

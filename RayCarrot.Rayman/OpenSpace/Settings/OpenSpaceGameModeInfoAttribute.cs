@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RayCarrot.Rayman
+namespace RayCarrot.Rayman.OpenSpace
 {
     /// <summary>
     /// Attribute to use on <see cref="OpenSpaceGameMode"/> fields, specifying the settings and data

@@ -1,4 +1,4 @@
-﻿namespace RayCarrot.Rayman
+﻿namespace RayCarrot.Rayman.UbiArt
 {
     /// <summary>
     /// UbiArt localization audio data

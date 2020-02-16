@@ -1,4 +1,4 @@
-﻿namespace RayCarrot.Rayman
+﻿namespace RayCarrot.Rayman.UbiArt
 {
     /// <summary>
     /// The save file data used for Rayman Jungle Run in the three .dat files on PC

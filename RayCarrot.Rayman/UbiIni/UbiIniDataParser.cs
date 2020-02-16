@@ -1,7 +1,7 @@
 ﻿using IniParser.Model.Configuration;
 using IniParser.Parser;
 
-namespace RayCarrot.Rayman
+namespace RayCarrot.Rayman.UbiIni
 {
     /// <summary>
     /// The <see cref="IniDataParser"/> for a ubi.ini file

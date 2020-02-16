@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace RayCarrot.Rayman
+namespace RayCarrot.Rayman.OpenSpace
 {
     // WIP: There are more values in the save file than this (button mapping, current level score etc.) - figure out what they are for
     // WIP: Support other platforms - the format seems very similar

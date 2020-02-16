@@ -1,6 +1,6 @@
 ﻿using RayCarrot.Extensions;
 
-namespace RayCarrot.Rayman
+namespace RayCarrot.Rayman.OpenSpace
 {
     /// <summary>
     /// Extension methods for <see cref="OpenSpaceGameMode"/>

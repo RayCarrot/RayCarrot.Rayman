@@ -1,8 +1,8 @@
-﻿using RayCarrot.Extensions;
+﻿using System;
+using RayCarrot.Extensions;
 using RayCarrot.IO;
-using System;
 
-namespace RayCarrot.Rayman
+namespace RayCarrot.Rayman.UbiIni
 {
     /// <summary>
     /// Handles the Rayman M section of a ubi.ini file

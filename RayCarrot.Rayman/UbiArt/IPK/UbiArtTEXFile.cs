@@ -1,6 +1,6 @@
 ﻿using RayCarrot.CarrotFramework.Abstractions;
 
-namespace RayCarrot.Rayman
+namespace RayCarrot.Rayman.UbiArt
 {
     /// <summary>
     /// Data for a UbiArt TEX file

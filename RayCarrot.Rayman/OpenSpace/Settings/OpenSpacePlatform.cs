@@ -1,4 +1,4 @@
-﻿namespace RayCarrot.Rayman
+﻿namespace RayCarrot.Rayman.OpenSpace
 {
     /// <summary>
     /// The supported platforms for the OpenSpace engine

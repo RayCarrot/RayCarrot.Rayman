@@ -1,14 +1,14 @@
-﻿using RayCarrot.CarrotFramework.Abstractions;
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
+using RayCarrot.CarrotFramework.Abstractions;
 
-namespace RayCarrot.Rayman
+namespace RayCarrot.Rayman.OpenSpace
 {
     /// <summary>
-    /// The data used for a file within the .cnt files for OpenSpace games
+    /// The data used for a file entry within a .cnt file
     /// </summary>
-    public class OpenSpaceCntFile : IBinarySerializable<OpenSpaceSettings>
+    public class OpenSpaceCntFileEntry : IBinarySerializable<OpenSpaceSettings>
     {
         #region Constructor
 
@@ -16,7 +16,7 @@ namespace RayCarrot.Rayman
         /// Default constructor
         /// </summary>
         /// <param name="xorKey">The XOR key</param>
-        public OpenSpaceCntFile(byte xorKey)
+        public OpenSpaceCntFileEntry(byte xorKey)
         {
             XORKey = xorKey;
         }

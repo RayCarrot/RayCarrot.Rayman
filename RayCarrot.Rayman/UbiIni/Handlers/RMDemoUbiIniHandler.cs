@@ -1,6 +1,6 @@
 ﻿using RayCarrot.IO;
 
-namespace RayCarrot.Rayman
+namespace RayCarrot.Rayman.UbiIni
 {
     /// <summary>
     /// Handles the Rayman M demo section of a ubi.ini file

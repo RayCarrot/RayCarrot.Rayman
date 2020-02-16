@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RayCarrot.Rayman
+namespace RayCarrot.Rayman.Rayman1
 {
     /// <summary>
     /// Attribute to use on <see cref="Rayman1GameMode"/> fields, specifying the settings and data

@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 
-namespace RayCarrot.Rayman
+namespace RayCarrot.Rayman.UbiArt
 {
     /// <summary>
     /// A <see cref="Dictionary{TKey,TValue}"/> which implements <see cref="IBinarySerializable{Settings}"/>
     /// </summary>
     /// <typeparam name="TKey">The type of key</typeparam>
     /// <typeparam name="TValue">The type of value</typeparam>
-    public class UbiArtSerializableDictionary<TKey, TValue> : Dictionary<TKey, TValue>, IBinarySerializable<BinarySerializerSettings>
+    public class SerializableDictionary<TKey, TValue> : Dictionary<TKey, TValue>, IBinarySerializable<BinarySerializerSettings>
     {
         /// <summary>
         /// Deserializes the data from the stream into this instance

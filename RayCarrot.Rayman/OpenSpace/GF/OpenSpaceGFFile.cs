@@ -1,13 +1,13 @@
-﻿using FastBitmapLib;
-using RayCarrot.CarrotFramework.Abstractions;
-using RayCarrot.Extensions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
+using FastBitmapLib;
+using RayCarrot.CarrotFramework.Abstractions;
+using RayCarrot.Extensions;
 
-namespace RayCarrot.Rayman
+namespace RayCarrot.Rayman.OpenSpace
 {
     /// <summary>
     /// The data used for a .gf file for OpenSpace games

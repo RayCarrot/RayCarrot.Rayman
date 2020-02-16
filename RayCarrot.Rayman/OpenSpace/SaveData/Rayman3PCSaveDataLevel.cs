@@ -1,4 +1,4 @@
-﻿namespace RayCarrot.Rayman
+﻿namespace RayCarrot.Rayman.OpenSpace
 {
     /// <summary>
     /// The data for a Rayman 3 save file level on PC

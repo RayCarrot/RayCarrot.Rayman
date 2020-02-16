@@ -44,7 +44,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="UbiArt\Common\UbiArtSerializableList.cs" />
+    <Compile Include="Binary\IBinarySerializableArchive.cs" />
+    <Compile Include="UbiArt\Common\SerializableList.cs" />
     <Compile Include="Binary\DataReader\IBinaryDataReader.cs" />
     <Compile Include="Binary\DataReader\IBinaryDataWriter.cs" />
     <Compile Include="Binary\Settings\BinarySerializerSettings.cs" />
@@ -97,18 +98,26 @@
     <Compile Include="UbiArt\Localization\BaseUbiArtLocalizationData.cs" />
     <Compile Include="UbiArt\Localization\FiestaRunLocalizationData.cs" />
     <Compile Include="UbiArt\Localization\UbiArtLocalizationAudio.cs" />
+    <Compile Include="UbiArt\SaveData\Origins\OriginsPCSaveData.cs" />
     <Compile Include="UbiArt\SaveData\Legends\LegendsPCSaveData.cs" />
+    <Compile Include="UbiArt\Common\LocalisationId.cs" />
+    <Compile Include="UbiArt\Common\ObjectPath.cs" />
+    <Compile Include="UbiArt\Common\SmartLocId.cs" />
+    <Compile Include="UbiArt\Common\UbiArtDateTime.cs" />
+    <Compile Include="UbiArt\Common\UbiArtGeneric.cs" />
+    <Compile Include="UbiArt\Common\UbiArtPath.cs" />
+    <Compile Include="UbiArt\Common\UbiArtStringID.cs" />
     <Compile Include="UbiArt\Settings\UbiArtGameModeExtensions.cs" />
     <Compile Include="UbiArt\Settings\UbiArtGameMode.cs" />
     <Compile Include="OpenSpace\Settings\OpenSpaceEngineVersion.cs" />
     <Compile Include="UbiArt\Settings\UbiArtPlatform.cs" />
     <Compile Include="UbiArt\Settings\UbiArtGame.cs" />
-    <Compile Include="OpenSpace\CNT\OpenSpaceCntFile.cs" />
+    <Compile Include="OpenSpace\CNT\OpenSpaceCntFileEntry.cs" />
     <Compile Include="OpenSpace\GF\OpenSpaceGFFile.cs" />
-    <Compile Include="UbiArt\Common\UbiArtSerializableDictionary.cs" />
+    <Compile Include="UbiArt\Common\SerializableDictionary.cs" />
     <Compile Include="Binary\IBinarySerializable.cs" />
     <Compile Include="OpenSpace\CNT\OpenSpaceCntData.cs" />
-    <Compile Include="UbiArt\Common\UbiArtSerializablePair.cs" />
+    <Compile Include="UbiArt\Common\SerializablePair.cs" />
     <Compile Include="UbiArt\Settings\UbiArtSettings.cs" />
     <Compile Include="Rayman1\Level\Rayman1PCLevData.cs" />
     <Compile Include="Rayman1\Level\Rayman1PCLevEvent.cs" />
@@ -126,7 +135,7 @@
     <Compile Include="Rayman1\Settings\Rayman1GameMode.cs" />
     <Compile Include="Rayman1\Settings\Rayman1Settings.cs" />
     <Compile Include="UbiArt\IPK\UbiArtIpkData.cs" />
-    <Compile Include="UbiArt\IPK\UbiArtIPKFile.cs" />
+    <Compile Include="UbiArt\IPK\UbiArtIPKFileEntry.cs" />
     <Compile Include="Binary\BinaryDataSerializer.cs" />
     <Compile Include="UbiArt\SaveData\FiestaRun\FiestaRunWin10EditionSaveData.cs" />
     <Compile Include="UbiArt\SaveData\FiestaRun\FiestaRunPCSaveDataLevel.cs" />
@@ -168,7 +177,7 @@
       <Version>1.5.2</Version>
     </PackageReference>
     <PackageReference Include="RayCarrot.Extensions">
-      <Version>1.2.10</Version>
+      <Version>1.2.11</Version>
     </PackageReference>
     <PackageReference Include="RayCarrot.IO">
       <Version>1.5.1</Version>
@@ -181,7 +190,7 @@
     <EmbeddedResource Include="Rayman1\Level\Icons\Rayman1LevIcons.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Rayman1LevIcons.Designer.cs</LastGenOutput>
-      <CustomToolNamespace>RayCarrot.Rayman</CustomToolNamespace>
+      <CustomToolNamespace>RayCarrot.Rayman.Rayman1</CustomToolNamespace>
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>

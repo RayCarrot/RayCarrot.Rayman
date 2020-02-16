@@ -1,4 +1,4 @@
-﻿namespace RayCarrot.Rayman
+﻿namespace RayCarrot.Rayman.UbiIni
 {
     /// <summary>
     /// The Rayman 2 ParticuleRate options

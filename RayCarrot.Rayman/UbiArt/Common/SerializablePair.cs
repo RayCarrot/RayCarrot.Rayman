@@ -1,11 +1,11 @@
-﻿namespace RayCarrot.Rayman
+﻿namespace RayCarrot.Rayman.UbiArt
 {
     /// <summary>
     /// A pair of two items which implements <see cref="IBinarySerializable{Settings}"/>
     /// </summary>
     /// <typeparam name="T1">The type of the first item</typeparam>
     /// <typeparam name="T2">The type of the second item</typeparam>
-    public class UbiArtSerializablePair<T1, T2> : IBinarySerializable<BinarySerializerSettings>
+    public class SerializablePair<T1, T2> : IBinarySerializable<BinarySerializerSettings>
     {
         /// <summary>
         /// The first item

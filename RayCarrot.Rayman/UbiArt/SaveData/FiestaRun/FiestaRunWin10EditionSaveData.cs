@@ -1,4 +1,4 @@
-﻿namespace RayCarrot.Rayman
+﻿namespace RayCarrot.Rayman.UbiArt
 {
     /// <summary>
     /// The save file data used for Rayman Fiesta Run Windows 10 Edition in the .dat file

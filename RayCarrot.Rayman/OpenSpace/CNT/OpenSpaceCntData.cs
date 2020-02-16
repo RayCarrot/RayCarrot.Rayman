@@ -1,11 +1,12 @@
 ﻿using System.IO;
+using RayCarrot.Extensions;
 
-namespace RayCarrot.Rayman
+namespace RayCarrot.Rayman.OpenSpace
 {
     /// <summary>
     /// The archive data used for the .cnt files from OpenSpace games
     /// </summary>
-    public class OpenSpaceCntData : IBinarySerializable<OpenSpaceSettings>
+    public class OpenSpaceCntData : IBinarySerializableArchive<OpenSpaceSettings>
     {
         #region Public Static Properties
 
@@ -41,42 +42,7 @@ namespace RayCarrot.Rayman
         /// <summary>
         /// The available files
         /// </summary>
-        public OpenSpaceCntFile[] Files { get; set; }
-
-        /// <summary>
-        /// The generator to use for retrieving the file contents when serializing
-        /// </summary>
-        public ArchiveFileGenerator FileGenerator { get; set; }
-
-        #endregion
-
-        #region Protected Methods
-
-        /// <summary>
-        /// Serializes the header data from this instance to the stream
-        /// </summary>
-        /// <param name="writer">The writer to use to write to the stream</param>
-        protected void SerializeHeader(IBinaryDataWriter<OpenSpaceSettings> writer)
-        {
-            // Write the directory and file count
-            writer.Write(Directories.Length);
-            writer.Write(Files.Length);
-
-            // Read header info
-            writer.Write(Signature);
-            writer.Write(XORKey);
-
-            // Write directory paths
-            foreach (var dir in Directories)
-                OpenSpaceSerializerHelpers.WriteEncryptedString(writer, dir, XORKey);
-
-            // Write version ID
-            writer.Write(VersionID);
-
-            // Write files
-            foreach (var file in Files)
-                writer.Write(file);
-        }
+        public OpenSpaceCntFileEntry[] Files { get; set; }
 
         #endregion
 
@@ -107,13 +73,13 @@ namespace RayCarrot.Rayman
             VersionID = reader.Read<byte>();
 
             // Create the array
-            Files = new OpenSpaceCntFile[fileCount];
+            Files = new OpenSpaceCntFileEntry[fileCount];
 
             // Read file info
             for (int i = 0; i < fileCount; i++)
             {
                 // Create the new file data and pass in the XOR key
-                var file = new OpenSpaceCntFile(XORKey);
+                var file = new OpenSpaceCntFileEntry(XORKey);
 
                 // Deserialize the file data
                 file.Deserialize(reader);
@@ -129,28 +95,48 @@ namespace RayCarrot.Rayman
         /// <param name="writer">The writer to use to write to the stream</param>
         public void Serialize(IBinaryDataWriter<OpenSpaceSettings> writer)
         {
-            // Make sure we have a generator
-            if (FileGenerator == null)
-                throw new BinarySerializableException("The .cnt file can't be serialized without a file generator");
+            // Write the directory and file count
+            writer.Write(Directories.Length);
+            writer.Write(Files.Length);
 
+            // Read header info
+            writer.Write(Signature);
+            writer.Write(XORKey);
+
+            // Write directory paths
+            foreach (var dir in Directories)
+                OpenSpaceSerializerHelpers.WriteEncryptedString(writer, dir, XORKey);
+
+            // Write version ID
+            writer.Write(VersionID);
+
+            // Write files
+            foreach (var file in Files)
+                writer.Write(file);
+        }
+
+        /// <summary>
+        /// Writes every listed file entry based on its offset to the file, getting the contents from the generator
+        /// </summary>
+        /// <param name="stream">The stream to write to</param>
+        /// <param name="fileGenerator">The file generator</param>
+        public void WriteArchiveContent(Stream stream, ArchiveFileGenerator fileGenerator)
+        {
             // Make sure we have a generator for each file
-            if (FileGenerator.Count != Files.Length)
+            if (fileGenerator.Count != Files.Length)
                 throw new BinarySerializableException("The .cnt file can't be serialized without a file generator for each file");
 
-            // Serialize the header
-            SerializeHeader(writer);
-
-            // Serialize the file contents
+            // Write the file contents
             foreach (var file in Files)
             {
                 // Set the position to the pointer
-                writer.BaseStream.Position = file.Pointer;
+                stream.Position = file.Pointer;
 
                 // Get the full path
                 var fullPath = file.GetFullPath(Directories);
 
                 // Write the contents from the generator
-                writer.Write(FileGenerator.GetBytes(fullPath));
+                stream.Write(fileGenerator.GetBytes(fullPath));
             }
         }
 
@@ -165,7 +151,7 @@ namespace RayCarrot.Rayman
             using var stream = new MemoryStream();
 
             // Serialize the header only
-            SerializeHeader(new BinaryDataWriter<OpenSpaceSettings>(GetSerializer(settings).GetBinaryWriter(stream), settings));
+            GetSerializer(settings).Serialize(stream, this);
 
             // Get the position, which will be the size of the header
             return (int)stream.Position;

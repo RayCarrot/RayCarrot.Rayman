@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace RayCarrot.Rayman {
+namespace RayCarrot.Rayman.Rayman1 {
     using System;
     
     

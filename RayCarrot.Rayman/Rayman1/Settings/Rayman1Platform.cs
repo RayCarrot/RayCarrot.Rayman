@@ -1,4 +1,4 @@
-﻿namespace RayCarrot.Rayman
+﻿namespace RayCarrot.Rayman.Rayman1
 {
     /// <summary>
     /// The supported platforms for the Rayman 1 engine

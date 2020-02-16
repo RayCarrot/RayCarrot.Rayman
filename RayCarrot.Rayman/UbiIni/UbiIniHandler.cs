@@ -1,14 +1,14 @@
-﻿using IniParser;
-using IniParser.Model;
-using RayCarrot.Extensions;
-using RayCarrot.IO;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using IniParser;
+using IniParser.Model;
+using RayCarrot.Extensions;
+using RayCarrot.IO;
 
-namespace RayCarrot.Rayman
+namespace RayCarrot.Rayman.UbiIni
 {
     /// <summary>
     /// The base class to inherit from for handling a ubi.ini file

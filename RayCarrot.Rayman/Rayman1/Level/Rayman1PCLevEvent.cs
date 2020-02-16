@@ -1,4 +1,4 @@
-﻿namespace RayCarrot.Rayman
+﻿namespace RayCarrot.Rayman.Rayman1
 {
     /// <summary>
     /// The data for an event for a Rayman 1 .lev file on PC

@@ -1,7 +1,7 @@
 ﻿using System;
 using RayCarrot.CarrotFramework.Abstractions;
 
-namespace RayCarrot.Rayman
+namespace RayCarrot.Rayman.UbiIni
 {
     /// <summary>
     /// Formats a Rayman GLI_Mode key

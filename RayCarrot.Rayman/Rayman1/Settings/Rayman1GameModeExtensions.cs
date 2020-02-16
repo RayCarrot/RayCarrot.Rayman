@@ -1,6 +1,6 @@
 ﻿using RayCarrot.Extensions;
 
-namespace RayCarrot.Rayman
+namespace RayCarrot.Rayman.Rayman1
 {
     /// <summary>
     /// Extension methods for <see cref="Rayman1GameMode"/>

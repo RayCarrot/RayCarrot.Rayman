@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RayCarrot.Rayman
+namespace RayCarrot.Rayman.UbiArt
 {
     /// <summary>
     /// The level progression data for Rayman Jungle Run on PC

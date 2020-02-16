@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RayCarrot.Rayman
+namespace RayCarrot.Rayman.OpenSpace
 {
     /// <summary>
     /// Helpers methods for <see cref="IBinaryDataReader{Settings}"/> and <see cref="IBinaryDataWriter{Settings}"/>

@@ -1,11 +1,11 @@
 ﻿using System.Text;
 
-namespace RayCarrot.Rayman
+namespace RayCarrot.Rayman.UbiArt
 {
     /// <summary>
     /// The localization data for Rayman Fiesta Run
     /// </summary>
-    public class FiestaRunLocalizationData : BaseUbiArtLocalizationData<UbiArtSerializablePair<string, string>>
+    public class FiestaRunLocalizationData : BaseUbiArtLocalizationData<SerializablePair<string, string>>
     {
         /// <summary>
         /// Gets the default serializer

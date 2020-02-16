@@ -1,10 +1,10 @@
-﻿using RayCarrot.Extensions;
-using System;
+﻿using System;
 using System.Drawing;
 using System.Linq;
 using FastBitmapLib;
+using RayCarrot.Extensions;
 
-namespace RayCarrot.Rayman
+namespace RayCarrot.Rayman.Rayman1
 {
     /// <summary>
     /// The data for a Rayman 1 .lev file on PC

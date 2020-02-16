@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace RayCarrot.Rayman
+namespace RayCarrot.Rayman.UbiArt
 {
     // NOTE: This does currently only work for the Rayman games. Just Dance and Child of Light use a different format where each language has its own file.
     /// <summary>
@@ -12,17 +12,17 @@ namespace RayCarrot.Rayman
         /// <summary>
         /// The localized strings, categorized by the language index and the localization ID
         /// </summary>
-        public UbiArtSerializableDictionary<int, UbiArtSerializableDictionary<int, LocStringType>> Strings { get; set; }
+        public SerializableDictionary<int, SerializableDictionary<int, LocStringType>> Strings { get; set; }
 
         /// <summary>
         /// The audio to use for each localized string
         /// </summary>
-        public UbiArtSerializableDictionary<int, UbiArtLocalizationAudio> Audio { get; set; }
+        public SerializableDictionary<int, UbiArtLocalizationAudio> Audio { get; set; }
 
         /// <summary>
         /// Unknown list of paths
         /// </summary>
-        public UbiArtSerializableList<string> Paths { get; set; }
+        public SerializableList<string> Paths { get; set; }
 
         /// <summary>
         /// Unknown values, used in Legends and later
@@ -35,9 +35,9 @@ namespace RayCarrot.Rayman
         /// <param name="reader">The reader to use to read from the stream</param>
         public void Deserialize(IBinaryDataReader<BinarySerializerSettings> reader)
         {
-            Strings = reader.Read<UbiArtSerializableDictionary<int, UbiArtSerializableDictionary<int, LocStringType>>>();
-            Audio = reader.Read<UbiArtSerializableDictionary<int, UbiArtLocalizationAudio>>();
-            Paths = reader.Read<UbiArtSerializableList<string>>();
+            Strings = reader.Read<SerializableDictionary<int, SerializableDictionary<int, LocStringType>>>();
+            Audio = reader.Read<SerializableDictionary<int, UbiArtLocalizationAudio>>();
+            Paths = reader.Read<SerializableList<string>>();
 
             Unknown = new List<int>();
             while (reader.BaseStream.Position < reader.BaseStream.Length)
