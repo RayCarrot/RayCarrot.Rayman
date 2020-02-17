@@ -55,48 +55,6 @@ namespace RayCarrot.Rayman.UbiArt
         #region Public Methods
 
         /// <summary>
-        /// Gets the file bytes for the IPK file item from the stream
-        /// </summary>
-        /// <param name="fileStream">The stream to get the file bytes from</param>
-        /// <param name="baseOffset">The file base offset</param>
-        /// <param name="serializerSettings">The serializer setting to use</param>
-        /// <param name="decompress">Indicates if the bytes should be decompressed if they're compressed</param>
-        /// <returns>The file bytes</returns>
-        public byte[] GetFileBytes(Stream fileStream, uint baseOffset, UbiArtSettings serializerSettings, bool decompress = true)
-        {
-            // Make sure we have offsets
-            if (Offsets?.Any() != true)
-                throw new Exception("No offsets were found");
-
-            // NOTE: We only care about getting the bytes from the first offset as they all point to identical bytes (this is used for memory optimization on certain platforms)
-            // Set the position
-            fileStream.Position = (long)(Offsets.First() + baseOffset);
-
-            // Create the buffer
-            byte[] buffer = new byte[ArchiveSize];
-
-            // Read the bytes into the buffer
-            fileStream.Read(buffer, 0, buffer.Length);
-
-            // Return the bytes if they should not be decompressed
-            if (!decompress || !IsCompressed) 
-                return buffer;
-
-            // Use LZMA
-            if (serializerSettings.IPKVersion >= 8)
-            {
-                // Decompress the bytes
-                return SevenZipHelper.Decompress(buffer, Size);
-            }
-            // Use ZLib
-            else
-            {
-                // Decompress the bytes
-                return ZlibStream.UncompressBuffer(buffer);
-            }
-        }
-
-        /// <summary>
         /// Deserializes the data from the stream into this instance
         /// </summary>
         /// <param name="reader">The reader to use to read from the stream</param>

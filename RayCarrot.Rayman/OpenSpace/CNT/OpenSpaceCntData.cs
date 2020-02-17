@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Linq;
 using RayCarrot.Extensions;
 
 namespace RayCarrot.Rayman.OpenSpace
@@ -6,7 +8,7 @@ namespace RayCarrot.Rayman.OpenSpace
     /// <summary>
     /// The archive data used for the .cnt files from OpenSpace games
     /// </summary>
-    public class OpenSpaceCntData : IBinarySerializableArchive<OpenSpaceSettings>
+    public class OpenSpaceCntData : IBinarySerializableArchive<OpenSpaceSettings, OpenSpaceCntFileEntry>
     {
         #region Public Static Properties
 
@@ -43,6 +45,31 @@ namespace RayCarrot.Rayman.OpenSpace
         /// The available files
         /// </summary>
         public OpenSpaceCntFileEntry[] Files { get; set; }
+
+        #endregion
+
+        #region Public Static Methods
+
+        /// <summary>
+        /// Decrypts the file data using the specified 4-byte key
+        /// </summary>
+        /// <param name="fileData">The file data to decrypt</param>
+        /// <param name="xorKey">The key, with the length of 4 bytes</param>
+        public static void DecryptFileData(byte[] fileData, byte[] xorKey)
+        {
+            // IDEA: Move to encoding class?
+
+            // Only decrypt if there is an encryption
+            if (xorKey.Any(x => x != 0))
+            {
+                // Enumerate each byte
+                for (int i = 0; i < fileData.Length; i++)
+                {
+                    if ((fileData.Length % 4) + i < fileData.Length)
+                        fileData[i] = (byte)(fileData[i] ^ xorKey[i % 4]);
+                }
+            }
+        }
 
         #endregion
 
@@ -120,7 +147,7 @@ namespace RayCarrot.Rayman.OpenSpace
         /// </summary>
         /// <param name="stream">The stream to write to</param>
         /// <param name="fileGenerator">The file generator</param>
-        public void WriteArchiveContent(Stream stream, ArchiveFileGenerator fileGenerator)
+        public void WriteArchiveContent(Stream stream, IArchiveFileGenerator<OpenSpaceCntFileEntry> fileGenerator)
         {
             // Make sure we have a generator for each file
             if (fileGenerator.Count != Files.Length)
@@ -132,12 +159,19 @@ namespace RayCarrot.Rayman.OpenSpace
                 // Set the position to the pointer
                 stream.Position = file.Pointer;
 
-                // Get the full path
-                var fullPath = file.GetFullPath(Directories);
-
                 // Write the contents from the generator
-                stream.Write(fileGenerator.GetBytes(fullPath));
+                stream.Write(fileGenerator.GetBytes(file));
             }
+        }
+
+        /// <summary>
+        /// Gets a generator for the archive content
+        /// </summary>
+        /// <param name="stream">The archive stream</param>
+        /// <returns>The generator</returns>
+        public IArchiveFileGenerator<OpenSpaceCntFileEntry> GetArchiveContent(Stream stream)
+        {
+            return new CNTFileGenerator(stream);
         }
 
         /// <summary>
@@ -155,6 +189,62 @@ namespace RayCarrot.Rayman.OpenSpace
 
             // Get the position, which will be the size of the header
             return (int)stream.Position;
+        }
+
+        #endregion
+
+        #region Classes
+
+        /// <summary>
+        /// The archive file generator for .cnt files
+        /// </summary>
+        protected class CNTFileGenerator : IArchiveFileGenerator<OpenSpaceCntFileEntry>
+        {
+            /// <summary>
+            /// Default constructor
+            /// </summary>
+            /// <param name="archiveStream">The archive file stream</param>
+            public CNTFileGenerator(Stream archiveStream)
+            {
+                // Get the stream
+                Stream = archiveStream;
+            }
+
+            /// <summary>
+            /// The stream
+            /// </summary>
+            protected Stream Stream { get; }
+
+            /// <summary>
+            /// Gets the number of files which can be retrieved from the generator
+            /// </summary>
+            public int Count => throw new InvalidOperationException("The count can not be retrieved for this generator");
+
+            /// <summary>
+            /// Gets the bytes for the specified key
+            /// </summary>
+            /// <param name="fileEntry">The file entry to get the bytes for</param>
+            /// <returns>The bytes</returns>
+            public byte[] GetBytes(OpenSpaceCntFileEntry fileEntry)
+            {
+                // Set the position
+                Stream.Position = fileEntry.Pointer;
+
+                // Create the buffer
+                byte[] buffer = new byte[fileEntry.Size];
+
+                // Read the bytes into the buffer
+                Stream.Read(buffer, 0, buffer.Length);
+
+                // Return the buffer
+                return buffer;
+            }
+
+            /// <summary>
+            /// Disposes the generator
+            /// </summary>
+            public void Dispose()
+            { }
         }
 
         #endregion

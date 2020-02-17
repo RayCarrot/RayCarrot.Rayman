@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Binary\IBinarySerializableArchive.cs" />
+    <Compile Include="Binary\Archive\IArchiveFileGenerator.cs" />
     <Compile Include="UbiArt\Common\SerializableList.cs" />
     <Compile Include="Binary\DataReader\IBinaryDataReader.cs" />
     <Compile Include="Binary\DataReader\IBinaryDataWriter.cs" />
@@ -87,7 +88,7 @@
     <Compile Include="OpenSpace\Settings\OpenSpaceGameModeInfoAttribute.cs" />
     <Compile Include="OpenSpace\Helpers\OpenSpaceSerializerHelpers.cs" />
     <Compile Include="OpenSpace\Settings\OpenSpaceGameModeExtensions.cs" />
-    <Compile Include="Common\ArchiveFileGenerator.cs" />
+    <Compile Include="Binary\Archive\ArchiveFileGenerator.cs" />
     <Compile Include="Rayman1\Settings\Rayman1GameModeExtensions.cs" />
     <Compile Include="Rayman1\Settings\Rayman1GameModeInfoAttribute.cs" />
     <Compile Include="Rayman1\Settings\Rayman1Game.cs" />
