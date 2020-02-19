@@ -1,8 +1,6 @@
-﻿using Ionic.Zlib;
-using RayCarrot.CarrotFramework.Abstractions;
+﻿using RayCarrot.CarrotFramework.Abstractions;
 using RayCarrot.Extensions;
 using RayCarrot.IO;
-using SevenZip.Compression.LZMA;
 using System;
 using System.IO;
 using System.Linq;
@@ -36,6 +34,18 @@ namespace RayCarrot.Rayman.UbiArt
         /// Gets the default serializer
         /// </summary>
         public static BinaryDataSerializer<UbiArtIpkData, UbiArtSettings> GetSerializer(UbiArtSettings settings) => new BinaryDataSerializer<UbiArtIpkData, UbiArtSettings>(settings);
+
+        #endregion
+
+        #region Constructor
+
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        public UbiArtIpkData()
+        {
+            MagicHeader = 0x50EC12BA;
+        }
 
         #endregion
 
@@ -131,47 +141,22 @@ namespace RayCarrot.Rayman.UbiArt
         #region Public Static Methods
 
         /// <summary>
-        /// Compresses the specified data for this archive
+        /// Gets the data encoder to use for the .ipk file data
         /// </summary>
-        /// <param name="data">The data to compress</param>
-        /// <param name="ipkVersion">The IPK version</param>
-        /// <returns>The compressed data</returns>
-        public static byte[] CompressData(byte[] data, uint ipkVersion)
+        /// <param name="ipkVersion">The .ipk version</param>
+        /// <param name="decompressedSize">The size of the decompressed data, if available</param>
+        /// <returns>The data encoder</returns>
+        public static IDataEncoder GetEncoder(uint ipkVersion, long decompressedSize)
         {
             // Use LZMA
             if (ipkVersion >= 8)
             {
-                // Decompress the bytes
-                return SevenZipHelper.Compress(data);
+                return new SevenZipEncoder(decompressedSize);
             }
             // Use ZLib
             else
             {
-                // Decompress the bytes
-                return ZlibStream.CompressBuffer(data);
-            }
-        }
-
-        /// <summary>
-        /// Decompresses the specified data for this archive
-        /// </summary>
-        /// <param name="data">The data to decompress</param>
-        /// <param name="size">The size of the decompressed data</param>
-        /// <param name="ipkVersion">The IPK version</param>
-        /// <returns>The decompressed data</returns>
-        public static byte[] DecompressData(byte[] data, long size, uint ipkVersion)
-        {
-            // Use LZMA
-            if (ipkVersion >= 8)
-            {
-                // Decompress the bytes
-                return SevenZipHelper.Decompress(data, size);
-            }
-            // Use ZLib
-            else
-            {
-                // Decompress the bytes
-                return ZlibStream.UncompressBuffer(data);
+                return new ZLibEncoder();
             }
         }
 
@@ -310,18 +295,18 @@ namespace RayCarrot.Rayman.UbiArt
             // Write the file contents
             foreach (var file in Files)
             {
+                // Get the bytes from the generator
+                var bytes = fileGenerator.GetBytes(file);
+
+                // Make sure the size matches
+                if (bytes.Length != file.ArchiveSize)
+                    throw new BinarySerializableException("The archived file size does not match the bytes retrieved from the generator");
+
                 // Handle every file offset
                 foreach (var offset in file.Offsets)
                 {
                     // Set the position
                     currentStream.Position = (long)(IsBlockCompressed ? offset : (offset + BaseOffset));
-
-                    // Get the bytes from the generator
-                    var bytes = fileGenerator.GetBytes(file);
-
-                    // Make sure the size matches
-                    if (bytes.Length != file.ArchiveSize)
-                        throw new BinarySerializableException("The archived file size does not match the bytes retrieved from the generator");
 
                     // Write the bytes
                     currentStream.Write(bytes);
@@ -331,14 +316,14 @@ namespace RayCarrot.Rayman.UbiArt
             // Handle the data if it should be compressed
             if (IsBlockCompressed)
             {
-                // Reset the position
-                compressionStream.Position = 0;
-
                 // Get the length
                 var decompressedSize = compressionStream.Length;
 
+                // Create the stream for the final compressed data
+                using var finalDataStream = new MemoryStream();
+
                 // Compress the data
-                var data = CompressData(compressionStream.ReadRemainingBytes(), Version);
+                GetEncoder(Version, -1).Encode(compressionStream, finalDataStream);
 
                 // Dispose the stream
                 compressionStream.Dispose();
@@ -347,10 +332,10 @@ namespace RayCarrot.Rayman.UbiArt
                 stream.Position = BaseOffset;
 
                 // Write the data to main stream
-                stream.Write(data);
+                finalDataStream.CopyTo(stream);
 
                 // Update the size
-                BlockCompressedSize = (uint)data.Length;
+                BlockCompressedSize = (uint)finalDataStream.Length;
                 BlockSize = (uint)decompressedSize;
             }
         }
@@ -419,8 +404,11 @@ namespace RayCarrot.Rayman.UbiArt
                     // Set the archive stream position
                     archiveStream.Position = ipkData.BaseOffset;
 
+                    // Create a memory stream
+                    using var memStream = new MemoryStream(archiveStream.Read((int)IPKData.BlockCompressedSize));
+
                     // Decompress the block
-                    Stream.Write(DecompressData(archiveStream.Read((int)IPKData.BlockCompressedSize), IPKData.BlockSize, IPKData.Version));
+                    GetEncoder(IPKData.Version, IPKData.BlockSize).Decode(memStream, Stream);
 
                     // Set the stream to be disposed
                     DisposeStream = true;
@@ -435,7 +423,7 @@ namespace RayCarrot.Rayman.UbiArt
                 }
             }
 
-            // TODO: Replace with temp file object
+            // TODO: Replace with TempFile object
             protected FileSystemPath TempFile { get; }
 
             /// <summary>

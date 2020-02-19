@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using RayCarrot.IO;
 
 namespace RayCarrot.Rayman.UbiArt
 {
@@ -17,6 +18,13 @@ namespace RayCarrot.Rayman.UbiArt
         {
             
         }
+
+        /// <summary>
+        /// Constructor for a full path
+        /// </summary>
+        /// <param name="fullPath">The full path</param>
+        public UbiArtPath(FileSystemPath fullPath) : this(fullPath.FullPath.Replace('\\', '/'))
+        { }
 
         /// <summary>
         /// Constructor for a full path

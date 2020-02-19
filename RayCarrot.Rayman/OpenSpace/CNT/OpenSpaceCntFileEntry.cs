@@ -34,12 +34,12 @@ namespace RayCarrot.Rayman.OpenSpace
         public string FileName { get; set; }
 
         /// <summary>
-        /// The XOR key
+        /// The XOR key for the file name
         /// </summary>
         public byte XORKey { get; }
 
         /// <summary>
-        /// The XOR key for the file
+        /// The XOR key for the file contents
         /// </summary>
         public byte[] FileXORKey { get; set; }
 

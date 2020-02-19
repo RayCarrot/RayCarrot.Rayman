@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 
 namespace RayCarrot.Rayman
 {
@@ -11,15 +10,17 @@ namespace RayCarrot.Rayman
         /// <summary>
         /// Decodes the encrypted data
         /// </summary>
-        /// <param name="dataStream">The encrypted data stream</param>
+        /// <param name="inputStream">The encrypted data stream</param>
+        /// <param name="outputStream">The output stream</param>
         /// <returns>The decrypted data</returns>
-        IEnumerable<byte> Decode(Stream dataStream);
+        void Decode(Stream inputStream, Stream outputStream);
 
         /// <summary>
         /// Encodes the raw data
         /// </summary>
-        /// <param name="dataStream">The raw data stream</param>
+        /// <param name="inputStream">The raw data stream</param>
+        /// <param name="outputStream">The output stream</param>
         /// <returns>The encrypted data</returns>
-        IEnumerable<byte> Encode(Stream dataStream);
+        void Encode(Stream inputStream, Stream outputStream);
     }
 }

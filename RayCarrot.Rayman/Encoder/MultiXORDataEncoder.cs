@@ -4,23 +4,30 @@ using System.IO;
 namespace RayCarrot.Rayman
 {
     /// <summary>
-    /// Handles encoding using an XOR key
+    /// Handles encoding using an XOR key consisting of multiple bytes
     /// </summary>
-    public class XORDataEncoder : IDataEncoder
+    public class MultiXORDataEncoder : IDataEncoder
     {
         /// <summary>
         /// Default constructor
         /// </summary>
         /// <param name="xorKey">The key to use</param>
-        public XORDataEncoder(byte xorKey)
+        /// <param name="skipIncompleteSequences">Indicates if sequences which are smaller than the size of the key should be skipped</param>
+        public MultiXORDataEncoder(byte[] xorKey, bool skipIncompleteSequences)
         {
             XorKey = xorKey;
+            SkipIncompleteSequences = skipIncompleteSequences;
         }
 
         /// <summary>
         /// The key to use
         /// </summary>
-        public byte XorKey { get; }
+        public byte[] XorKey { get; }
+
+        /// <summary>
+        /// Indicates if sequences which are smaller than the size of the key should be skipped
+        /// </summary>
+        public bool SkipIncompleteSequences { get; }
 
         /// <summary>
         /// Decodes the encrypted data
@@ -30,7 +37,19 @@ namespace RayCarrot.Rayman
         /// <returns>The decrypted data</returns>
         public void Decode(Stream inputStream, Stream outputStream)
         {
-            outputStream.EnumerateBytes().ForEach(b => outputStream.WriteByte((byte)(b ^ XorKey)));
+            var index = 0;
+            var xorLength = XorKey.Length;
+            var inputLength = inputStream.Length - inputStream.Position;
+
+            foreach (var b in inputStream.EnumerateBytes())
+            {
+                if (!SkipIncompleteSequences || (inputLength % xorLength) + index < inputLength)
+                    outputStream.WriteByte((byte)(b ^ XorKey[index % xorLength]));
+                else
+                    outputStream.WriteByte(b);
+
+                index++;
+            }
         }
 
         /// <summary>

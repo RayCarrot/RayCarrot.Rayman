@@ -34,37 +34,52 @@ namespace SevenZip.Compression.LZMA
 
         public static byte[] Compress(byte[] inputBytes)
         {
-            using MemoryStream inStream = new MemoryStream(inputBytes);
-            using MemoryStream outStream = new MemoryStream();
-            
+            // Create the memory streams
+            using MemoryStream inputStream = new MemoryStream(inputBytes);
+            using MemoryStream outputStream = new MemoryStream();
+
+            // Compress the data
+            Compress(inputStream, outputStream);
+
+            // Return the output stream
+            return outputStream.ToArray();
+        }
+
+        public static void Compress(Stream inputStream, Stream outputStream)
+        {
             Encoder encoder = new Encoder();
-            
+
             encoder.SetCoderProperties(propIDs, properties);
-            encoder.WriteCoderProperties(outStream);
-            
-            encoder.Code(inStream, outStream, -1, -1, null);
-            return outStream.ToArray();
+            encoder.WriteCoderProperties(outputStream);
+
+            encoder.Code(inputStream, outputStream, -1, -1, null);
         }
 
         public static byte[] Decompress(byte[] inputBytes, long outSize)
         {
-            using MemoryStream newInStream = new MemoryStream(inputBytes);
-            using MemoryStream newOutStream = new MemoryStream();
+            // Create the memory streams
+            using MemoryStream inputStream = new MemoryStream(inputBytes);
+            using MemoryStream outputStream = new MemoryStream();
 
+            // Decompress the data
+            Decompress(inputStream, outputStream, outSize);
+
+            // Return the output stream
+            return outputStream.ToArray();
+        }
+
+        public static void Decompress(Stream inputStream, Stream outputStream, long outputSize)
+        {
             Decoder decoder = new Decoder();
 
             var properties2 = new byte[5];
-            if (newInStream.Read(properties2, 0, 5) != 5) 
+            if (inputStream.Read(properties2, 0, 5) != 5)
                 throw new Exception("Input LZMA is too short");
-            
+
             decoder.SetDecoderProperties(properties2);
 
-            var compressedSize = newInStream.Length - newInStream.Position;
-            decoder.Code(newInStream, newOutStream, compressedSize, outSize, null);
-
-            var b = newOutStream.ToArray();
-
-            return b;
+            var compressedSize = inputStream.Length - inputStream.Position;
+            decoder.Code(inputStream, outputStream, compressedSize, outputSize, null);
         }
     }
 }

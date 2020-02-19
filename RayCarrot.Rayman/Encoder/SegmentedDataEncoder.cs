@@ -26,38 +26,38 @@ namespace RayCarrot.Rayman
         /// <summary>
         /// Decodes the encrypted data
         /// </summary>
-        /// <param name="dataStream">The encrypted data stream</param>
+        /// <param name="inputStream">The encrypted data stream</param>
+        /// <param name="outputStream">The output stream</param>
         /// <returns>The decrypted data</returns>
-        public IEnumerable<byte> Decode(Stream dataStream)
+        public void Decode(Stream inputStream, Stream outputStream)
         {
             // Handle each segment
             foreach (var s in Segments)
             {
                 // Read the segment into a memory stream
-                using var segmentData = new MemoryStream(dataStream.Read(s.Length));
+                using var segmentData = new MemoryStream(inputStream.Read(s.Length));
 
-                // Decode the segment and return
-                foreach (var b in s.Encoder.Decode(segmentData))
-                    yield return b;
+                // Decode the segment
+                s.Encoder.Decode(segmentData, outputStream);
             }
         }
 
         /// <summary>
         /// Encodes the raw data
         /// </summary>
-        /// <param name="dataStream">The raw data stream</param>
+        /// <param name="inputStream">The raw data stream</param>
+        /// <param name="outputStream">The output stream</param>
         /// <returns>The encrypted data</returns>
-        public IEnumerable<byte> Encode(Stream dataStream)
+        public void Encode(Stream inputStream, Stream outputStream)
         {
             // Handle each segment
             foreach (var s in Segments)
             {
                 // Read the segment into a memory stream
-                using var segmentData = new MemoryStream(dataStream.Read(s.Length));
+                using var segmentData = new MemoryStream(inputStream.Read(s.Length));
 
-                // Encode the segment and return
-                foreach (var b in s.Encoder.Encode(segmentData))
-                    yield return b;
+                // Encode the segment
+                s.Encoder.Encode(segmentData, outputStream);
             }
         }
 

@@ -1,27 +1,13 @@
-﻿using RayCarrot.Extensions;
-using System.IO;
+﻿using System.IO;
+using Ionic.Zlib;
 
 namespace RayCarrot.Rayman
 {
     /// <summary>
-    /// Handles encoding using an XOR key
+    /// Data encoder for ZLib
     /// </summary>
-    public class XORDataEncoder : IDataEncoder
+    public class ZLibEncoder : IDataEncoder
     {
-        /// <summary>
-        /// Default constructor
-        /// </summary>
-        /// <param name="xorKey">The key to use</param>
-        public XORDataEncoder(byte xorKey)
-        {
-            XorKey = xorKey;
-        }
-
-        /// <summary>
-        /// The key to use
-        /// </summary>
-        public byte XorKey { get; }
-
         /// <summary>
         /// Decodes the encrypted data
         /// </summary>
@@ -30,7 +16,9 @@ namespace RayCarrot.Rayman
         /// <returns>The decrypted data</returns>
         public void Decode(Stream inputStream, Stream outputStream)
         {
-            outputStream.EnumerateBytes().ForEach(b => outputStream.WriteByte((byte)(b ^ XorKey)));
+            using var zStream = new ZlibStream(inputStream, CompressionMode.Decompress);
+
+            zStream.CopyTo(outputStream);
         }
 
         /// <summary>
@@ -41,8 +29,9 @@ namespace RayCarrot.Rayman
         /// <returns>The encrypted data</returns>
         public void Encode(Stream inputStream, Stream outputStream)
         {
-            // Same as decoding...
-            Decode(inputStream, outputStream);
+            using var zStream = new ZlibStream(inputStream, CompressionMode.Compress);
+
+            zStream.CopyTo(outputStream);
         }
     }
 }

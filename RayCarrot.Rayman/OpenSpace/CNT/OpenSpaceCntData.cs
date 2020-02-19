@@ -48,31 +48,6 @@ namespace RayCarrot.Rayman.OpenSpace
 
         #endregion
 
-        #region Public Static Methods
-
-        /// <summary>
-        /// Decrypts the file data using the specified 4-byte key
-        /// </summary>
-        /// <param name="fileData">The file data to decrypt</param>
-        /// <param name="xorKey">The key, with the length of 4 bytes</param>
-        public static void DecryptFileData(byte[] fileData, byte[] xorKey)
-        {
-            // IDEA: Move to encoding class?
-
-            // Only decrypt if there is an encryption
-            if (xorKey.Any(x => x != 0))
-            {
-                // Enumerate each byte
-                for (int i = 0; i < fileData.Length; i++)
-                {
-                    if ((fileData.Length % 4) + i < fileData.Length)
-                        fileData[i] = (byte)(fileData[i] ^ xorKey[i % 4]);
-                }
-            }
-        }
-
-        #endregion
-
         #region Public Methods
 
         /// <summary>
@@ -156,11 +131,14 @@ namespace RayCarrot.Rayman.OpenSpace
             // Write the file contents
             foreach (var file in Files)
             {
+                // Get the bytes
+                var bytes = fileGenerator.GetBytes(file);
+
                 // Set the position to the pointer
                 stream.Position = file.Pointer;
 
                 // Write the contents from the generator
-                stream.Write(fileGenerator.GetBytes(file));
+                stream.Write(bytes);
             }
         }
 

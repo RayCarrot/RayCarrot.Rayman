@@ -1,26 +1,26 @@
-﻿using RayCarrot.Extensions;
-using System.IO;
+﻿using System.IO;
+using SevenZip.Compression.LZMA;
 
 namespace RayCarrot.Rayman
 {
     /// <summary>
-    /// Handles encoding using an XOR key
+    /// Data encoder for 7-Zip compression
     /// </summary>
-    public class XORDataEncoder : IDataEncoder
+    public class SevenZipEncoder : IDataEncoder
     {
         /// <summary>
         /// Default constructor
         /// </summary>
-        /// <param name="xorKey">The key to use</param>
-        public XORDataEncoder(byte xorKey)
+        /// <param name="decompressedSize">The size of the decompressed data, if available</param>
+        public SevenZipEncoder(long decompressedSize)
         {
-            XorKey = xorKey;
+            DecompressedSize = decompressedSize;
         }
 
         /// <summary>
-        /// The key to use
+        /// The size of the decompressed data, if available
         /// </summary>
-        public byte XorKey { get; }
+        public long DecompressedSize { get; }
 
         /// <summary>
         /// Decodes the encrypted data
@@ -30,7 +30,7 @@ namespace RayCarrot.Rayman
         /// <returns>The decrypted data</returns>
         public void Decode(Stream inputStream, Stream outputStream)
         {
-            outputStream.EnumerateBytes().ForEach(b => outputStream.WriteByte((byte)(b ^ XorKey)));
+            SevenZipHelper.Decompress(inputStream, outputStream, DecompressedSize);
         }
 
         /// <summary>
@@ -41,8 +41,7 @@ namespace RayCarrot.Rayman
         /// <returns>The encrypted data</returns>
         public void Encode(Stream inputStream, Stream outputStream)
         {
-            // Same as decoding...
-            Decode(inputStream, outputStream);
+            SevenZipHelper.Compress(inputStream, outputStream);
         }
     }
 }

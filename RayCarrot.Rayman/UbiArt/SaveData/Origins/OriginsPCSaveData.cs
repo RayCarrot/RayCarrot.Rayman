@@ -14,8 +14,6 @@ namespace RayCarrot.Rayman.UbiArt
         /// </summary>
         public static BinaryDataSerializer<OriginsPCSaveData, UbiArtSettings> GetSerializer()
         {
-            // TODO: Need to redesign this settings system as it's different between file formats...
-
             var settings = UbiArtGameMode.RaymanOriginsPC.GetSettings();
 
             settings.Encoding = Encoding.UTF8;

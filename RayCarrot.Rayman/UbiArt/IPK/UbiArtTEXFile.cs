@@ -129,36 +129,32 @@ namespace RayCarrot.Rayman.UbiArt
         /// <param name="writer">The writer to use to write to the stream</param>
         public void Serialize(IBinaryDataWriter<UbiArtSettings> writer)
         {
-            // TODO: Don't need this?
-            if (writer.SerializerSettings.Game != UbiArtGame.RaymanOrigins)
-            {
-                writer.Write(Version);
-                writer.Write(Signature);
+            writer.Write(Version);
+            writer.Write(Signature);
 
-                writer.Write(HdrSize);
+            writer.Write(HdrSize);
 
-                writer.Write(TextureSize);
-                writer.Write(Width);
-                writer.Write(Height);
-                writer.Write(UnknownX);
-                writer.Write(UnknownY);
+            writer.Write(TextureSize);
+            writer.Write(Width);
+            writer.Write(Height);
+            writer.Write(UnknownX);
+            writer.Write(UnknownY);
 
-                if (Version == 16 || Version == 17)
-                    writer.Write(Unknown6);
+            if (Version == 16 || Version == 17)
+                writer.Write(Unknown6);
 
-                writer.Write(TextureSize2);
-                writer.Write(Unknown0);
-                writer.Write(Unknown1);
-                writer.Write(Unknown2);
+            writer.Write(TextureSize2);
+            writer.Write(Unknown0);
+            writer.Write(Unknown1);
+            writer.Write(Unknown2);
 
-                if (Version > 10)
-                    writer.Write(Unknown3);
+            if (Version > 10)
+                writer.Write(Unknown3);
 
-                writer.Write(Unknown4);
+            writer.Write(Unknown4);
 
-                if (Version > 10) 
-                    writer.Write(Unknown5);
-            }
+            if (Version > 10)
+                writer.Write(Unknown5);
 
             writer.Write(TextureData);
         }

@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using System.Linq;
 
 namespace RayCarrot.Rayman
 {
@@ -16,11 +15,15 @@ namespace RayCarrot.Rayman
         /// <returns>The decrypted data</returns>
         public static byte[] Decode(this IDataEncoder encoder, byte[] data)
         {
-            // Create a memory stream
-            using var stream = new MemoryStream(data);
+            // Create memory streams
+            using var inputStream = new MemoryStream(data);
+            using var outputStream = new MemoryStream();
 
             // Decode the data and return as an array
-            return encoder.Decode(stream).ToArray();
+            encoder.Decode(inputStream, outputStream);
+
+            // Return the output stream
+            return outputStream.ToArray();
         }
 
         /// <summary>
@@ -31,11 +34,15 @@ namespace RayCarrot.Rayman
         /// <returns>The encrypted data</returns>
         public static byte[] Encode(this IDataEncoder encoder, byte[] data)
         {
-            // Create a memory stream
-            using var stream = new MemoryStream(data);
+            // Create memory streams
+            using var inputStream = new MemoryStream(data);
+            using var outputStream = new MemoryStream();
 
             // Decode the data and return as an array
-            return encoder.Encode(stream).ToArray();
+            encoder.Encode(inputStream, outputStream);
+
+            // Return the output stream
+            return outputStream.ToArray();
         }
     }
 }

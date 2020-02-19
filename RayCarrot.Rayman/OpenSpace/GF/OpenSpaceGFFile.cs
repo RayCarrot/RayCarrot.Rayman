@@ -436,7 +436,7 @@ namespace RayCarrot.Rayman.OpenSpace
             var widthScale = Width / (double)width;
             var heightScale = Height / (double)height;
 
-            // IDEA: Make a pull request for 24bpp images - should be the same but with 3 bytes instead of 4
+            // IDEA: Make a pull request for 24bpp images
             // Fast lock currently only supports 32bpp images
             if (IsTransparent)
             {
@@ -506,7 +506,7 @@ namespace RayCarrot.Rayman.OpenSpace
             // Create the bitmap
             Bitmap bmp = new Bitmap(width, height, isTransparent ? PixelFormat.Format32bppArgb : PixelFormat.Format24bppRgb);
 
-            // IDEA: Make a pull request for 24bpp images - should be the same but with 3 bytes instead of 4
+            // IDEA: Make a pull request for 24bpp images
             // Fast lock currently only supports 32bpp images
             if (isTransparent)
             {

@@ -1,10 +1,4 @@
-﻿using Ionic.Zlib;
-using SevenZip.Compression.LZMA;
-using System;
-using System.IO;
-using System.Linq;
-
-namespace RayCarrot.Rayman.UbiArt
+﻿namespace RayCarrot.Rayman.UbiArt
 {
     /// <summary>
     /// The data used for a file entry within a .ipk file

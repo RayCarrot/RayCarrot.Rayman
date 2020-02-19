@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using RayCarrot.Extensions;
+using System;
 using System.IO;
-using RayCarrot.Extensions;
 
 namespace RayCarrot.Rayman
 {
@@ -13,12 +12,13 @@ namespace RayCarrot.Rayman
         /// <summary>
         /// Decodes the encrypted data
         /// </summary>
-        /// <param name="dataStream">The encrypted data stream</param>
+        /// <param name="inputStream">The encrypted data stream</param>
+        /// <param name="outputStream">The output stream</param>
         /// <returns>The decrypted data</returns>
-        public IEnumerable<byte> Decode(Stream dataStream)
+        public void Decode(Stream inputStream, Stream outputStream)
         {
             // Read the initial key
-            var XORKey = BitConverter.ToUInt32(dataStream.Read(4), 0) ^ 0xA55AA55A;
+            var XORKey = BitConverter.ToUInt32(inputStream.Read(4), 0) ^ 0xA55AA55A;
 
             // Keep track of the last byte
             byte lastByte;
@@ -26,13 +26,13 @@ namespace RayCarrot.Rayman
             byte DecryptByte()
             {
                 XORKey = (XORKey >> 3) | (XORKey << 29);
-                lastByte = (byte)dataStream.ReadByte();
+                lastByte = (byte)inputStream.ReadByte();
                 lastByte ^= (byte)XORKey;
                 return lastByte;
             }
 
             // Enumerate each byte
-            while (dataStream.Position < dataStream.Length)
+            while (inputStream.Position < inputStream.Length)
             {
                 // Decrypt the byte
                 DecryptByte();
@@ -40,7 +40,7 @@ namespace RayCarrot.Rayman
                 if ((lastByte & 0x80) == 0)
                 {
                     for (var i = 0; i < lastByte; i++)
-                        yield return 0;
+                        outputStream.WriteByte(0);
                 }
                 else
                 {
@@ -50,8 +50,7 @@ namespace RayCarrot.Rayman
                     for (var i = size; i > 0; --i)
                         byteArray[i - 1] = DecryptByte();
 
-                    foreach (var b in byteArray)
-                        yield return b;
+                    outputStream.Write(byteArray);
                 }
             }
         }
@@ -59,9 +58,10 @@ namespace RayCarrot.Rayman
         /// <summary>
         /// Encodes the raw data
         /// </summary>
-        /// <param name="dataStream">The raw data stream</param>
+        /// <param name="inputStream">The raw data stream</param>
+        /// <param name="outputStream">The output stream</param>
         /// <returns>The encrypted data</returns>
-        public IEnumerable<byte> Encode(Stream dataStream)
+        public void Encode(Stream inputStream, Stream outputStream)
         {
             throw new NotImplementedException();
         }

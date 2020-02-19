@@ -50,10 +50,18 @@ namespace RayCarrot.Rayman
         /// <param name="stream">The stream to use</param>
         public virtual BinaryReader GetBinaryReader(Stream stream)
         {
-            if (Encoder != null)
-                return new StandardBinaryReader(new EnumerationStream(Encoder.Decode(stream)), SerializerSettings, false);
-            else
+            // If there is no encoder, use the stream directly
+            if (Encoder == null)
                 return new StandardBinaryReader(stream, SerializerSettings, true);
+
+            // IDEA: Use temp file here if the size is too big
+            // Create a memory stream
+            var memStream = new MemoryStream();
+
+            // Decode the data
+            Encoder.Decode(stream, memStream);
+
+            return new StandardBinaryReader(memStream, SerializerSettings, false);
         }
 
         /// <summary>

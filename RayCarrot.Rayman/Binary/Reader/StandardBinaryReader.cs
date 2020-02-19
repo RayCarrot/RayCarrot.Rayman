@@ -68,7 +68,7 @@ namespace RayCarrot.Rayman
             // Get the length
             var length = ReadInt32();
 
-            // IDEA: Have a max length to allow to avoid OutOfMemory exception
+            // IDEA: Have a max length to avoid OutOfMemory exception
 
             // Read the bytes
             var bytes = ReadBytes(length * Settings.Encoding.GetByteCount("A"));
