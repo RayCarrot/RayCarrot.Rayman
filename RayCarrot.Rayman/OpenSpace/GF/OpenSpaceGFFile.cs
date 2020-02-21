@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
-using FastBitmapLib;
 using RayCarrot.CarrotFramework.Abstractions;
 using RayCarrot.Extensions;
 
@@ -66,6 +65,31 @@ namespace RayCarrot.Rayman.OpenSpace
         public ushort PaletteNumColors { get; set; }
 
         /// <summary>
+        /// The pixel count
+        /// </summary>
+        public uint PixelCount { get; set; }
+
+        /// <summary>
+        /// Unknown value (only used for <see cref="OpenSpaceEngineVersion.Montreal"/>)
+        /// </summary>
+        public byte MontrealByte1 { get; set; }
+
+        /// <summary>
+        /// Unknown value (only used for <see cref="OpenSpaceEngineVersion.Montreal"/>)
+        /// </summary>
+        public byte MontrealByte2 { get; set; }
+
+        /// <summary>
+        /// Unknown value (only used for <see cref="OpenSpaceEngineVersion.Montreal"/>)
+        /// </summary>
+        public byte MontrealByte3 { get; set; }
+
+        /// <summary>
+        /// Unknown value (only used for <see cref="OpenSpaceEngineVersion.Montreal"/>)
+        /// </summary>
+        public uint MontrealNum4 { get; set; }
+
+        /// <summary>
         /// The format signature
         /// </summary>
         public uint Format { get; set; }
@@ -81,49 +105,18 @@ namespace RayCarrot.Rayman.OpenSpace
         public uint Height { get; set; }
 
         /// <summary>
+        /// The pixel data, in the .gf format
+        /// </summary>
+        public byte[] PixelData { get; set; }
+
+        /// <summary>
         /// Indicates if the image is transparent
         /// </summary>
-        public bool IsTransparent { get; set; }
-
-        /// <summary>
-        /// The color for each pixel of the image
-        /// </summary>
-        public Color[,] Pixels { get; set; }
-
-        /// <summary>
-        /// The color for each pixel of each available mipmap, not including the main image
-        /// </summary>
-        public Color[][,] MipmapPixels { get; set; }
+        public bool IsTransparent => GetBitmapChannelCount() == 4;
 
         #endregion
 
         #region Protected Methods
-
-        /// <summary>
-        /// Gets all pixel arrays, including the mipmaps
-        /// </summary>
-        /// <returns>The pixel arrays</returns>
-        protected IEnumerable<Color[,]> GetAllPixels()
-        {
-            // Return main image pixels
-            yield return Pixels;
-
-            if (MipmapPixels != null)
-            {
-                // Return mipmap pixels
-                foreach (var m in MipmapPixels)
-                    yield return m;
-            }
-        }
-
-        /// <summary>
-        /// Gets the channels for the current colors. This returns either 3 or 4 channels depending on if the image is transparent.
-        /// </summary>
-        /// <returns>The channels for blue, green, red and alpha (if transparent)</returns>
-        protected byte[][] GetBGRAChannels()
-        {
-            return GetBGRAChannels(Pixels, IsTransparent);
-        }
 
         /// <summary>
         /// Gets the sizes for all mipmap images, starting from the largest
@@ -139,10 +132,10 @@ namespace RayCarrot.Rayman.OpenSpace
             for (int i = 0; i < RealMipmapCount; i++)
             {
                 // Get the next mipmap size
-                if (width != 1) 
+                if (width != 1)
                     width >>= 1;
 
-                if (height != 1) 
+                if (height != 1)
                     height >>= 1;
 
                 // Return the current size
@@ -150,150 +143,58 @@ namespace RayCarrot.Rayman.OpenSpace
             }
         }
 
-        #endregion
-
-        #region Protected Static Methods
-
         /// <summary>
-        /// Gets the channels for the current colors. This returns either 3 or 4 channels depending on if the image is transparent.
+        /// Gets the preferred mipmap count based on the current size
         /// </summary>
-        /// <param name="pixels">The pixels to get the channels from</param>
-        /// <param name="isTransparent">Indicates if the image is transparent and the alpha channel should be returned</param>
-        /// <returns>The channels for blue, green, red and alpha (if transparent)</returns>
-        protected static byte[][] GetBGRAChannels(Color[,] pixels, bool isTransparent)
+        /// <returns>The mipmap count</returns>
+        protected byte GetMipmapCount()
         {
-            // Get the size
-            int width = pixels.GetLength(0);
-            int height = pixels.GetLength(1);
+            // Get the largest size
+            var width = Width;
+            var height = Height;
 
-            // Create the output array
-            var output = new byte[isTransparent ? 4 : 3][];
+            // Keep track of the count
+            byte count = 1;
 
-            // Create sub-arrays
-            for (int i = 0; i < output.Length; i++)
-                output[i] = new byte[width * height];
-
-            // Get channels
-            for (int x = 0; x < width; x++)
+            // Enumerate each mipmap
+            while (!(width == 1 && height == 1))
             {
-                for (int y = 0; y < height; y++)
-                {
-                    // The index of the array to add to
-                    var index = 0;
+                // Get the next mipmap size
+                if (width != 1)
+                    width >>= 1;
 
-                    // Helper method for adding a value to the array
-                    void AddValue(byte value)
-                    {
-                        output[index][width * y + x] = value;
-                        index++;
-                    }
+                if (height != 1)
+                    height >>= 1;
 
-                    // Add RGB values
-                    AddValue(pixels[x, height - y - 1].B);
-                    AddValue(pixels[x, height - y - 1].G);
-                    AddValue(pixels[x, height - y - 1].R);
-
-                    // Only add the alpha channel if transparent
-                    if (isTransparent)
-                        AddValue(pixels[x, height - y - 1].A);
-                }
+                count++;
             }
 
-            return output;
-        }
-
-        #endregion
-
-        #region Protected Methods
-
-        /// <summary>
-        /// Reads the available channels
-        /// </summary>
-        /// <param name="reader">The reader</param>
-        /// <param name="pixelCount">The pixel count for each channel</param>
-        /// <returns>The channels data</returns>
-        protected byte[] ReadChannels(IBinaryDataReader<OpenSpaceSettings> reader, uint pixelCount)
-        {
-            // Create the data array
-            byte[] data = new byte[Channels * pixelCount];
-
-            // Keep track of the current channel
-            int channel = 0;
-
-            // Enumerate each channel
-            while (channel < Channels)
-            {
-                int pixel = 0;
-
-                // Enumerate through each pixel
-                while (pixel < pixelCount)
-                {
-                    // Read the pixel
-                    byte b1 = reader.Read<byte>();
-
-                    // If it's the repeat byte...
-                    if (b1 == RepeatByte)
-                    {
-                        // Get the value to repeat
-                        byte value = reader.Read<byte>();
-
-                        // Get the number of times to repeat
-                        byte count = reader.Read<byte>();
-
-                        // Repeat the value the specified number of times
-                        for (int i = 0; i < count; ++i)
-                        {
-                            // Set the value
-                            data[channel + pixel * Channels] = value;
-
-                            pixel++;
-                        }
-                    }
-                    else
-                    {
-                        // Set the value
-                        data[channel + pixel * Channels] = b1;
-                        pixel++;
-                    }
-                }
-
-                channel++;
-            }
-
-            return data;
+            return count;
         }
 
         /// <summary>
-        /// Gets the pixel color from the pixel data
+        /// Gets the pixel color from the pixel data in the BGR(A) format
         /// </summary>
         /// <param name="pixelData">The pixel data to get the color from</param>
         /// <param name="offset">The offset for the specific pixel in the data array</param>
-        /// <returns>The color for the pixel</returns>
-        protected Color GetColor(byte[] pixelData, int offset)
+        /// <returns>The color for the pixel in the BGR(A) format</returns>
+        protected IEnumerable<byte> GetBitmapColorPixels(byte[] pixelData, long offset)
         {
             if (Channels >= 3)
             {
                 // Get the BGR color values
-                byte b = pixelData[offset + 0];
-                byte g = pixelData[offset + 1];
-                byte r = pixelData[offset + 2];
+                yield return pixelData[offset + 0];
+                yield return pixelData[offset + 1];
+                yield return pixelData[offset + 2];
 
                 // If transparent, get the alpha value
-                if (IsTransparent)
-                {
-                    byte a = pixelData[offset + 3];
-
-                    return Color.FromArgb(a, r, g, b);
-                }
-                else
-                {
-                    return Color.FromArgb(r, g, b);
-                }
+                if (Channels == 4)
+                    yield return pixelData[offset + 3];
             }
             else if (Channels == 2)
             {
                 // Helper method for extracting bits
-                static int extractBits(int number, int count, int offset) => (((1 << count) - 1) & (number >> (offset)));
+                static int extractBits(int number, int count, int offset2) => (((1 << count) - 1) & (number >> (offset2)));
 
                 ushort pixel = BitConverter.ToUInt16(new byte[]
                 {
@@ -301,76 +202,140 @@ namespace RayCarrot.Rayman.OpenSpace
                     pixelData[offset + 1]
                 }, 0); // RRRRR, GGGGGG, BBBBB (565)
 
-                int r, g, b, a;
-
                 switch (Format)
                 {
                     case 88:
-                        a = pixelData[offset + 1];
-                        r = pixelData[offset];
-                        g = pixelData[offset];
-                        b = pixelData[offset];
+                        yield return pixelData[offset];
+                        yield return pixelData[offset];
+                        yield return pixelData[offset];
+                        yield return pixelData[offset + 1];
 
                         break;
+
                     case 4444:
 
-                        a = extractBits(pixel, 4, 12) * 17;
-                        r = extractBits(pixel, 4, 8) * 17;
-                        g = extractBits(pixel, 4, 4) * 17;
-                        b = extractBits(pixel, 4, 0) * 17;
+                        yield return (byte)(extractBits(pixel, 4, 0) * 17);
+                        yield return (byte)(extractBits(pixel, 4, 4) * 17);
+                        yield return (byte)(extractBits(pixel, 4, 8) * 17);
+                        yield return (byte)(extractBits(pixel, 4, 12) * 17);
 
                         break;
+
                     case 1555:
                         const float multiple = (255 / 31f);
 
-                        a = extractBits(pixel, 1, 15) * 255;
-                        r = (int)(extractBits(pixel, 5, 10) * multiple);
-                        g = (int)(extractBits(pixel, 5, 5) * multiple);
-                        b = (int)(extractBits(pixel, 5, 0) * multiple);
+                        yield return (byte)(extractBits(pixel, 5, 0) * multiple);
+                        yield return (byte)(extractBits(pixel, 5, 5) * multiple);
+                        yield return (byte)(extractBits(pixel, 5, 10) * multiple);
+                        yield return (byte)(extractBits(pixel, 1, 15) * 255);
 
                         break;
+
                     case 565:
                     default: // 565
-                        a = 255;
-                        r = (int)(extractBits(pixel, 5, 11) * (255 / 31f));
-                        g = (int)(extractBits(pixel, 6, 5) * (255 / 63f));
-                        b = (int)(extractBits(pixel, 5, 0) * (255 / 31f));
+                        yield return (byte)(extractBits(pixel, 5, 0) * (255 / 31f));
+                        yield return (byte)(extractBits(pixel, 6, 5) * (255 / 63f));
+                        yield return (byte)(extractBits(pixel, 5, 11) * (255 / 31f));
 
                         break;
                 }
-
-                return Color.FromArgb(a, r, g, b);
             }
             else if (Channels == 1)
             {
-                // Get the BGR color values
-                byte r, g, b;
-
-                byte a = 255;
-
                 if (Palette != null)
                 {
-                    if (IsTransparent)
-                        a = Palette[pixelData[offset] * PaletteBytesPerColor + 3];
-
-                    r = Palette[pixelData[offset] * PaletteBytesPerColor + 2];
-                    g = Palette[pixelData[offset] * PaletteBytesPerColor + 1];
-                    b = Palette[pixelData[offset] * PaletteBytesPerColor + 0];
+                    for (int i = 0; i < PaletteBytesPerColor; i++)
+                        yield return Palette[pixelData[offset] * PaletteBytesPerColor + i];
                 }
                 else
                 {
-                    if (IsTransparent)
-                        a = pixelData[offset];
-                    r = pixelData[offset];
-                    g = pixelData[offset];
-                    b = pixelData[offset];
+                    yield return pixelData[offset];
+                    yield return pixelData[offset];
+                    yield return pixelData[offset];
                 }
-
-                return Color.FromArgb(a, r, g, b);
             }
             else
             {
-                throw new BinarySerializableException("The number of channels is not valid");
+                throw new Exception("The number of channels is not valid");
+            }
+        }
+
+        /// <summary>
+        /// Gets the pixel color from the pixel data in the .gf format
+        /// </summary>
+        /// <param name="bmpPixelData">The bitmap pixel data to get the color from, always 4 bytes</param>
+        /// <returns>The color for the pixel in the .gf format</returns>
+        protected IEnumerable<byte> GetGfPixels(byte[] bmpPixelData)
+        {
+            if (Channels >= 3)
+            {
+                // Get the BGR color values
+                yield return bmpPixelData[0];
+                yield return bmpPixelData[1];
+                yield return bmpPixelData[2];
+
+                // If transparent, get the alpha value
+                if (Channels == 4)
+                    yield return bmpPixelData[3];
+            }
+            else if (Channels == 2)
+            {
+                throw new NotImplementedException("Importing from files with 2 channels is currently not supported");
+            }
+            else if (Channels == 1)
+            {
+                if (Palette != null)
+                {
+                    throw new NotImplementedException("Importing from files with a palette is currently not supported");
+                }
+                else
+                {
+                    yield return bmpPixelData[0];
+                }
+            }
+            else
+            {
+                throw new Exception("The number of channels is not valid");
+            }
+        }
+
+        /// <summary>
+        /// Gets the bitmap channel count for the image, either 3 or 4 channels
+        /// </summary>
+        /// <returns></returns>
+        protected int GetBitmapChannelCount()
+        {
+            if (Channels >= 3)
+                return Channels;
+
+            if (Channels == 2)
+            {
+                if (Format == 88 || Format == 4444 || Format == 1555)
+                    return 4;
+                
+                else if (Format == 565)
+                    return 3;
+                
+                else
+                    throw new Exception("The format is not valid");
+            }
+            else if (Channels == 1)
+            {
+                if (Palette == null)
+                    return 3;
+
+                if (PaletteBytesPerColor == 4)
+                    return 4;
+                
+                else if (PaletteBytesPerColor == 3)
+                    return 3;
+              
+                else
+                    throw new Exception("The number of palette bytes per color is not valid");
+            }
+            else
+            {
+                throw new Exception("The number of channels is not valid");
             }
         }
 
@@ -379,25 +344,77 @@ namespace RayCarrot.Rayman.OpenSpace
         #region Public Methods
 
         /// <summary>
+        /// Indicates if mipmaps are supported. NOTE: This currently does not count the mipmapping used in Hype.
+        /// </summary>
+        public bool SupportsMipmaps(OpenSpaceSettings settings) => settings.EngineVersion == OpenSpaceEngineVersion.Rayman3 && settings.Game != OpenSpaceGame.Dinosaur && settings.Game != OpenSpaceGame.LargoWinch;
+
+        /// <summary>
+        /// Converts the .gf pixel data to raw bitmap data of a specified size
+        /// </summary>
+        /// <param name="width">The image width</param>
+        /// <param name="height">The image height</param>
+        /// <param name="offset">The offset in the pixel array</param>
+        /// <returns>The raw image data</returns>
+        public RawBitmapData GetRawBitmapData(int width, int height, int offset = 0)
+        {
+            // Check if the size is scaled
+            var isScaled = Width != width || Height != height;
+
+            // Get the scale factors
+            var widthScale = Width / (double)width;
+            var heightScale = Height / (double)height;
+
+            // Get the pixel format
+            PixelFormat pixelFormat = GetBitmapChannelCount() == 4 ? PixelFormat.Format32bppArgb : PixelFormat.Format24bppRgb;
+
+            // Get the number of bitmap channels
+            var bmpChannels = Image.GetPixelFormatSize(pixelFormat) / 8;
+
+            // Create the pixel array
+            var rawPixelData = new byte[width * height * bmpChannels];
+
+            // Enumerate each pixel
+            for (uint y = 0; y < height; y++)
+            for (uint x = 0; x < width; x++)
+            {
+                // Get the offsets for the pixel colors
+                var pixelOffset = isScaled 
+                    ? (long)(((width * widthScale) * Math.Floor((y * heightScale)) + Math.Floor((x * widthScale))) * Channels + offset)
+                    : (width * y + x) * Channels + offset;
+
+                // NOTE: We reverse the Y-axis here since the .gf images are always flipper vertically
+                var rawOffset = (width * (height - y - 1) + x) * bmpChannels;
+
+                // Get the pixels
+                foreach (var b in GetBitmapColorPixels(PixelData, pixelOffset))
+                {
+                    rawPixelData[rawOffset] = b;
+                    rawOffset++;
+                }
+            }
+
+            // Return the raw bitmap data
+            return new RawBitmapData(width, height, rawPixelData, pixelFormat);
+        }
+
+        /// <summary>
+        /// Converts the .gf pixel data to raw bitmap data
+        /// </summary>
+        /// <param name="offset">The offset in the pixel array</param>
+        /// <returns>The raw image data</returns>
+        public RawBitmapData GetRawBitmapData(int offset = 0) => GetRawBitmapData((int)Width, (int)Height, offset);
+
+        /// <summary>
         /// Updates the repeat byte to the most appropriate value, based on the main image
         /// </summary>
         public void UpdateRepeatByte()
         {
-            if (Channels < 3)
-                throw new NotImplementedException("The repeat byte can currently only be updated when 3 or 4 channels are present");
-
             // Keep track of the occurrence for each value
             var tempValues = new int[Byte.MaxValue + 1];
 
-            // Enumerate each channel
-            foreach (var channel in GetBGRAChannels())
-            {
-                // Enumerate each byte in the channel
-                foreach (var b in channel)
-                {
-                    tempValues[b]++;
-                }
-            }
+            // Enumerate each byte
+            foreach (var b in PixelData)
+                tempValues[b]++;
 
             // Get the min value
             var min = tempValues.Min();
@@ -412,228 +429,150 @@ namespace RayCarrot.Rayman.OpenSpace
         }
 
         /// <summary>
-        /// Gets a bitmap from the image as a thumbnail
+        /// Converts the .gf pixel data to raw bitmap data, including for the mipmaps
         /// </summary>
-        /// <param name="width">The image width</param>
-        /// <returns>The bitmap</returns>
-        public Bitmap GetBitmapThumbnail(int width)
+        /// <returns>The raw bitmap data for every image, including the mipmaps</returns>
+        public IEnumerable<RawBitmapData> GetRawBitmapDatas()
         {
-            return GetBitmapThumbnail(width, (int)(Height / ((double)Width / width)));
-        }
+            int offset = 0;
 
-        /// <summary>
-        /// Gets a bitmap from the image as a thumbnail
-        /// </summary>
-        /// <param name="width">The image width</param>
-        /// <param name="height">The image height</param>
-        /// <returns>The bitmap</returns>
-        public Bitmap GetBitmapThumbnail(int width, int height)
-        {
-            // Create the bitmap
-            Bitmap bmp = new Bitmap(width, height, IsTransparent ? PixelFormat.Format32bppArgb : PixelFormat.Format24bppRgb);
-
-            // Get the scale factors
-            var widthScale = Width / (double)width;
-            var heightScale = Height / (double)height;
-
-            // IDEA: Make a pull request for 24bpp images
-            // Fast lock currently only supports 32bpp images
-            if (IsTransparent)
-            {
-                // Lock the bitmap for faster reading/writing
-                using var lockedBmp = bmp.FastLock();
-
-                // Set each pixel
-                for (int y = 0; y < height; y++)
-                for (int x = 0; x < width; x++)
-                    lockedBmp.SetPixel(x, y, Pixels[(int)(x * widthScale), (int)(y * heightScale)]);
-            }
-            else
-            {
-                // Set each pixel
-                for (int y = 0; y < height; y++)
-                for (int x = 0; x < width; x++)
-                    bmp.SetPixel(x, y, Pixels[(int)(x * widthScale), (int)(y * heightScale)]);
-            }
-
-            // Return the bitmap
-            return bmp;
-        }
-
-        /// <summary>
-        /// Gets a bitmap from the image
-        /// </summary>
-        /// <returns>The bitmap</returns>
-        public Bitmap GetBitmap()
-        {
-            // Return a bitmap from the full image
-            return GetBitmap(Pixels, IsTransparent);
-        }
-
-        /// <summary>
-        /// Gets all available bitmaps from the image, including mipmaps
-        /// </summary>
-        /// <param name="includeMain">Indicates if the main image should be included</param>
-        /// <returns>The available bitmaps</returns>
-        public IEnumerable<Bitmap> GetBitmaps(bool includeMain)
-        {
-            if (includeMain)
-                // Return main image
-                yield return GetBitmap(Pixels, IsTransparent);
+            // Return the main image
+            yield return GetRawBitmapData(offset);
 
             // Return mipmaps
-            foreach (var bmp in MipmapPixels.
-                // Make sure there are any pixels
-                Where(x => x.Any()).
-                // Convert to bitmap
-                Select(m => GetBitmap(m, IsTransparent))) 
+            foreach (var mipmap in GetMipmapSizes()) 
+            {
+                // Calculate the size
+                var size = mipmap.Width * mipmap.Height * Channels;
+
+                // Make sure the size is valid
+                if (size <= 0) 
+                    continue;
+
                 // Return the bitmap
-                yield return bmp;
+                yield return GetRawBitmapData(mipmap.Width, mipmap.Height, offset);
+
+                // Get the offset
+                offset += size;
+            }
         }
 
         /// <summary>
-        /// Gets a bitmap from the image
+        /// Imports a bitmap image into the file, keeping the structure based on the properties and generating mipmaps if needed. This will reset the mipmaps, requiring them to be generated again.
         /// </summary>
-        /// <param name="pixels">The pixels to use in the bitmap</param>
-        /// <param name="isTransparent">Indicates if the image is transparent and the alpha channel should be used</param>
-        /// <returns>The bitmap</returns>
-        public static Bitmap GetBitmap(Color[,] pixels, bool isTransparent)
+        /// <param name="settings">The serializer settings</param>
+        /// <param name="bmp">The bitmap data to import from</param>
+        /// <param name="generateMipmaps">Indicates if mipmaps should be generated for the image</param>
+        /// <param name="updateGfTransparencyIfPossible">Indicates if the .gf format should be updated based on if the imported image supports transparency, if possible</param>
+        public void ImportFromBitmap(OpenSpaceSettings settings, RawBitmapData bmp, bool generateMipmaps, bool updateGfTransparencyIfPossible)
         {
-            // Get the dimensions
-            var width = pixels.GetLength(0);
-            var height = pixels.GetLength(1);
-
-            // Create the bitmap
-            Bitmap bmp = new Bitmap(width, height, isTransparent ? PixelFormat.Format32bppArgb : PixelFormat.Format24bppRgb);
-
-            // IDEA: Make a pull request for 24bpp images
-            // Fast lock currently only supports 32bpp images
-            if (isTransparent)
+            // Helper method for writing the pixel data
+            void WritePixelData(RawBitmapData bitmapData, long offset)
             {
-                // Lock the bitmap for faster reading/writing
-                using var lockedBmp = bmp.FastLock();
+                // Get the number of bitmap channels
+                var bmpChannels = Image.GetPixelFormatSize(bitmapData.PixelFormat) / 8;
 
-                // Set each pixel
-                for (int y = 0; y < height; y++)
-                for (int x = 0; x < width; x++)
-                    lockedBmp.SetPixel(x, y, pixels[x, y]);
+                byte[] bmpColorData = new byte[4];
+
+                for (uint y = 0; y < bitmapData.Height; y++)
+                for (uint x = 0; x < bitmapData.Width; x++)
+                {
+                    // Get the offsets for the pixel colors
+                    var pixelOffset = (bitmapData.Width * y + x) * Channels + offset;
+
+                    // NOTE: We reverse the Y-axis here since the .gf images are always flipper vertically
+                    var rawOffset = (bitmapData.Width * (bitmapData.Height - y - 1) + x) * bmpChannels;
+
+                    // Get the bitmap color bytes for this pixel
+                    bmpColorData[0] = bitmapData.PixelData[rawOffset + 0];
+                    bmpColorData[1] = bitmapData.PixelData[rawOffset + 1];
+                    bmpColorData[2] = bitmapData.PixelData[rawOffset + 2];
+                    bmpColorData[3] = bmpChannels == 4 ? bitmapData.PixelData[rawOffset + 3] : (byte)255;
+
+                    // Get the pixels
+                    foreach (var b in GetGfPixels(bmpColorData))
+                    {
+                        PixelData[pixelOffset] = b;
+                        pixelOffset++;
+                    }
+                }
             }
-            else
+
+            // Get the number of bitmap channels
+            var bitmapChannels = Image.GetPixelFormatSize(bmp.PixelFormat) / 8;
+
+            // Make sure the channel count is 3 or 4
+            if (!(bitmapChannels == 3 || bitmapChannels == 4))
+                throw new Exception("GF files only support importing from bitmaps with 3 or 4 channels");
+
+            // Check if the format should be updated for transparency
+            if (updateGfTransparencyIfPossible && bitmapChannels != GetBitmapChannelCount())
             {
-                // Set each pixel
-                for (int y = 0; y < height; y++)
-                for (int x = 0; x < width; x++)
-                    bmp.SetPixel(x, y, pixels[x, y]);
+                // Currently only supported for 3 or 4 channels...
+                if (Channels >= 3)
+                {
+                    // Update the channel count
+                    Channels = (byte)bitmapChannels;
+
+                    // Update the format
+                    Format = Channels == 3 ? 0888u : 8888u;
+                }
             }
 
-            // Return the bitmap
-            return bmp;
-        }
-
-        /// <summary>
-        /// Imports a bitmap image into the file, keeping the structure based on the properties and generating mipmaps if needed
-        /// </summary>
-        /// <param name="bmp">The bitmap to import</param>
-        public void ImportFromBitmap(Bitmap bmp)
-        {
             // Set size
             Width = (uint)bmp.Width;
             Height = (uint)bmp.Height;
 
-            // Create the pixels array for the main image
-            Pixels = new Color[Width, Height];
+            // Set the pixel count
+            PixelCount = Width * Height;
 
-            // Create the pixels arrays for the mipmaps
-            MipmapPixels = new Color[RealMipmapCount][,];
+            // Update the mipmap count
+            if (generateMipmaps && SupportsMipmaps(settings))
+                MipmapCount = GetMipmapCount();
+            else
+                MipmapCount = 0;
 
-            int mipmapIndex = 0;
-
-            // Set the mipmap sizes
-            foreach (var size in GetMipmapSizes())
+            // Enumerate each mipmap size
+            foreach (Size size in GetMipmapSizes())
             {
-                MipmapPixels[mipmapIndex] = new Color[size.Width, size.Height];
+                // Get the mipmap pixel count
+                var count = (uint)(size.Width * size.Height);
 
-                mipmapIndex++;
+                // Add to the total pixel count
+                PixelCount += count;
             }
 
-            // TODO: Allow this to be configured
-            // Indicated if changing the transparency is allowed
-            bool allowChangedTransparency = false;
+            // Create the data array
+            PixelData = new byte[Channels * PixelCount];
 
-            RCFCore.Logger?.LogDebugSource($"A bitmap is being imported to a .gf file with the size '{Width} x {Height}'");
+            // Set the main pixel data
+            WritePixelData(bmp, 0);
 
-            // Helper method for setting the pixels from a bitmap, returning a value indicating if the image is transparent
-            static bool SetPixels(Color[,] pixelArray, int width, int height, Bitmap bitmap)
+            // Keep track of the offset
+            long mipmapOffset = Width * Height * Channels;
+
+            // Generate mipmaps if available
+            if (RealMipmapCount > 0)
             {
-                // Keep track of if the image is transparent
-                var isBitmapTransparent = false;
+                // Get the bitmap
+                using var bitmap = bmp.GetBitmap();
 
-                // Set each pixel for the main image
-                for (int x = 0; x < width; x++)
+                // Generate every mipmap
+                foreach (Size size in GetMipmapSizes())
                 {
-                    for (int y = 0; y < height; y++)
-                    {
-                        // Get the pixel data
-                        var pixel = bitmap.GetPixel(x, y);
+                    // Resize the bitmap
+                    using var resizedBmp = bitmap.ResizeImage(size.Width, size.Height, false);
 
-                        // Set the pixel
-                        pixelArray[x, y] = pixel;
+                    // Write the mipmap
+                    WritePixelData(new RawBitmapData(resizedBmp), mipmapOffset);
 
-                        // Check if it's transparent
-                        if (pixel.A != Byte.MaxValue)
-                            isBitmapTransparent = true;
-                    }
+                    // Increase the index
+                    mipmapOffset += size.Height * size.Width * Channels;
                 }
-
-                return isBitmapTransparent;
-            }
-
-            // Set the pixels for the main image
-            var isTransparent = SetPixels(Pixels, (int)Width, (int)Height, bmp);
-
-            RCFCore.Logger?.LogDebugSource($"The bitmap image {(isTransparent ? "is" : "is not")} transparent");
-
-            // Check if the transparency value should be updated
-            if (allowChangedTransparency && IsTransparent != isTransparent)
-            {
-                RCFCore.Logger?.LogDebugSource($"The bitmap image transparency has changed");
-
-                // TODO: Format needs to be updated too
-
-                // Update channels if they are 3 or more
-                if (Channels == 3)
-                    Channels = 4;
-                else if (Channels == 4)
-                    Channels = 3;
-
-                // Update transparency
-                IsTransparent = isTransparent;
             }
 
             // Update the repeat byte
             UpdateRepeatByte();
-
-            // Set mipmaps if available
-            if (RealMipmapCount > 0)
-            {
-                mipmapIndex = 0;
-
-                // Set each mipmap
-                foreach (Size size in GetMipmapSizes())
-                {
-                    // Ignore if one value is 0
-                    if (size.Width == 0 || size.Height == 0)
-                        break;
-
-                    // Resize the bitmap
-                    using var resizedBmp = bmp.ResizeImage(size.Width, size.Height, false);
-
-                    // Add the pixels from the resized image
-                    SetPixels(MipmapPixels[mipmapIndex], size.Width, size.Height, resizedBmp);
-
-                    mipmapIndex++;
-                }
-            }
         }
 
         /// <summary>
@@ -668,19 +607,11 @@ namespace RayCarrot.Rayman.OpenSpace
             MipmapCount = 0;
 
             // Check if mipmaps are used
-            if (reader.SerializerSettings.EngineVersion == OpenSpaceEngineVersion.Rayman3 && reader.SerializerSettings.Game != OpenSpaceGame.Dinosaur && reader.SerializerSettings.Game != OpenSpaceGame.LargoWinch)
+            if (SupportsMipmaps(reader.SerializerSettings))
                 MipmapCount = reader.Read<byte>();
 
-            // Create the pixels array for the main image
-            Pixels = new Color[Width, Height];
-
-            // Create the pixels arrays for the mipmaps
-            MipmapPixels = new Color[RealMipmapCount][,];
-
             // Set the pixel count
-            uint pixelCount = Width * Height;
-
-            int mipmapIndex = 0;
+            PixelCount = Width * Height;
 
             // Enumerate each mipmap size
             foreach (Size size in GetMipmapSizes())
@@ -688,13 +619,8 @@ namespace RayCarrot.Rayman.OpenSpace
                 // Get the mipmap pixel count
                 var count = (uint)(size.Width * size.Height);
 
-                // Create the pixel array
-                MipmapPixels[mipmapIndex] = new Color[size.Width, size.Height];
-
                 // Add to the total pixel count
-                pixelCount += count;
-
-                mipmapIndex++;
+                PixelCount += count;
             }
 
             RepeatByte = reader.Read<byte>();
@@ -704,12 +630,12 @@ namespace RayCarrot.Rayman.OpenSpace
                 PaletteNumColors = reader.Read<ushort>();
                 PaletteBytesPerColor = reader.Read<byte>();
 
-                var byte1 = reader.Read<byte>();
-                var byte2 = reader.Read<byte>();
-                var byte3 = reader.Read<byte>();
-                var num4 = reader.Read<uint>();
+                MontrealByte1 = reader.Read<byte>();
+                MontrealByte2 = reader.Read<byte>();
+                MontrealByte3 = reader.Read<byte>();
+                MontrealNum4 = reader.Read<uint>();
 
-                pixelCount = reader.Read<uint>(); // Hype has mipmaps
+                PixelCount = reader.Read<uint>(); // Hype has mipmaps
                 var montrealType = reader.Read<byte>();
 
                 if (PaletteNumColors != 0 && PaletteBytesPerColor != 0)
@@ -725,51 +651,50 @@ namespace RayCarrot.Rayman.OpenSpace
                 };
             }
 
-            // Read the channels
-            var pixelData = ReadChannels(reader, pixelCount);
+            // Create the data array
+            PixelData = new byte[Channels * PixelCount];
 
-            // Check if the texture is transparent
-            if (Channels >= 3)
+            // Keep track of the current channel
+            int channel = 0;
+
+            // Enumerate each channel
+            while (channel < Channels)
             {
-                IsTransparent = Channels == 4;
-            }
-            else if (Channels == 2)
-            {
-                if (Format == 1555 || Format == 4444) 
-                    IsTransparent = true;
-            }
-            else if (Channels == 1)
-            {
-                if (Palette != null && PaletteBytesPerColor == 4) 
-                    IsTransparent = true;
-            }
+                int pixel = 0;
 
-            // Keep track of the channel offset
-            int channelOffset = 0;
-
-            // Set each pixel, including for each mipmap
-            foreach (var mipmapArray in GetAllPixels())
-            {
-                // If we are not deserializing mipmaps, break once an offset has been set
-                if (!reader.SerializerSettings.DeserializeMipmaps && channelOffset > 0)
-                    break;
-
-                // Get the sizes
-                var width = mipmapArray.GetLength(0);
-                var height = mipmapArray.GetLength(1);
-
-                // Enumerate each pixel
-                for (int y = 0; y < height; y++)
-                for (int x = 0; x < width; x++)
+                // Enumerate through each pixel
+                while (pixel < PixelCount)
                 {
-                    // Get the offset for the pixel colors
-                    var offset = (width * y + x) * Channels + channelOffset;
+                    // Read the pixel
+                    byte b1 = reader.Read<byte>();
 
-                    // Set the pixel color
-                    mipmapArray[x, height - y - 1] = GetColor(pixelData, offset);
+                    // If it's the repeat byte...
+                    if (b1 == RepeatByte)
+                    {
+                        // Get the value to repeat
+                        byte value = reader.Read<byte>();
+
+                        // Get the number of times to repeat
+                        byte count = reader.Read<byte>();
+
+                        // Repeat the value the specified number of times
+                        for (int i = 0; i < count; ++i)
+                        {
+                            // Set the value
+                            PixelData[channel + pixel * Channels] = value;
+
+                            pixel++;
+                        }
+                    }
+                    else
+                    {
+                        // Set the value
+                        PixelData[channel + pixel * Channels] = b1;
+                        pixel++;
+                    }
                 }
-                
-                channelOffset += mipmapArray.Length * Channels;
+
+                channel++;
             }
         }
 
@@ -779,10 +704,6 @@ namespace RayCarrot.Rayman.OpenSpace
         /// <param name="writer">The writer to use to write to the stream</param>
         public void Serialize(IBinaryDataWriter<OpenSpaceSettings> writer)
         {
-            // Make sure the file was not deserialized without mipmaps if needing them
-            if (MipmapPixels.Length != (RealMipmapCount))
-                throw new BinarySerializableException("The file can not be serialized due to the mipmap count not matching the available mipmaps");
-
             // Write the format or version
             if (writer.SerializerSettings.EngineVersion == OpenSpaceEngineVersion.Montreal)
                 writer.Write(Version);
@@ -797,7 +718,7 @@ namespace RayCarrot.Rayman.OpenSpace
             writer.Write(Channels);
 
             // Write the number of mipmaps
-            if (writer.SerializerSettings.EngineVersion == OpenSpaceEngineVersion.Rayman3 && writer.SerializerSettings.Game != OpenSpaceGame.Dinosaur && writer.SerializerSettings.Game != OpenSpaceGame.LargoWinch)
+            if (SupportsMipmaps(writer.SerializerSettings))
                 writer.Write(MipmapCount);
 
             // Write the repeat byte
@@ -805,214 +726,87 @@ namespace RayCarrot.Rayman.OpenSpace
 
             if (writer.SerializerSettings.EngineVersion == OpenSpaceEngineVersion.Montreal)
             {
-                throw new NotImplementedException("Serializing Ubisoft Montreal .gf files is currently not supported");
-                //writer.Write(PaletteNumColors);
-                //writer.Write(PaletteBytesPerColor);
+                writer.Write(PaletteNumColors);
+                writer.Write(PaletteBytesPerColor);
 
-                //var byte1 = reader.Read<byte>();
-                //var byte2 = reader.Read<byte>();
-                //var byte3 = reader.Read<byte>();
-                //var num4 = reader.Read<uint>();
+                writer.Write(MontrealByte1);
+                writer.Write(MontrealByte2);
+                writer.Write(MontrealByte3);
+                writer.Write(MontrealNum4);
 
-                //channelPixels = reader.Read<uint>(); // Hype has mipmaps
+                writer.Write(PixelCount);
+                writer.Write((byte)(Format switch
+                {
+                    0 => 5,
+                    565 => 10,
+                    1555 => 11,
+                    4444 => 12,
+                    _ => throw new BinarySerializableException($"Unknown Montreal GF format {Format}")
+                }));
 
-                //var montrealType = reader.Read<byte>();
-
-                //if (paletteNumColors != 0 && paletteBytesPerColor != 0)
-                //    palette = reader.ReadBytes(paletteBytesPerColor * paletteNumColors);
-
-                //Format = montrealType switch
-                //{
-                //    5 => 0u,
-                //    10 => 565u,
-                //    11 => 1555u,
-                //    12 => 4444u,
-                //    _ => throw new BinarySerializableException($"Unknown Montreal GF format {montrealType}")
-                //};
+                if (PaletteNumColors != 0 && PaletteBytesPerColor != 0)
+                    writer.Write(Palette);
             }
 
-            // TODO: Rewrite this to follow how the deserializer handles it
-            if (Channels >= 3)
+            // Keep track of the current channel
+            int channel = 0;
+
+            // Enumerate each channel
+            while (channel < Channels)
             {
-                // Helper method for writing a channel
-                void WriteChannel(IReadOnlyList<byte> channelData)
+                int pixelIndex = 0;
+                int pixelDataIndex() => pixelIndex * Channels + channel;
+
+                // Enumerate through each pixel
+                while (pixelIndex < PixelCount)
                 {
-                    int pixelIndex = 0;
+                    // Get the pixel
+                    var pixelData = PixelData[pixelDataIndex()];
 
-                    // Enumerate each pixel
-                    while (pixelIndex < channelData.Count)
+                    // Check if it equals the next two pixels or the repeat byte
+                    if ((pixelDataIndex() + 2 < PixelData.Length && pixelData == PixelData[pixelDataIndex() + 1] && pixelData == PixelData[pixelDataIndex() + 2]) || pixelData == RepeatByte)
                     {
-                        // Get the pixel
-                        var pixelData = channelData[pixelIndex];
+                        // Get the value to repeat
+                        var repeatValue = pixelData;
 
-                        // Check if it equals the next two pixels or the repeat byte
-                        if ((pixelIndex + 2 < channelData.Count && pixelData == channelData[pixelIndex + 1] && pixelData == channelData[pixelIndex + 2]) || pixelData == RepeatByte)
+                        // Start repeating by writing the repeat byte
+                        writer.Write(RepeatByte);
+
+                        // Write the pixel to repeat
+                        writer.Write(repeatValue);
+
+                        // Keep track of how many times we repeat
+                        byte repeatCount = 0;
+
+                        // Check each value until we break
+                        while (pixelIndex < PixelCount)
                         {
-                            // Get the value to repeat
-                            var repeatValue = pixelData;
+                            // Get the data
+                            pixelData = PixelData[pixelDataIndex()];
 
-                            // Start repeating by writing the repeat byte
-                            writer.Write(RepeatByte);
+                            // Make sure it's still equal to the value and we haven't reached the maximum value
+                            if (pixelData != repeatValue || repeatCount >= Byte.MaxValue)
+                                break;
 
-                            // Write the pixel to repeat
-                            writer.Write(repeatValue);
-
-                            // Keep track of how many times we repeat
-                            byte repeatCount = 0;
-
-                            // Check each value until we break
-                            while (pixelIndex < channelData.Count)
-                            {
-                                // Get the data
-                                pixelData = channelData[pixelIndex];
-
-                                // Make sure it's still equal to the value and we haven't reached the maximum value
-                                if (pixelData != repeatValue || repeatCount >= Byte.MaxValue)
-                                    break;
-
-                                // Increment the index and count
-                                pixelIndex++;
-                                repeatCount++;
-                            }
-
-                            // Write the repeat count
-                            writer.Write(repeatCount);
-                        }
-                        else
-                        {
-                            // Write the pixel
-                            writer.Write(pixelData);
-
-                            // Increment the index
+                            // Increment the index and count
                             pixelIndex++;
+                            repeatCount++;
                         }
+
+                        // Write the repeat count
+                        writer.Write(repeatCount);
                     }
-                }
-
-                // Create a list of each channel
-                var channels = new List<byte>[IsTransparent ? 4 : 3];
-
-                // Create each channel list
-                for (int i = 0; i < channels.Length; i++)
-                    channels[i] = new List<byte>();
-
-                // Get the channels for every mipmap and add them
-                foreach (var c in GetAllPixels().Select(x => GetBGRAChannels(x, IsTransparent)))
-                {
-                    int index = 0;
-
-                    // Add every channel from this mipmap
-                    foreach (var channel in c)
+                    else
                     {
-                        // Add the channel data
-                        channels[index].AddRange(channel);
+                        // Write the pixel
+                        writer.Write(pixelData);
 
-                        index++;
+                        // Increment the index
+                        pixelIndex++;
                     }
                 }
 
-                // Write the channels
-                foreach (var c in channels)
-                    WriteChannel(c);
-            }
-            else if (Channels == 2)
-            {
-                throw new NotImplementedException("Serializing .gf files with 2 channels is currently not supported");
-                //byte[] channel_1 = ReadChannel();
-                //byte[] channel_2 = ReadChannel();
-
-                //redChannel = new byte[channelPixels];
-                //greenChannel = new byte[channelPixels];
-                //blueChannel = new byte[channelPixels];
-                //alphaChannel = new byte[channelPixels];
-
-                //if (Format == 1555 || Format == 4444)
-                //    IsTransparent = true;
-
-                //for (int i = 0; i < channelPixels; i++)
-                //{
-                //    ushort pixel = BitConverter.ToUInt16(new byte[] { channel_1[i], channel_2[i] }, 0); // RRRRR, GGGGGG, BBBBB (565)
-
-                //    uint red;
-                //    uint green;
-                //    uint blue;
-                //    uint alpha;
-
-                //    switch (Format)
-                //    {
-                //        case 88:
-                //            alphaChannel[i] = channel_2[i];
-                //            redChannel[i] = channel_1[i];
-                //            blueChannel[i] = channel_1[i];
-                //            greenChannel[i] = channel_1[i];
-                //            break;
-
-                //        case 4444:
-                //            alpha = extractBits(pixel, 4, 12);
-                //            red = extractBits(pixel, 4, 8);
-                //            green = extractBits(pixel, 4, 4);
-                //            blue = extractBits(pixel, 4, 0);
-
-                //            redChannel[i] = (byte)((red / 15.0f) * 255.0f);
-                //            greenChannel[i] = (byte)((green / 15.0f) * 255.0f);
-                //            blueChannel[i] = (byte)((blue / 15.0f) * 255.0f);
-                //            alphaChannel[i] = (byte)((alpha / 15.0f) * 255.0f);
-                //            break;
-
-                //        case 1555:
-                //            alpha = extractBits(pixel, 1, 15);
-                //            red = extractBits(pixel, 5, 10);
-                //            green = extractBits(pixel, 5, 5);
-                //            blue = extractBits(pixel, 5, 0);
-
-                //            redChannel[i] = (byte)((red / 31.0f) * 255.0f);
-                //            greenChannel[i] = (byte)((green / 31.0f) * 255.0f);
-                //            blueChannel[i] = (byte)((blue / 31.0f) * 255.0f);
-                //            alphaChannel[i] = (byte)(alpha * 255);
-                //            break;
-
-                //        case 565:
-                //        default: // 565
-                //            red = extractBits(pixel, 5, 11);
-                //            green = extractBits(pixel, 6, 5);
-                //            blue = extractBits(pixel, 5, 0);
-
-                //            redChannel[i] = (byte)((red / 31.0f) * 255.0f);
-                //            greenChannel[i] = (byte)((green / 63.0f) * 255.0f);
-                //            blueChannel[i] = (byte)((blue / 31.0f) * 255.0f);
-                //            break;
-                //    }
-                //}
-            }
-            else if (Channels == 1)
-            {
-                throw new NotImplementedException("Serializing .gf files with 1 channel is currently not supported");
-
-                //byte[] channel_1 = ReadChannel();
-
-                //redChannel = new byte[channelPixels];
-                //greenChannel = new byte[channelPixels];
-                //blueChannel = new byte[channelPixels];
-
-                //for (int i = 0; i < channelPixels; i++)
-                //{
-                //    if (palette != null)
-                //    {
-                //        redChannel[i] = palette[channel_1[i] * paletteBytesPerColor + 2];
-                //        greenChannel[i] = palette[channel_1[i] * paletteBytesPerColor + 1];
-                //        blueChannel[i] = palette[channel_1[i] * paletteBytesPerColor + 0];
-                //    }
-                //    else
-                //    {
-                //        redChannel[i] = channel_1[i];
-                //        blueChannel[i] = channel_1[i];
-                //        greenChannel[i] = channel_1[i];
-                //    }
-                //}
-            }
-            else
-            {
-                throw new BinarySerializableException("The number of channels is not valid");
+                channel++;
             }
         }
 

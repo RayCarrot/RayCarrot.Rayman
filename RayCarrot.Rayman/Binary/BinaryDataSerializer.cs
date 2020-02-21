@@ -19,11 +19,9 @@ namespace RayCarrot.Rayman
         /// Default constructor
         /// </summary>
         /// <param name="serializerSettings">The serializer settings</param>
-        /// <param name="encoder">An optional encoder to use</param>
-        public BinaryDataSerializer(Settings serializerSettings, IDataEncoder encoder = null)
+        public BinaryDataSerializer(Settings serializerSettings)
         {
             SerializerSettings = serializerSettings;
-            Encoder = encoder;
         }
 
         #endregion
@@ -35,11 +33,6 @@ namespace RayCarrot.Rayman
         /// </summary>
         public Settings SerializerSettings { get; }
 
-        /// <summary>
-        /// An optional encoder to use
-        /// </summary>
-        public IDataEncoder Encoder { get; }
-
         #endregion
 
         #region Public Methods
@@ -50,18 +43,7 @@ namespace RayCarrot.Rayman
         /// <param name="stream">The stream to use</param>
         public virtual BinaryReader GetBinaryReader(Stream stream)
         {
-            // If there is no encoder, use the stream directly
-            if (Encoder == null)
-                return new StandardBinaryReader(stream, SerializerSettings, true);
-
-            // IDEA: Use temp file here if the size is too big
-            // Create a memory stream
-            var memStream = new MemoryStream();
-
-            // Decode the data
-            Encoder.Decode(stream, memStream);
-
-            return new StandardBinaryReader(memStream, SerializerSettings, false);
+            return new StandardBinaryReader(stream, SerializerSettings, true);
         }
 
         /// <summary>
@@ -70,10 +52,7 @@ namespace RayCarrot.Rayman
         /// <param name="stream">The stream to use</param>
         public virtual BinaryWriter GetBinaryWriter(Stream stream)
         {
-            if (Encoder != null)
-                throw new NotImplementedException("The binary data serializer does currently not support writing with an encoder");
-            else
-                return new StandardBinaryWriter(stream, SerializerSettings, true);
+            return new StandardBinaryWriter(stream, SerializerSettings, true);
         }
 
         /// <summary>

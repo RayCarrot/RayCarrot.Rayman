@@ -8,19 +8,19 @@ using System.Linq;
 namespace RayCarrot.Rayman.UbiArt
 {
     /*
-    Game:                                 Version:    Unk1:    Unk2:    Unk3:    Unk4:    Unk5:    Unk6:     Unk9:    Unk7:    Unk8:    BlockSize:    BlockCompressedSize:
+    Game:                                 Version:    Unk1:    Unk2:    Unk3:    Unk4:    Unk5:    Unk6:     Unk9:    Unk7:    EngineVersion:    BlockSize:    BlockCompressedSize:
 
-    Rayman Origins (PC, Wii, PS3, PS Vita):      3        0        -        0        1        1        0         -   877930951     0             -                       -
-    Rayman Origins (3DS):                        4        5        -        0        1        1        0         -   1635089726    0             -                       -
-    Rayman Legends (PC, Wii U, PS Vita, Switch): 5        0        -        0        1        1        0         -   1274838019    0             -                       -
-    Just Dance 2017 (Wii U):                     5        8        -        0        0        0        0         -   3346979248   241478         -                       -
-    Valiant Hearts (Android):                    7       10        -        0        1        1        0         0   3713665533    0             0                       0
-    Child of Light (PC, PS Vita):                7        0        -        0        1        1        0         -   3669482532   30765          0                       0
-    Rayman Legends (PS4):                        7        8        -        0        1        1        0         -   3669482532   30765          0                       0
-    Gravity Falls (3DS):                         7       10        -        0        1        1        0         -   4160251604    0             0                       0
-    Rayman Adventures (Android, iOS):            8        2       11        1        1        1        0         -   285844061     0             0                       0
-    Rayman Mini 1.0 (Mac):                       8       12       12        1        1        1     3771         -   800679911    3771           0                       0
-    Rayman Mini 1.1 (Mac):                       8       12       12        1        1        1     3826         -   2057063881   3826           0                       0
+    Rayman Origins (PC, Wii, PS3, PS Vita):      3        0        -        0        1        1        0         -   877930951          0             -                       -                                                                                                                     
+    Rayman Origins (3DS):                        4        5        -        0        1        1        0         -   1635089726         0             -                       -                                                                                                                     
+    Rayman Legends (PC, Wii U, PS Vita, Switch): 5        0        -        0        1        1        0         -   1274838019         0             -                       -                                                                                                                     
+    Just Dance 2017 (Wii U):                     5        8        -        0        0        0        0         -   3346979248        241478         -                       -                                                                                                                     
+    Valiant Hearts (Android):                    7       10        -        0        1        1        0         0   3713665533         0             0                       0                                                                                                                     
+    Child of Light (PC, PS Vita):                7        0        -        0        1        1        0         -   3669482532        30765          0                       0                                                                                                                     
+    Rayman Legends (PS4):                        7        8        -        0        1        1        0         -   3669482532        30765          0                       0                                                                                                                     
+    Gravity Falls (3DS):                         7       10        -        0        1        1        0         -   4160251604         0             0                       0                                                                                                                     
+    Rayman Adventures (Android, iOS):            8        2       11        1        1        1        0         -   285844061          0             0                       0                                                                                                                     
+    Rayman Mini 1.0 (Mac):                       8       12       12        1        1        1     3771         -   800679911         3771           0                       0                                                                                                                     
+    Rayman Mini 1.1 (Mac):                       8       12       12        1        1        1     3826         -   2057063881        3826           0                       0
     */
 
     /// <summary>
@@ -107,9 +107,9 @@ namespace RayCarrot.Rayman.UbiArt
         public uint Unknown7 { get; set; }
 
         /// <summary>
-        /// Unknown value
+        /// The engine version
         /// </summary>
-        public uint Unknown8 { get; set; }
+        public uint EngineVersion { get; set; }
 
         /// <summary>
         /// The block size, if the block is compressed
@@ -203,7 +203,7 @@ namespace RayCarrot.Rayman.UbiArt
                 Unknown9 = reader.Read<uint>();
 
             Unknown7 = reader.Read<uint>();
-            Unknown8 = reader.Read<uint>();
+            EngineVersion = reader.Read<uint>();
 
             if (Version >= 6)
             {
@@ -259,7 +259,7 @@ namespace RayCarrot.Rayman.UbiArt
                 writer.Write(Unknown9);
 
             writer.Write(Unknown7);
-            writer.Write(Unknown8);
+            writer.Write(EngineVersion);
 
             if (Version >= 6)
             {

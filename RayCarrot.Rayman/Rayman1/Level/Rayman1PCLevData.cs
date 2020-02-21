@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Drawing;
 using System.Linq;
-using FastBitmapLib;
 using RayCarrot.Extensions;
+using RayCarrot.Rayman.OpenSpace;
 
 namespace RayCarrot.Rayman.Rayman1
 {
@@ -189,7 +189,7 @@ namespace RayCarrot.Rayman.Rayman1
             var bmp = new Bitmap(Rayman1PCLevTexture.Size * MapWidth, Rayman1PCLevTexture.Size * MapHeight);
 
             // Lock the bitmap for faster reading/writing
-            using (var lockedBmp = bmp.FastLock())
+            using (var lockedBmp = new BitmapLock(bmp))
             {
                 // Enumerate each cell
                 for (int cellY = 0; cellY < MapHeight; cellY++)
@@ -248,7 +248,7 @@ namespace RayCarrot.Rayman.Rayman1
             var bmp = new Bitmap(Rayman1PCLevTexture.Size * MapWidth, Rayman1PCLevTexture.Size * MapHeight);
 
             // Lock the bitmap for faster reading/writing
-            using (var lockedBmp = bmp.FastLock())
+            using (var lockedBmp = new BitmapLock(bmp))
             {
                 // Enumerate each cell
                 for (int cellY = 0; cellY < MapHeight; cellY++)

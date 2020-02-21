@@ -20,7 +20,7 @@ namespace RayCarrot.Rayman.OpenSpace
             settings.ByteOrder = ByteOrder.LittleEndian;
             settings.Encoding = Encoding.UTF8;
 
-            return new BinaryDataSerializer<Rayman3PCSaveData, OpenSpaceSettings>(settings, new Rayman3SaveDataEncoder());
+            return new BinaryDataSerializer<Rayman3PCSaveData, OpenSpaceSettings>(settings);
         }
 
         /// <summary>
