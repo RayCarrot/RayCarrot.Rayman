@@ -110,9 +110,13 @@ namespace RayCarrot.Rayman.OpenSpace
         public byte[] PixelData { get; set; }
 
         /// <summary>
-        /// Indicates if the image is transparent
+        /// The current pixel format
         /// </summary>
-        public bool IsTransparent => GetBitmapChannelCount() == 4;
+        public OpenSpaceGFFormat GFPixelFormat
+        {
+            get => GetFormat();
+            set => SetFormat(value);
+        }
 
         #endregion
 
@@ -175,122 +179,190 @@ namespace RayCarrot.Rayman.OpenSpace
         /// <summary>
         /// Gets the pixel color from the pixel data in the BGR(A) format
         /// </summary>
-        /// <param name="pixelData">The pixel data to get the color from</param>
+        /// <param name="format">The .gf pixel format</param>
+        /// <param name="gfPixelData">The pixel data to get the color from</param>
         /// <param name="offset">The offset for the specific pixel in the data array</param>
         /// <returns>The color for the pixel in the BGR(A) format</returns>
-        protected IEnumerable<byte> GetBitmapColorPixels(byte[] pixelData, long offset)
+        protected IEnumerable<byte> GetGBRAPixel(OpenSpaceGFFormat format, byte[] gfPixelData, long offset)
         {
-            if (Channels >= 3)
+            switch (format)
             {
-                // Get the BGR color values
-                yield return pixelData[offset + 0];
-                yield return pixelData[offset + 1];
-                yield return pixelData[offset + 2];
+                case OpenSpaceGFFormat.Format_32bpp_BGRA_8888:
+                    // Get the BGR color values
+                    yield return gfPixelData[offset + 0];
+                    yield return gfPixelData[offset + 1];
+                    yield return gfPixelData[offset + 2];
+                    yield return gfPixelData[offset + 3];
 
-                // If transparent, get the alpha value
-                if (Channels == 4)
-                    yield return pixelData[offset + 3];
-            }
-            else if (Channels == 2)
-            {
-                // Helper method for extracting bits
-                static int extractBits(int number, int count, int offset2) => (((1 << count) - 1) & (number >> (offset2)));
+                    break;
 
-                ushort pixel = BitConverter.ToUInt16(new byte[]
-                {
-                    pixelData[offset],
-                    pixelData[offset + 1]
-                }, 0); // RRRRR, GGGGGG, BBBBB (565)
+                case OpenSpaceGFFormat.Format_24bpp_BGR_888:
+                    // Get the BGRA color values
+                    yield return gfPixelData[offset + 0];
+                    yield return gfPixelData[offset + 1];
+                    yield return gfPixelData[offset + 2];
 
-                switch (Format)
-                {
-                    case 88:
-                        yield return pixelData[offset];
-                        yield return pixelData[offset];
-                        yield return pixelData[offset];
-                        yield return pixelData[offset + 1];
+                    break;
 
-                        break;
+                case OpenSpaceGFFormat.Format_16bpp_GrayAlpha_88:
+                case OpenSpaceGFFormat.Format_16bpp_BGRA_4444:
+                case OpenSpaceGFFormat.Format_16bpp_BGRA_1555:
+                case OpenSpaceGFFormat.Format_16bpp_BGR_565:
 
-                    case 4444:
+                    // Helper method for extracting bits
+                    static int extractBits(int number, int count, int offset2) => (((1 << count) - 1) & (number >> (offset2)));
 
-                        yield return (byte)(extractBits(pixel, 4, 0) * 17);
-                        yield return (byte)(extractBits(pixel, 4, 4) * 17);
-                        yield return (byte)(extractBits(pixel, 4, 8) * 17);
-                        yield return (byte)(extractBits(pixel, 4, 12) * 17);
+                    ushort pixel = BitConverter.ToUInt16(new byte[]
+                    {
+                        gfPixelData[offset],
+                        gfPixelData[offset + 1]
+                    }, 0); // RRRRR, GGGGGG, BBBBB (565)
 
-                        break;
+                    switch (format)
+                    {
+                        case OpenSpaceGFFormat.Format_16bpp_GrayAlpha_88:
+                            yield return gfPixelData[offset];
+                            yield return gfPixelData[offset];
+                            yield return gfPixelData[offset];
+                            yield return gfPixelData[offset + 1];
 
-                    case 1555:
-                        const float multiple = (255 / 31f);
+                            break;
 
-                        yield return (byte)(extractBits(pixel, 5, 0) * multiple);
-                        yield return (byte)(extractBits(pixel, 5, 5) * multiple);
-                        yield return (byte)(extractBits(pixel, 5, 10) * multiple);
-                        yield return (byte)(extractBits(pixel, 1, 15) * 255);
+                        case OpenSpaceGFFormat.Format_16bpp_BGRA_4444:
 
-                        break;
+                            yield return (byte)(extractBits(pixel, 4, 0) * 17);
+                            yield return (byte)(extractBits(pixel, 4, 4) * 17);
+                            yield return (byte)(extractBits(pixel, 4, 8) * 17);
+                            yield return (byte)(extractBits(pixel, 4, 12) * 17);
 
-                    case 565:
-                    default: // 565
-                        yield return (byte)(extractBits(pixel, 5, 0) * (255 / 31f));
-                        yield return (byte)(extractBits(pixel, 6, 5) * (255 / 63f));
-                        yield return (byte)(extractBits(pixel, 5, 11) * (255 / 31f));
+                            break;
 
-                        break;
-                }
-            }
-            else if (Channels == 1)
-            {
-                if (Palette != null)
-                {
+                        case OpenSpaceGFFormat.Format_16bpp_BGRA_1555:
+                            const float multiple = (255 / 31f);
+
+                            yield return (byte)(extractBits(pixel, 5, 0) * multiple);
+                            yield return (byte)(extractBits(pixel, 5, 5) * multiple);
+                            yield return (byte)(extractBits(pixel, 5, 10) * multiple);
+                            yield return (byte)(extractBits(pixel, 1, 15) * 255);
+
+                            break;
+
+                        case OpenSpaceGFFormat.Format_16bpp_BGR_565:
+                        default: // 565
+                            yield return (byte)(extractBits(pixel, 5, 0) * (255 / 31f));
+                            yield return (byte)(extractBits(pixel, 6, 5) * (255 / 63f));
+                            yield return (byte)(extractBits(pixel, 5, 11) * (255 / 31f));
+
+                            break;
+                    }
+
+                    break;
+
+                case OpenSpaceGFFormat.Format_8bpp_BGRA_Indexed:
+                case OpenSpaceGFFormat.Format_8bpp_BGR_Indexed:
                     for (int i = 0; i < PaletteBytesPerColor; i++)
-                        yield return Palette[pixelData[offset] * PaletteBytesPerColor + i];
-                }
-                else
-                {
-                    yield return pixelData[offset];
-                    yield return pixelData[offset];
-                    yield return pixelData[offset];
-                }
-            }
-            else
-            {
-                throw new Exception("The number of channels is not valid");
+                        yield return Palette[gfPixelData[offset] * PaletteBytesPerColor + i];
+
+                    break;
+
+                case OpenSpaceGFFormat.Format_8bpp_Gray:
+                    yield return gfPixelData[offset];
+                    yield return gfPixelData[offset];
+                    yield return gfPixelData[offset];
+
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(format), format, null);
             }
         }
 
         /// <summary>
         /// Gets the pixel color from the pixel data in the .gf format
         /// </summary>
-        /// <param name="bmpPixelData">The bitmap pixel data to get the color from, always 4 bytes</param>
+        /// <param name="format">The .gf pixel format</param>
+        /// <param name="bgraPixelData">The bitmap pixel data to get the color from, always 4 bytes</param>
         /// <returns>The color for the pixel in the .gf format</returns>
-        protected IEnumerable<byte> GetGfPixels(byte[] bmpPixelData)
+        protected IEnumerable<byte> GetGfPixel(OpenSpaceGFFormat format, byte[] bgraPixelData)
         {
-            if (Channels >= 3)
+            switch (format)
             {
-                // Get the BGR color values
-                yield return bmpPixelData[0];
-                yield return bmpPixelData[1];
-                yield return bmpPixelData[2];
+                case OpenSpaceGFFormat.Format_32bpp_BGRA_8888:
+                    // Get the BGR color values
+                    yield return bgraPixelData[0];
+                    yield return bgraPixelData[1];
+                    yield return bgraPixelData[2];
+                    yield return bgraPixelData[3];
 
-                // If transparent, get the alpha value
-                if (Channels == 4)
-                    yield return bmpPixelData[3];
+                    break;
+
+                case OpenSpaceGFFormat.Format_24bpp_BGR_888:
+                    // Get the BGRA color values
+                    yield return bgraPixelData[0];
+                    yield return bgraPixelData[1];
+                    yield return bgraPixelData[2];
+
+                    break;
+
+                case OpenSpaceGFFormat.Format_16bpp_GrayAlpha_88:
+                case OpenSpaceGFFormat.Format_16bpp_BGRA_4444:
+                case OpenSpaceGFFormat.Format_16bpp_BGRA_1555:
+                case OpenSpaceGFFormat.Format_16bpp_BGR_565:
+                    throw new NotImplementedException("Importing from files with 2 channels is currently not supported");
+
+                case OpenSpaceGFFormat.Format_8bpp_BGRA_Indexed:
+                case OpenSpaceGFFormat.Format_8bpp_BGR_Indexed:
+                    throw new NotImplementedException("Importing from files with a palette is currently not supported");
+
+                case OpenSpaceGFFormat.Format_8bpp_Gray:
+                    yield return bgraPixelData[0];
+
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(format), format, null);
+            }
+        }
+
+        /// <summary>
+        /// Gets the current format
+        /// </summary>
+        /// <returns>The current format</returns>
+        protected OpenSpaceGFFormat GetFormat()
+        {
+            if (Channels == 4)
+            {
+                return OpenSpaceGFFormat.Format_32bpp_BGRA_8888;
+            }
+            else if (Channels >= 3)
+            {
+                return OpenSpaceGFFormat.Format_24bpp_BGR_888;
             }
             else if (Channels == 2)
             {
-                throw new NotImplementedException("Importing from files with 2 channels is currently not supported");
+                return Format switch
+                {
+                    88 => OpenSpaceGFFormat.Format_16bpp_GrayAlpha_88,
+                    4444 => OpenSpaceGFFormat.Format_16bpp_BGRA_4444,
+                    1555 => OpenSpaceGFFormat.Format_16bpp_BGRA_1555,
+                    565 => OpenSpaceGFFormat.Format_16bpp_BGR_565,
+                    _ => OpenSpaceGFFormat.Format_16bpp_BGR_565
+                };
             }
             else if (Channels == 1)
             {
                 if (Palette != null)
                 {
-                    throw new NotImplementedException("Importing from files with a palette is currently not supported");
+                    return PaletteBytesPerColor switch
+                    {
+                        3 => OpenSpaceGFFormat.Format_8bpp_BGR_Indexed,
+                        4 => OpenSpaceGFFormat.Format_8bpp_BGRA_Indexed,
+                        _ => throw new Exception("The number of palette bytes per color is not valid")
+                    };
                 }
                 else
                 {
-                    yield return bmpPixelData[0];
+                    return OpenSpaceGFFormat.Format_8bpp_Gray;
                 }
             }
             else
@@ -300,42 +372,62 @@ namespace RayCarrot.Rayman.OpenSpace
         }
 
         /// <summary>
-        /// Gets the bitmap channel count for the image, either 3 or 4 channels
+        /// Sets the current format
         /// </summary>
-        /// <returns></returns>
-        protected int GetBitmapChannelCount()
+        /// <param name="format">The format to set to</param>
+        protected void SetFormat(OpenSpaceGFFormat format)
         {
-            if (Channels >= 3)
-                return Channels;
+            switch (format)
+            {
+                case OpenSpaceGFFormat.Format_32bpp_BGRA_8888:
+                    Format = 8888;
+                    Channels = 4;
+                    break;
 
-            if (Channels == 2)
-            {
-                if (Format == 88 || Format == 4444 || Format == 1555)
-                    return 4;
-                
-                else if (Format == 565)
-                    return 3;
-                
-                else
-                    throw new Exception("The format is not valid");
-            }
-            else if (Channels == 1)
-            {
-                if (Palette == null)
-                    return 3;
+                case OpenSpaceGFFormat.Format_24bpp_BGR_888:
+                    Format = 888;
+                    Channels = 3;
+                    break;
 
-                if (PaletteBytesPerColor == 4)
-                    return 4;
-                
-                else if (PaletteBytesPerColor == 3)
-                    return 3;
-              
-                else
-                    throw new Exception("The number of palette bytes per color is not valid");
-            }
-            else
-            {
-                throw new Exception("The number of channels is not valid");
+                case OpenSpaceGFFormat.Format_16bpp_GrayAlpha_88:
+                    Format = 88;
+                    Channels = 2;
+                    break;
+
+                case OpenSpaceGFFormat.Format_16bpp_BGRA_4444:
+                    Format = 4444;
+                    Channels = 2;
+                    break;
+
+                case OpenSpaceGFFormat.Format_16bpp_BGRA_1555:
+                    Format = 1555;
+                    Channels = 2;
+                    break;
+
+                case OpenSpaceGFFormat.Format_16bpp_BGR_565:
+                    Format = 565;
+                    Channels = 2;
+                    break;
+
+                case OpenSpaceGFFormat.Format_8bpp_BGRA_Indexed:
+                    Format = 0;
+                    Channels = 1;
+                    PaletteBytesPerColor = 4;
+                    break;
+
+                case OpenSpaceGFFormat.Format_8bpp_BGR_Indexed:
+                    Format = 0;
+                    Channels = 1;
+                    PaletteBytesPerColor = 3;
+                    break;
+
+                case OpenSpaceGFFormat.Format_8bpp_Gray:
+                    Format = 8;
+                    Channels = 1;
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(format), format, null);
             }
         }
 
@@ -364,8 +456,11 @@ namespace RayCarrot.Rayman.OpenSpace
             var widthScale = Width / (double)width;
             var heightScale = Height / (double)height;
 
+            // Get the format
+            var format = GFPixelFormat;
+
             // Get the pixel format
-            PixelFormat pixelFormat = GetBitmapChannelCount() == 4 ? PixelFormat.Format32bppArgb : PixelFormat.Format24bppRgb;
+            PixelFormat pixelFormat = format.SupportsTransparency() ? PixelFormat.Format32bppArgb : PixelFormat.Format24bppRgb;
 
             // Get the number of bitmap channels
             var bmpChannels = Image.GetPixelFormatSize(pixelFormat) / 8;
@@ -386,7 +481,7 @@ namespace RayCarrot.Rayman.OpenSpace
                 var rawOffset = (width * (height - y - 1) + x) * bmpChannels;
 
                 // Get the pixels
-                foreach (var b in GetBitmapColorPixels(PixelData, pixelOffset))
+                foreach (var b in GetGBRAPixel(format, PixelData, pixelOffset))
                 {
                     rawPixelData[rawOffset] = b;
                     rawOffset++;
@@ -463,14 +558,20 @@ namespace RayCarrot.Rayman.OpenSpace
         /// <param name="settings">The serializer settings</param>
         /// <param name="bmp">The bitmap data to import from</param>
         /// <param name="generateMipmaps">Indicates if mipmaps should be generated for the image</param>
-        /// <param name="updateGfTransparencyIfPossible">Indicates if the .gf format should be updated based on if the imported image supports transparency, if possible</param>
-        public void ImportFromBitmap(OpenSpaceSettings settings, RawBitmapData bmp, bool generateMipmaps, bool updateGfTransparencyIfPossible)
+        public void ImportFromBitmap(OpenSpaceSettings settings, RawBitmapData bmp, bool generateMipmaps)
         {
             // Helper method for writing the pixel data
             void WritePixelData(RawBitmapData bitmapData, long offset)
             {
+                // Make sure the pixel format is supported
+                if (bitmapData.PixelFormat != PixelFormat.Format32bppArgb && bitmapData.PixelFormat != PixelFormat.Format24bppRgb)
+                    throw new Exception($"The bitmap pixel format {bitmapData.PixelFormat} is not supported for importing");
+
                 // Get the number of bitmap channels
                 var bmpChannels = Image.GetPixelFormatSize(bitmapData.PixelFormat) / 8;
+
+                // Get the format
+                var format = GFPixelFormat;
 
                 byte[] bmpColorData = new byte[4];
 
@@ -490,32 +591,11 @@ namespace RayCarrot.Rayman.OpenSpace
                     bmpColorData[3] = bmpChannels == 4 ? bitmapData.PixelData[rawOffset + 3] : (byte)255;
 
                     // Get the pixels
-                    foreach (var b in GetGfPixels(bmpColorData))
+                    foreach (var b in GetGfPixel(format, bmpColorData))
                     {
                         PixelData[pixelOffset] = b;
                         pixelOffset++;
                     }
-                }
-            }
-
-            // Get the number of bitmap channels
-            var bitmapChannels = Image.GetPixelFormatSize(bmp.PixelFormat) / 8;
-
-            // Make sure the channel count is 3 or 4
-            if (!(bitmapChannels == 3 || bitmapChannels == 4))
-                throw new Exception("GF files only support importing from bitmaps with 3 or 4 channels");
-
-            // Check if the format should be updated for transparency
-            if (updateGfTransparencyIfPossible && bitmapChannels != GetBitmapChannelCount())
-            {
-                // Currently only supported for 3 or 4 channels...
-                if (Channels >= 3)
-                {
-                    // Update the channel count
-                    Channels = (byte)bitmapChannels;
-
-                    // Update the format
-                    Format = Channels == 3 ? 0888u : 8888u;
                 }
             }
 
@@ -581,20 +661,13 @@ namespace RayCarrot.Rayman.OpenSpace
         /// <param name="reader">The reader to use to read from the stream</param>
         public void Deserialize(IBinaryDataReader<OpenSpaceSettings> reader)
         {
-            // Read the format
+            // Read the version
             if (reader.SerializerSettings.EngineVersion == OpenSpaceEngineVersion.Montreal)
-            {
                 Version = reader.Read<byte>();
-                Format = 1555;
-            }
-            else if (reader.SerializerSettings.Platform == OpenSpacePlatform.iOS || reader.SerializerSettings.Game == OpenSpaceGame.TonicTroubleSpecialEdition)
-            {
-                Format = 8888;
-            }
-            else
-            {
+
+            // Read the format
+            else if (reader.SerializerSettings.Platform != OpenSpacePlatform.iOS && reader.SerializerSettings.Game != OpenSpaceGame.TonicTroubleSpecialEdition)
                 Format = reader.Read<uint>();
-            }
 
             // Read the size
             Width = reader.Read<uint>();
@@ -602,6 +675,9 @@ namespace RayCarrot.Rayman.OpenSpace
 
             // Read the channels
             Channels = reader.Read<byte>();
+
+            if (reader.SerializerSettings.Platform == OpenSpacePlatform.iOS || reader.SerializerSettings.Game == OpenSpaceGame.TonicTroubleSpecialEdition)
+                Format = Channels == 4 ? 8888u : 888u;
 
             // Default the mipmap count to 0
             MipmapCount = 0;
@@ -623,8 +699,10 @@ namespace RayCarrot.Rayman.OpenSpace
                 PixelCount += count;
             }
 
+            // Read the repeat byte
             RepeatByte = reader.Read<byte>();
 
+            // Read Montreal specific values
             if (reader.SerializerSettings.EngineVersion == OpenSpaceEngineVersion.Montreal)
             {
                 PaletteNumColors = reader.Read<ushort>();

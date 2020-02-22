@@ -49,6 +49,8 @@
     <Compile Include="Encoder\MultiXORDataEncoder.cs" />
     <Compile Include="Bitmap\BitmapLock.cs" />
     <Compile Include="Bitmap\RawBitmapData.cs" />
+    <Compile Include="OpenSpace\GF\OpenSpaceGFFormat.cs" />
+    <Compile Include="OpenSpace\GF\OpenSpaceGFFormatExtensions.cs" />
     <Compile Include="UbiArt\Common\SerializableList.cs" />
     <Compile Include="Binary\DataReader\IBinaryDataReader.cs" />
     <Compile Include="Binary\DataReader\IBinaryDataWriter.cs" />

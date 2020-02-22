@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace RayCarrot.Rayman
@@ -28,18 +29,15 @@ namespace RayCarrot.Rayman
             // Create rectangle to lock
             Rectangle rect = new Rectangle(0, 0, Width, Height);
 
-            // Get source bitmap pixel format size
-            Bpp = Image.GetPixelFormatSize(SourceBmp.PixelFormat);
-
-            // Check if the bits per pixel value is 8, 24, or 32
-            if (Bpp != 8 && Bpp != 24 && Bpp != 32)
-                throw new ArgumentException("Only 8, 24 and 32 bits per pixel images are supported");
+            // Make sure the pixel format is supported
+            if (!SupportedPixelFormats.Contains(PixelFormat))
+                throw new ArgumentException($"The pixel format {PixelFormat} of the bitmap is not supported");
 
             // Lock bitmap and return bitmap data
             BitmapData = SourceBmp.LockBits(rect, ImageLockMode.ReadWrite, SourceBmp.PixelFormat);
 
             // Create byte array to copy pixel values
-            Pixels = new byte[Width * Height * (Bpp / 8)];
+            Pixels = new byte[Width * Height * (Image.GetPixelFormatSize(PixelFormat) / 8)];
 
             // Get the pointer address
             Iptr = BitmapData.Scan0;
@@ -68,9 +66,18 @@ namespace RayCarrot.Rayman
         protected BitmapData BitmapData { get; }
 
         /// <summary>
-        /// The bits per pixel depth
+        /// The pixel format of the bitmap
         /// </summary>
-        protected int Bpp { get; }
+        protected PixelFormat PixelFormat => SourceBmp.PixelFormat;
+
+        /// <summary>
+        /// The currently supported pixel formats
+        /// </summary>
+        protected PixelFormat[] SupportedPixelFormats => new[]
+        {
+            PixelFormat.Format32bppArgb,
+            PixelFormat.Format24bppRgb
+        };
 
         /// <summary>
         /// The bitmap width
@@ -104,7 +111,7 @@ namespace RayCarrot.Rayman
         public Color GetPixel(int x, int y)
         {
             // Get color components count
-            int cCount = Bpp / 8;
+            int cCount = Image.GetPixelFormatSize(PixelFormat) / 8;
 
             // Get start index of the specified pixel
             int i = ((y * Width) + x) * cCount;
@@ -112,32 +119,32 @@ namespace RayCarrot.Rayman
             if (i > Pixels.Length - cCount)
                 throw new IndexOutOfRangeException();
 
-            if (Bpp == 32)
-            {
-                byte b = Pixels[i + 0];
-                byte g = Pixels[i + 1];
-                byte r = Pixels[i + 2];
-                byte a = Pixels[i + 3];
+            byte b;
+            byte g;
+            byte r;
+            byte a;
 
-                return Color.FromArgb(a, r, g, b);
-            }
-            else if (Bpp == 24)
+            // Get the pixel
+            switch (PixelFormat)
             {
-                byte b = Pixels[i + 0];
-                byte g = Pixels[i + 1];
-                byte r = Pixels[i + 2];
+                case PixelFormat.Format24bppRgb:
+                    b = Pixels[i + 0];
+                    g = Pixels[i + 1];
+                    r = Pixels[i + 2];
 
-                return Color.FromArgb(r, g, b);
-            }
-            else if (Bpp == 8)
-            {
-                byte c = Pixels[i];
+                    return Color.FromArgb(r, g, b);
 
-                return Color.FromArgb(c, c, c);
-            }
-            else
-            {
-                throw new InvalidOperationException("Only 8, 24 and 32 bits per pixel images are supported");
+                case PixelFormat.Format32bppArgb:
+
+                    b = Pixels[i + 0];
+                    g = Pixels[i + 1];
+                    r = Pixels[i + 2];
+                    a = Pixels[i + 3];
+
+                    return Color.FromArgb(a, r, g, b);
+
+                default:
+                    throw new ArgumentException($"The pixel format {PixelFormat} of the bitmap is not supported");
             }
         }
 
@@ -150,31 +157,61 @@ namespace RayCarrot.Rayman
         public void SetPixel(int x, int y, Color color)
         {
             // Get color components count
-            int cCount = Bpp / 8;
+            int cCount = Image.GetPixelFormatSize(PixelFormat) / 8;
 
             // Get start index of the specified pixel
             int i = ((y * Width) + x) * cCount;
 
-            if (Bpp == 32)
+            // Set the pixel
+            switch (PixelFormat)
             {
-                Pixels[i + 0] = color.B;
-                Pixels[i + 1] = color.G;
-                Pixels[i + 2] = color.R;
-                Pixels[i + 3] = color.A;
+                case PixelFormat.Format24bppRgb:
+                    Pixels[i + 0] = color.B;
+                    Pixels[i + 1] = color.G;
+                    Pixels[i + 2] = color.R;
+
+                    break;
+
+                case PixelFormat.Format32bppArgb:
+
+                    Pixels[i + 0] = color.B;
+                    Pixels[i + 1] = color.G;
+                    Pixels[i + 2] = color.R;
+                    Pixels[i + 3] = color.A;
+
+                    break;
+
+                default:
+                    throw new ArgumentException($"The pixel format {PixelFormat} of the bitmap is not supported");
             }
-            else if (Bpp == 24)
+        }
+
+        /// <summary>
+        /// Checks if the bitmap utilizes the alpha channel
+        /// </summary>
+        /// <returns>True if it is utilized, otherwise false</returns>
+        public bool UtilizesAlpha()
+        {
+            if (PixelFormat == PixelFormat.Format32bppArgb)
             {
-                Pixels[i + 0] = color.B;
-                Pixels[i + 1] = color.G;
-                Pixels[i + 2] = color.R;
+                for (int y = 0; y < Height; y++)
+                {
+                    for (int x = 0; x < Width; x++)
+                    {
+                        if (Pixels[(((y * Width) + x) * 4) + 3] != Byte.MaxValue)
+                            return true;
+                    }
+                }
+
+                return false;
             }
-            else if (Bpp == 8)
+            else if (PixelFormat == PixelFormat.Format24bppRgb)
             {
-                Pixels[i] = color.B;
+                return false;
             }
             else
             {
-                throw new InvalidOperationException("Only 8, 24 and 32 bits per pixel images are supported");
+                throw new ArgumentException($"The pixel format {PixelFormat} of the bitmap is not supported");
             }
         }
 
