@@ -1,7 +1,6 @@
-﻿using System;
+﻿using RayCarrot.Extensions;
+using System;
 using System.IO;
-using System.Linq;
-using RayCarrot.Extensions;
 
 namespace RayCarrot.Rayman.OpenSpace
 {
@@ -22,9 +21,14 @@ namespace RayCarrot.Rayman.OpenSpace
         #region Public Properties
 
         /// <summary>
-        /// The file signature
+        /// Indicates if the XOR keys should be used
         /// </summary>
-        public short Signature { get; set; }
+        public bool IsXORUsed { get; set; }
+
+        /// <summary>
+        /// Indicates if the checksum is used
+        /// </summary>
+        public bool IsChecksumUsed { get; set; }
 
         /// <summary>
         /// The XOR key used to get the directory and file names
@@ -37,9 +41,9 @@ namespace RayCarrot.Rayman.OpenSpace
         public string[] Directories { get; set; }
 
         /// <summary>
-        /// The version ID
+        /// The checksum for the directories
         /// </summary>
-        public byte VersionID { get; set; }
+        public byte DirChecksum { get; set; }
 
         /// <summary>
         /// The available files
@@ -61,7 +65,8 @@ namespace RayCarrot.Rayman.OpenSpace
             var fileCount = reader.Read<int>();
 
             // Read header info
-            Signature = reader.Read<short>();
+            IsXORUsed = reader.Read<byte>() == 1;
+            IsChecksumUsed = reader.Read<byte>() == 1;
             XORKey = reader.Read<byte>();
 
             // Create the list
@@ -69,10 +74,10 @@ namespace RayCarrot.Rayman.OpenSpace
 
             // Read directory paths
             for (int i = 0; i < dirCount; i++)
-                Directories[i] = OpenSpaceSerializerHelpers.ReadEncryptedString(reader, XORKey);
+                Directories[i] = OpenSpaceSerializerHelpers.ReadEncryptedString(reader, XORKey, IsXORUsed);
 
-            // Read version ID
-            VersionID = reader.Read<byte>();
+            // Read the directory checksum
+            DirChecksum = reader.Read<byte>();
 
             // Create the array
             Files = new OpenSpaceCntFileEntry[fileCount];
@@ -102,15 +107,16 @@ namespace RayCarrot.Rayman.OpenSpace
             writer.Write(Files.Length);
 
             // Read header info
-            writer.Write(Signature);
+            writer.Write((byte)(IsXORUsed ? 1 : 0));
+            writer.Write((byte)(IsChecksumUsed ? 1 : 0));
             writer.Write(XORKey);
 
             // Write directory paths
             foreach (var dir in Directories)
-                OpenSpaceSerializerHelpers.WriteEncryptedString(writer, dir, XORKey);
+                OpenSpaceSerializerHelpers.WriteEncryptedString(writer, dir, XORKey, IsXORUsed);
 
-            // Write version ID
-            writer.Write(VersionID);
+            // Write directory checksum
+            writer.Write(DirChecksum);
 
             // Write files
             foreach (var file in Files)

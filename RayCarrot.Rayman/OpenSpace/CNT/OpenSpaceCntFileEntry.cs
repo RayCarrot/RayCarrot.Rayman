@@ -17,6 +17,10 @@ namespace RayCarrot.Rayman.OpenSpace
         public OpenSpaceCntFileEntry(byte xorKey)
         {
             XORKey = xorKey;
+            FileXORKey = FileXORKey = new byte[]
+            {
+                0, 0, 0, 0
+            };
         }
 
         #endregion
@@ -36,7 +40,7 @@ namespace RayCarrot.Rayman.OpenSpace
         /// <summary>
         /// The XOR key for the file name
         /// </summary>
-        public byte XORKey { get; }
+        public byte XORKey { get; set; }
 
         /// <summary>
         /// The XOR key for the file contents
@@ -44,9 +48,9 @@ namespace RayCarrot.Rayman.OpenSpace
         public byte[] FileXORKey { get; set; }
 
         /// <summary>
-        /// Unknown value
+        /// The file checksum
         /// </summary>
-        public int Unknown1 { get; set; }
+        public uint Checksum { get; set; }
 
         /// <summary>
         /// The file data pointer
@@ -79,9 +83,9 @@ namespace RayCarrot.Rayman.OpenSpace
         public void Deserialize(IBinaryDataReader<OpenSpaceSettings> reader)
         {
             DirectoryIndex = reader.Read<int>();
-            FileName = OpenSpaceSerializerHelpers.ReadEncryptedString(reader, XORKey);
+            FileName = OpenSpaceSerializerHelpers.ReadEncryptedString(reader, XORKey, XORKey != 0);
             FileXORKey = reader.ReadBytes(4);
-            Unknown1 = reader.Read<int>();
+            Checksum = reader.Read<uint>();
             Pointer = reader.Read<int>();
             Size = reader.Read<int>();
         }
@@ -93,9 +97,9 @@ namespace RayCarrot.Rayman.OpenSpace
         public void Serialize(IBinaryDataWriter<OpenSpaceSettings> writer)
         {
             writer.Write(DirectoryIndex);
-            OpenSpaceSerializerHelpers.WriteEncryptedString(writer, FileName, XORKey);
+            OpenSpaceSerializerHelpers.WriteEncryptedString(writer, FileName, XORKey, XORKey != 0);
             writer.Write(FileXORKey);
-            writer.Write(Unknown1);
+            writer.Write(Checksum);
             writer.Write(Pointer);
             writer.Write(Size);
         }

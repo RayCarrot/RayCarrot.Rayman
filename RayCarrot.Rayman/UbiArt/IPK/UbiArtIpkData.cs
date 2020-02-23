@@ -136,6 +136,11 @@ namespace RayCarrot.Rayman.UbiArt
         /// </summary>
         public bool IsBlockCompressed => BlockSize != 0;
 
+        /// <summary>
+        /// Indicates if a compressed block is supported
+        /// </summary>
+        public bool SupportsCompressedBlock => Version >= 6;
+
         #endregion
 
         #region Public Static Methods
@@ -205,7 +210,7 @@ namespace RayCarrot.Rayman.UbiArt
             Unknown7 = reader.Read<uint>();
             EngineVersion = reader.Read<uint>();
 
-            if (Version >= 6)
+            if (SupportsCompressedBlock)
             {
                 BlockSize = reader.Read<uint>();
                 BlockCompressedSize = reader.Read<uint>();
@@ -261,7 +266,7 @@ namespace RayCarrot.Rayman.UbiArt
             writer.Write(Unknown7);
             writer.Write(EngineVersion);
 
-            if (Version >= 6)
+            if (SupportsCompressedBlock)
             {
                 writer.Write(BlockSize);
                 writer.Write(BlockCompressedSize);
@@ -276,11 +281,22 @@ namespace RayCarrot.Rayman.UbiArt
         }
 
         /// <summary>
-        /// Writes every listed file entry based on its offset to the file, getting the contents from the generator
+        /// Writes every listed file entry based on its offset to the file, getting the contents from the generator and compressing the block if it is set as compressed
         /// </summary>
         /// <param name="stream">The stream to write to</param>
         /// <param name="fileGenerator">The file generator</param>
         public void WriteArchiveContent(Stream stream, IArchiveFileGenerator<UbiArtIPKFileEntry> fileGenerator)
+        {
+            WriteArchiveContent(stream, fileGenerator, IsBlockCompressed);
+        }
+
+        /// <summary>
+        /// Writes every listed file entry based on its offset to the file, getting the contents from the generator
+        /// </summary>
+        /// <param name="stream">The stream to write to</param>
+        /// <param name="fileGenerator">The file generator</param>
+        /// <param name="compressBlock">Indicates if the block should be compressed</param>
+        public void WriteArchiveContent(Stream stream, IArchiveFileGenerator<UbiArtIPKFileEntry> fileGenerator, bool compressBlock)
         {
             // Make sure we have a generator for each file
             if (fileGenerator.Count != Files.Length)
@@ -290,7 +306,7 @@ namespace RayCarrot.Rayman.UbiArt
             using var compressionStream = new MemoryStream();
 
             // Get the stream to write the files to
-            var currentStream = IsBlockCompressed ? compressionStream : stream;
+            var currentStream = compressBlock ? compressionStream : stream;
 
             // Write the file contents
             foreach (var file in Files)
@@ -306,7 +322,7 @@ namespace RayCarrot.Rayman.UbiArt
                 foreach (var offset in file.Offsets)
                 {
                     // Set the position
-                    currentStream.Position = (long)(IsBlockCompressed ? offset : (offset + BaseOffset));
+                    currentStream.Position = (long)(compressBlock ? offset : (offset + BaseOffset));
 
                     // Write the bytes
                     currentStream.Write(bytes);
@@ -314,7 +330,7 @@ namespace RayCarrot.Rayman.UbiArt
             }
 
             // Handle the data if it should be compressed
-            if (IsBlockCompressed)
+            if (compressBlock)
             {
                 // Get the length
                 var decompressedSize = compressionStream.Length;
@@ -337,6 +353,12 @@ namespace RayCarrot.Rayman.UbiArt
                 // Update the size
                 BlockCompressedSize = (uint)finalDataStream.Length;
                 BlockSize = (uint)decompressedSize;
+            }
+            else
+            {
+                // Reset the size
+                BlockCompressedSize = 0;
+                BlockSize = 0;
             }
         }
 

@@ -30,7 +30,8 @@ namespace RayCarrot.Rayman
         /// <returns>The decrypted data</returns>
         public void Decode(Stream inputStream, Stream outputStream)
         {
-            outputStream.EnumerateBytes().ForEach(b => outputStream.WriteByte((byte)(b ^ XorKey)));
+            foreach (var b in inputStream.EnumerateBytes())
+                outputStream.WriteByte((byte)(b ^ XorKey));
         }
 
         /// <summary>
