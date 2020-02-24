@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using RayCarrot.Extensions;
-using RayCarrot.Rayman.OpenSpace;
 
 namespace RayCarrot.Rayman.Rayman1
 {
@@ -247,9 +247,25 @@ namespace RayCarrot.Rayman.Rayman1
             // Create the bitmap
             var bmp = new Bitmap(Rayman1PCLevTexture.Size * MapWidth, Rayman1PCLevTexture.Size * MapHeight);
 
-            // Lock the bitmap for faster reading/writing
-            using (var lockedBmp = new BitmapLock(bmp))
+            // Load every bitmap
+            Dictionary<Rayman1PCLevMapCellType, Bitmap> typeBitmaps = new Dictionary<Rayman1PCLevMapCellType, Bitmap>();
+            Dictionary<Bitmap, BitmapLock> bitmapLocks = new Dictionary<Bitmap, BitmapLock>();
+
+            try
             {
+                // Load the bitmaps and lock them
+                foreach (var type in EnumHelpers.GetValues<Rayman1PCLevMapCellType>())
+                {
+                    // Get the bitmap
+                    var typeBmp = Rayman1LevIcons.ResourceManager.GetObject(type.ToString()).CastTo<Bitmap>();
+
+                    typeBitmaps.Add(type, typeBmp);
+                    bitmapLocks.Add(typeBmp, new BitmapLock(typeBmp));
+                }
+
+                // Lock the bitmap for faster reading/writing
+                using var lockedBmp = new BitmapLock(bmp);
+
                 // Enumerate each cell
                 for (int cellY = 0; cellY < MapHeight; cellY++)
                 {
@@ -258,19 +274,16 @@ namespace RayCarrot.Rayman.Rayman1
                         // Get the cell
                         var cell = MapCells[cellX, cellY];
 
-                        // Get the type bitmap
-                        using var typeBmp = Rayman1LevIcons.ResourceManager.GetObject(cell.CellType.ToString()).CastTo<Bitmap>();
+                        // Get the bitmap lock
+                        var bmpLock = bitmapLocks[typeBitmaps.TryGetValue(cell.CellType)];
 
                         // Write each pixel for the texture
                         for (int x = 0; x < Rayman1PCLevTexture.Size; x++)
                         {
                             for (int y = 0; y < Rayman1PCLevTexture.Size; y++)
                             {
-                                if (typeBmp == null)
-                                    Console.WriteLine((int)cell.CellType);
-
                                 // Get the pixel
-                                var c = typeBmp?.GetPixel(x, y) ?? Color.Red;
+                                var c = bmpLock.GetPixel(x, y);
 
                                 // Set the pixel
                                 lockedBmp.SetPixel(Rayman1PCLevTexture.Size * cellX + x, Rayman1PCLevTexture.Size * cellY + y, c);
@@ -278,6 +291,11 @@ namespace RayCarrot.Rayman.Rayman1
                         }
                     }
                 }
+            }
+            finally
+            {
+                bitmapLocks?.Values.DisposeAll();
+                typeBitmaps?.Values.DisposeAll();
             }
 
             // Return the bitmap

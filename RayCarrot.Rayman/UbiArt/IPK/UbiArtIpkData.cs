@@ -184,9 +184,6 @@ namespace RayCarrot.Rayman.UbiArt
             // Read version
             Version = reader.Read<uint>();
 
-            // Set the version
-            reader.SerializerSettings.IPKVersion = Version;
-
             // Read first unknown value
             Unknown1 = reader.Read<uint>();
 
@@ -227,7 +224,13 @@ namespace RayCarrot.Rayman.UbiArt
             Files = new UbiArtIPKFileEntry[fileCount];
 
             for (int i = 0; i < fileCount; i++)
-                Files[i] = reader.Read<UbiArtIPKFileEntry>();
+            {
+                var file = new UbiArtIPKFileEntry(Version);
+
+                file.Deserialize(reader);
+
+                Files[i] = file;
+            }
 
             if (reader.BaseStream.Position != BaseOffset)
                 throw new BinarySerializableException("Offset value is incorrect.");
@@ -302,63 +305,80 @@ namespace RayCarrot.Rayman.UbiArt
             if (fileGenerator.Count != Files.Length)
                 throw new BinarySerializableException("The .ipk file can't be serialized without a file generator for each file");
 
-            // Create a stream for storing the data to compress if the block should be compressed
-            using var compressionStream = new MemoryStream();
+            TempFile tempDecompressedBlockFile = null;
+            FileStream tempDecompressedBlockFileStream = null;
 
-            // Get the stream to write the files to
-            var currentStream = compressBlock ? compressionStream : stream;
-
-            // Write the file contents
-            foreach (var file in Files)
+            try
             {
-                // Get the bytes from the generator
-                var bytes = fileGenerator.GetBytes(file);
-
-                // Make sure the size matches
-                if (bytes.Length != file.ArchiveSize)
-                    throw new BinarySerializableException("The archived file size does not match the bytes retrieved from the generator");
-
-                // Handle every file offset
-                foreach (var offset in file.Offsets)
+                // Create a temporary file to use if the block should be compressed
+                if (compressBlock)
                 {
-                    // Set the position
-                    currentStream.Position = (long)(compressBlock ? offset : (offset + BaseOffset));
+                    tempDecompressedBlockFile = new TempFile(true);
+                    tempDecompressedBlockFileStream = new FileStream(tempDecompressedBlockFile.TempPath, FileMode.Open);
+                }
 
-                    // Write the bytes
-                    currentStream.Write(bytes);
+                // Get the stream to write the files to
+                var currentStream = compressBlock ? tempDecompressedBlockFileStream : stream;
+
+                // Write the file contents
+                foreach (var file in Files)
+                {
+                    // Get the bytes from the generator
+                    var bytes = fileGenerator.GetBytes(file);
+
+                    // Make sure the size matches
+                    if (bytes.Length != file.ArchiveSize)
+                        throw new BinarySerializableException("The archived file size does not match the bytes retrieved from the generator");
+
+                    // Handle every file offset
+                    foreach (var offset in file.Offsets)
+                    {
+                        // Set the position
+                        currentStream.Position = (long)(compressBlock ? offset : (offset + BaseOffset));
+
+                        // Write the bytes
+                        currentStream.Write(bytes);
+                    }
+                }
+
+                // Handle the data if it should be compressed
+                if (compressBlock)
+                {
+                    // Get the length
+                    var decompressedSize = tempDecompressedBlockFileStream.Length;
+
+                    // Create a temporary file for the final compressed data
+                    using var tempCompressedBlockFile = new TempFile(true);
+                    using var tempCompressedBlockFileStream = new FileStream(tempCompressedBlockFile.TempPath, FileMode.Open);
+
+                    tempDecompressedBlockFileStream.Position = 0;
+
+                    // Compress the data
+                    GetEncoder(Version, -1).Encode(tempDecompressedBlockFileStream, tempCompressedBlockFileStream);
+
+                    tempCompressedBlockFileStream.Position = 0;
+
+                    // Set the .ipk stream position
+                    stream.Position = BaseOffset;
+
+                    // Write the data to main stream
+                    tempCompressedBlockFileStream.CopyTo(stream);
+
+                    // Update the size
+                    BlockCompressedSize = (uint)tempCompressedBlockFileStream.Length;
+                    BlockSize = (uint)decompressedSize;
+                }
+                else
+                {
+                    // Reset the size
+                    BlockCompressedSize = 0;
+                    BlockSize = 0;
                 }
             }
-
-            // Handle the data if it should be compressed
-            if (compressBlock)
+            finally
             {
-                // Get the length
-                var decompressedSize = compressionStream.Length;
-
-                // Create the stream for the final compressed data
-                using var finalDataStream = new MemoryStream();
-
-                // Compress the data
-                GetEncoder(Version, -1).Encode(compressionStream, finalDataStream);
-
-                // Dispose the stream
-                compressionStream.Dispose();
-
-                // Set the .ipk stream position
-                stream.Position = BaseOffset;
-
-                // Write the data to main stream
-                finalDataStream.CopyTo(stream);
-
-                // Update the size
-                BlockCompressedSize = (uint)finalDataStream.Length;
-                BlockSize = (uint)decompressedSize;
-            }
-            else
-            {
-                // Reset the size
-                BlockCompressedSize = 0;
-                BlockSize = 0;
+                tempDecompressedBlockFile?.Dispose();
+                tempDecompressedBlockFileStream?.Dispose();
             }
         }
 
@@ -412,16 +432,10 @@ namespace RayCarrot.Rayman.UbiArt
                 if (ipkData.IsBlockCompressed)
                 {
                     // Get the temp path and create the file
-                    TempFile = Path.GetTempFileName();
-
-                    // Get the file info
-                    var info = TempFile.GetFileInfo();
-
-                    // Set the attribute to temporary
-                    info.Attributes |= FileAttributes.Temporary;
+                    TempFile = new TempFile(true);
 
                     // Set the stream to the temp file
-                    Stream = File.Open(TempFile, FileMode.Open, FileAccess.ReadWrite);
+                    Stream = File.Open(TempFile.TempPath, FileMode.Open, FileAccess.ReadWrite);
 
                     // Set the archive stream position
                     archiveStream.Position = ipkData.BaseOffset;
@@ -445,8 +459,7 @@ namespace RayCarrot.Rayman.UbiArt
                 }
             }
 
-            // TODO: Replace with TempFile object
-            protected FileSystemPath TempFile { get; }
+            protected TempFile TempFile { get; }
 
             /// <summary>
             /// The .ipk file data
@@ -497,21 +510,7 @@ namespace RayCarrot.Rayman.UbiArt
                 if (DisposeStream)
                     Stream?.Dispose();
 
-                try
-                {
-                    // Check if the temp file exists
-                    if (!TempFile.FileExists)
-                        return;
-
-                    // Delete the temp file
-                    File.Delete(TempFile);
-
-                    RCFCore.Logger?.LogDebugSource($"The file {TempFile} was deleted");
-                }
-                catch (Exception ex)
-                {
-                    ex.HandleError("Deleting temp file");
-                }
+                TempFile?.Dispose();
             }
         }
 

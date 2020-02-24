@@ -36,6 +36,9 @@ namespace RayCarrot.Rayman.UbiArt
 
             DirectoryPath = fullPath.Substring(0, separatorIndex);
             FileName = fullPath.Substring(separatorIndex);
+
+            StringID = new UbiArtStringID();
+            Flags = 2;
         }
 
         #endregion

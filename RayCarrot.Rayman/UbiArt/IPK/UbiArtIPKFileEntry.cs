@@ -5,7 +5,25 @@
     /// </summary>
     public class UbiArtIPKFileEntry : IBinarySerializable<UbiArtSettings>
     {
+        #region Constructor
+
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="ipkVersion"></param>
+        public UbiArtIPKFileEntry(uint ipkVersion)
+        {
+            IPKVersion = ipkVersion;
+        }
+
+        #endregion
+
         #region Public Properties
+
+        /// <summary>
+        /// The .ipk version the entry belongs to
+        /// </summary>
+        public uint IPKVersion { get; set; }
 
         /// <summary>
         /// The number of offsets
@@ -55,7 +73,7 @@
         public void Deserialize(IBinaryDataReader<UbiArtSettings> reader)
         {
             // 3DS files can not be serialized separately
-            if (reader.SerializerSettings.IPKVersion == 4)
+            if (IPKVersion == 4)
                 throw new BinarySerializableException("File data for IPK 4 can not be serialized separately");
 
             // Read common values
@@ -69,7 +87,7 @@
                 Offsets[i] = reader.Read<ulong>();
 
             // For any game after Origins the path is in the standard format
-            if (reader.SerializerSettings.IPKVersion >= 5)
+            if (IPKVersion >= 5)
                 Path = reader.Read<UbiArtPath>();
             else
                 Path = new UbiArtPath(reader.Read<string>());
@@ -82,7 +100,7 @@
         public void Serialize(IBinaryDataWriter<UbiArtSettings> writer)
         {
             // 3DS files can not be serialized separately
-            if (writer.SerializerSettings.IPKVersion == 4)
+            if (IPKVersion == 4)
                 throw new BinarySerializableException("File data for IPK 4 can not be serialized separately");
 
             // Write common values
@@ -96,7 +114,7 @@
                 writer.Write(offset);
 
             // For any game after Origins the path is in the standard format
-            if (writer.SerializerSettings.IPKVersion >= 5)
+            if (IPKVersion >= 5)
                 writer.Write(Path);
             else
                 writer.Write(Path.FullPath);

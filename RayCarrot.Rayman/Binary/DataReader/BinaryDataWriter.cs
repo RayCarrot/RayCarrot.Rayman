@@ -52,7 +52,7 @@ namespace RayCarrot.Rayman
         /// <summary>
         /// Writes the specified type
         /// </summary>
-        /// <typeparam name="T">The type of the value to write. This is either a supported value type or implements <see cref="IBinarySerializable"/></typeparam>
+        /// <typeparam name="T">The type of the value to write. This is either a supported value type or implements <see cref="IBinarySerializable{Settings}"/></typeparam>
         /// <param name="value">The value to write</param>
         public void Write<T>(T value)
         {
@@ -103,6 +103,9 @@ namespace RayCarrot.Rayman
 
             else if (value is string st)
                 Writer.Write(st);
+
+            else if (value is null)
+                throw new ArgumentNullException(nameof(value));
 
             else
                 throw new NotSupportedException($"The specified generic type {typeof(T).Name} is not supported and does not implement {nameof(IBinarySerializable<Settings>)}");

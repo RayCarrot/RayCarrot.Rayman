@@ -27,11 +27,6 @@
         }
 
         /// <summary>
-        /// The current IPK version. This value gets set automatically when deserializing the IPK and is used for deserializing the IPK contents.
-        /// </summary>
-        public uint IPKVersion { get; set; }
-
-        /// <summary>
         /// The game
         /// </summary>
         public UbiArtGame Game { get; }
