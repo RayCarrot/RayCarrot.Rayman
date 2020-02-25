@@ -8,19 +8,30 @@ using System.Linq;
 namespace RayCarrot.Rayman.UbiArt
 {
     /*
-    Game:                                 Version:    Unk1:    Unk2:    Unk3:    Unk4:    Unk5:    Unk6:     Unk9:    Unk7:    EngineVersion:    BlockSize:    BlockCompressedSize:
+    Game:                                 Version:    Unk1:    Unk2:    Unk3:    Unk4:    Unk5:    Unk6:     Unk9:    Unk7:    EngineVersion:
 
-    Rayman Origins (PC, Wii, PS3, PS Vita):      3        0        -        0        1        1        0         -   877930951          0             -                       -                                                                                                                     
-    Rayman Origins (3DS):                        4        5        -        0        1        1        0         -   1635089726         0             -                       -                                                                                                                     
-    Rayman Legends (PC, Wii U, PS Vita, Switch): 5        0        -        0        1        1        0         -   1274838019         0             -                       -                                                                                                                     
-    Just Dance 2017 (Wii U):                     5        8        -        0        0        0        0         -   3346979248        241478         -                       -                                                                                                                     
-    Valiant Hearts (Android):                    7       10        -        0        1        1        0         0   3713665533         0             0                       0                                                                                                                     
-    Child of Light (PC, PS Vita):                7        0        -        0        1        1        0         -   3669482532        30765          0                       0                                                                                                                     
-    Rayman Legends (PS4):                        7        8        -        0        1        1        0         -   3669482532        30765          0                       0                                                                                                                     
-    Gravity Falls (3DS):                         7       10        -        0        1        1        0         -   4160251604         0             0                       0                                                                                                                     
-    Rayman Adventures (Android, iOS):            8        2       11        1        1        1        0         -   285844061          0             0                       0                                                                                                                     
-    Rayman Mini 1.0 (Mac):                       8       12       12        1        1        1     3771         -   800679911         3771           0                       0                                                                                                                     
-    Rayman Mini 1.1 (Mac):                       8       12       12        1        1        1     3826         -   2057063881        3826           0                       0
+    Rayman Origins (PC Demo):                    3        0        -        0        1        1        0         -   2727956186         0
+    Rayman Origins (PC):                         3        0        -        0        1        1        0         -   877930951          0
+    Rayman Origins (Wii):                        3        6        -        0        1        1        0         -   1698768603         0
+    Rayman Origins (PS Vita):                    3        7        -        0        1        1        0         -   559042371          0
+    Rayman Origins (PS3):                        3        3        -        0        1        1        0         -   1698768603         0
+    Rayman Origins (3DS):                        4        5        -        0        1        1        0         -   1635089726         0
+    Rayman Legends (PC):                         5        0        -        0        1        1        0         -   1274838019         0
+    Rayman Legends Challenges App (Wii U):       5        7        -        0        1        1    70107         -   2662508568        62127
+    Rayman Legends (Wii U Demo):                 5        7        -        0        1        1        0         -   1182590121        48117
+    Rayman Legends (Wii U):                      5        7        -        0        1        1    78992         -   2697850994        84435
+    Rayman Legends (PS Vita):                    5        6        -        0        1        1        0         -   2869177618         0
+    Just Dance 2017 (Wii U):                     5        8        -        0        0        0        0         -   3346979248        241478
+    Valiant Hearts (Android):                    7       10        -        0        1        1        0         0   3713665533         0
+    Child of Light (PC Demo):                    7        0        -        0        1        1        0         -   3669482532        30765
+    Child of Light (PS Vita):                    7        6        -        0        1        1        0         -   19689438           0
+    Rayman Legends (PS4):                        7        8        -        0        1        1    80253         -   2973796970        117321
+    Rayman Legends (Switch):                     7       10        -        0        1        1        0         -   2514498303         0
+    Gravity Falls (3DS):                         7       10        -        0        1        1        0         -   4160251604         0
+    Rayman Adventures 3.9.0 (Android):           8       12       11        1        1        1   127901         -   3037303110        277220
+    Rayman Adventures 3.9.0 (iOS):               8       12       10        1        1        1   127895         -   3037303110        277216
+    Rayman Mini 1.0 (Mac):                       8       12       12        1        1        1     3771         -   800679911         3771
+    Rayman Mini 1.1 (Mac):                       8       12       12        1        1        1     3826         -   2057063881        3826
     */
 
     /// <summary>

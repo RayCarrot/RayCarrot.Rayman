@@ -11,6 +11,14 @@ namespace RayCarrot.Rayman
         /// <summary>
         /// Default constructor
         /// </summary>
+        public BinarySerializableList()
+        {
+            
+        }
+
+        /// <summary>
+        /// Default constructor for a fixed size
+        /// </summary>
         /// <param name="capacity">The capacity of the list</param>
         public BinarySerializableList(int capacity) : base(capacity)
         { }

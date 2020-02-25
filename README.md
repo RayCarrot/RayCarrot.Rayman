@@ -14,15 +14,17 @@ Allows reading and writing to supported binary files. Below is a list of the cur
 * Level files (.lev) - (WIP)
 
 #### OpenSpace
-* Texture archives (.cnt)
-* Texture files (.gf)
-* Rayman 3 save files on PC (.sav)
+* Archives (.cnt)
+* Graphic files (.gf)
+* Rayman 3 save files on PC (.sav) - (WIP)
 
 #### UbiArt
-* Archives (.ipk) - (WIP)
+* Archives (.ipk)
 * Localization files (.loc, .loc8)
-* Rayman Jungle Run save files on Windows 10 (.dat)
-* Rayman Fiesta Run save files on Windows 10 (.dat) - (WIP)
+* Rayman Origins save files on PC
+* Rayman Jungle Run save files on PC (.dat)
+* Rayman Legends save files on PC
+* Rayman Fiesta Run save files on PC Windows 10 Edition (.dat) - (WIP)
 
 ## Dependencies
 RayCarrot.Rayman uses these main dependencies:

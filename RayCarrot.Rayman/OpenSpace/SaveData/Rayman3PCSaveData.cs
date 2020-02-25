@@ -1,9 +1,11 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 
 namespace RayCarrot.Rayman.OpenSpace
 {
     // WIP: There are more values in the save file than this (button mapping, current level score etc.) - figure out what they are for
     // WIP: Support other platforms - the format seems very similar
+
     /// <summary>
     /// The data for a Rayman 3 save file on PC
     /// </summary>
@@ -130,6 +132,8 @@ namespace RayCarrot.Rayman.OpenSpace
         /// <param name="writer">The writer to use to write to the stream</param>
         public void Serialize(IBinaryDataWriter<OpenSpaceSettings> writer)
         {
+            throw new NotImplementedException();
+
             writer.Write(TotalCages);
             writer.Write(TotalScore);
             writer.Write(Levels);
