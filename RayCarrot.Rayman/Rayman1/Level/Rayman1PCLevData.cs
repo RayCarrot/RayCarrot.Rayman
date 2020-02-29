@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Text;
+using RayCarrot.CarrotFramework.Abstractions;
 using RayCarrot.Extensions;
+using RayCarrot.IO;
 
 namespace RayCarrot.Rayman.Rayman1
 {
@@ -153,7 +157,7 @@ namespace RayCarrot.Rayman.Rayman1
         /// <summary>
         /// The checksum for <see cref="NonTransparentTextures"/>, <see cref="TransparentTextures"/> and <see cref="Unknown4"/>
         /// </summary>
-        public byte TexturesChecksum { get; set; }
+        public byte TexturesChecksum { get; set; }  
 
         /// <summary>
         /// The number of available events in the map
@@ -191,13 +195,73 @@ namespace RayCarrot.Rayman.Rayman1
             // Lock the bitmap for faster reading/writing
             using (var lockedBmp = new BitmapLock(bmp))
             {
+                // Get the palette changers
+                var paletteXChangers = Events.Where(x => x.Type == 158 && x.SubEtat < 6).ToDictionary(x => x.XPosition, x => (PaletteChangerMode)x.SubEtat);
+                var paletteYChangers = Events.Where(x => x.Type == 158 && x.SubEtat >= 6).ToDictionary(x => x.YPosition, x => (PaletteChangerMode)x.SubEtat);
+
+                if (paletteXChangers.Any() && paletteYChangers.Any())
+                    throw new Exception("Horizontal and vertical palette changers can't both appear in the same level");
+
+                bool isPaletteHorizontal = paletteXChangers.Any();
+                int currentPalette = 0;
+
                 // Enumerate each cell
                 for (int cellY = 0; cellY < MapHeight; cellY++)
                 {
+                    if (isPaletteHorizontal)
+                        currentPalette = 0;
+                    else
+                    {
+                        for (int y = 0; y < Rayman1PCLevTexture.Size; y++)
+                        {
+                            var py = paletteYChangers.TryGetValue((uint)(Rayman1PCLevTexture.Size * cellY + y), out PaletteChangerMode pm) ? (PaletteChangerMode?)pm : null;
+
+                            if (py != null)
+                            {
+                                currentPalette = py switch
+                                {
+                                    PaletteChangerMode.Top2tobottom1 => 0,
+                                    PaletteChangerMode.Top3tobottom1 => 0,
+
+                                    PaletteChangerMode.Top1tobottom2 => 1,
+                                    PaletteChangerMode.Top3tobottom2 => 1,
+
+                                    PaletteChangerMode.Top1tobottom3 => 2,
+                                    PaletteChangerMode.Top2tobottom3 => 2,
+                                    _ => currentPalette
+                                };
+                            }
+                        }
+                    }
+
                     for (int cellX = 0; cellX < MapWidth; cellX++)
                     {
                         // Get the cell
                         var cell = MapCells[cellX, cellY];
+
+                        if (isPaletteHorizontal)
+                        {
+                            for (int x = 0; x < Rayman1PCLevTexture.Size; x++)
+                            {
+                                var px = paletteXChangers.TryGetValue((uint)(Rayman1PCLevTexture.Size * cellX + x), out PaletteChangerMode pm) ? (PaletteChangerMode?)pm : null;
+
+                                if (px != null)
+                                {
+                                    currentPalette = px switch
+                                    {
+                                        PaletteChangerMode.Left3toRight1 => 0,
+                                        PaletteChangerMode.Left2toRight1 => 0,
+
+                                        PaletteChangerMode.Left1toRight2 => 1,
+                                        PaletteChangerMode.Left3toRight2 => 1,
+
+                                        PaletteChangerMode.Left1toRight3 => 2,
+                                        PaletteChangerMode.Left2toRight3 => 2,
+                                        _ => currentPalette
+                                    };
+                                }
+                            }
+                        }
 
                         // Ignore if fully transparent
                         if (cell.TransparencyMode == Rayman1PCLevMapCellTransparencyMode.FullyTransparent)
@@ -216,18 +280,21 @@ namespace RayCarrot.Rayman.Rayman1
                         // Write each pixel for the texture
                         for (int x = 0; x < Rayman1PCLevTexture.Size; x++)
                         {
+                            var currentX = Rayman1PCLevTexture.Size * cellX + x;
+
                             for (int y = 0; y < Rayman1PCLevTexture.Size; y++)
                             {
-                                // NOTE: The color palette isn't always correct - the palette changer event needs to be checked
+                                var currentY = Rayman1PCLevTexture.Size * cellY + y;
+
                                 // Get the color
-                                var c = ColorPalettes[0][texture.ColorIndexes[x, y]];
+                                var c = ColorPalettes[currentPalette][texture.ColorIndexes[x, y]];
 
                                 // If the texture is transparent, replace the color with one with the alpha channel
                                 if (texture is Rayman1PCLevTransparentTexture tt)
                                     c = Color.FromArgb(tt.Alpha[x, y], c.R, c.G, c.B);
 
                                 // Set the pixel
-                                lockedBmp.SetPixel(Rayman1PCLevTexture.Size * cellX + x, Rayman1PCLevTexture.Size * cellY + y, c);
+                                lockedBmp.SetPixel(currentX, currentY, c);
                             }
                         }
                     }
@@ -621,5 +688,227 @@ namespace RayCarrot.Rayman.Rayman1
         }
 
         #endregion
+    }
+
+    public enum PaletteChangerMode
+    {
+        Left1toRight2 = 0,
+        Left1toRight3 = 1,
+
+        Left2toRight3 = 2,
+        Left2toRight1 = 3,
+
+        Left3toRight1 = 4,
+        Left3toRight2 = 5,
+                      
+        Top1tobottom2 = 6,
+        Top1tobottom3 = 7,
+
+        Top2tobottom3 = 8,
+        Top2tobottom1 = 9,
+
+        Top3tobottom1 = 10,
+        Top3tobottom2 = 11,
+    }
+
+    public static class DesignerEventParser
+    {
+        public static IEnumerable<DesignerEvent> ParseEvents(FileSystemPath file)
+        {
+            using var stream = File.OpenRead(file);
+            using var reader = new StreamReader(stream);
+
+            bool isInComment = false;
+
+            bool crashed = false;
+
+            while (!reader.EndOfStream && !crashed)
+            {
+                string getNewLine()
+                {
+                    while (!reader.EndOfStream)
+                    {
+                        var line = reader.ReadLine();
+
+                        if (line == null || line.IsNullOrWhiteSpace())
+                            continue;
+
+                        string l = String.Empty;
+
+                        foreach (var c in line)
+                        {
+                            if (c == '/')
+                                isInComment ^= true;
+                            else if (!isInComment)
+                                l += c;
+                        }
+
+                        if (!l.IsNullOrWhiteSpace())
+                            return l;
+                    }
+
+                    return null;
+                }
+
+                List<string> lineBuffer = new List<string>();
+
+                string nextValue()
+                {
+                    if (!lineBuffer.Any())
+                        lineBuffer = getNewLine().Split(',').Select(x => x.Trim()).Where(x => !x.IsNullOrWhiteSpace()).ToList();
+
+                    var v = lineBuffer.First();
+
+                    lineBuffer.RemoveAt(0);
+
+                    return v;
+                }
+
+                var e = new DesignerEvent();
+
+                nextValue();
+                
+                e.Name = nextValue();
+                e.DESFile = nextValue();
+                e.UnkGroup = UInt32.Parse(nextValue());
+
+                e.ETAFile = nextValue();
+
+                var cmds = new List<int>();
+
+                bool is33 = false;
+
+                while (true)
+                {
+                    var v = nextValue();
+
+                    if (is33 && v == "255")
+                    {
+                        cmds.RemoveAt(cmds.Count - 1);
+                        break;
+                    }
+
+                    if (v == "33")
+                    {
+                        is33 = true;
+                    }
+                    else
+                    {
+                        is33 = false;
+                    }
+
+                    cmds.Add(Int32.Parse(v));
+                }
+
+                try
+                {                
+                    e.EventCommands = cmds.ToArray();
+
+                    e.XPosition = Int32.Parse(nextValue());
+                    e.YPosition = Int32.Parse(nextValue());
+
+                    e.Etat = UInt32.Parse(nextValue());
+                    e.SubEtat = UInt32.Parse(nextValue());
+
+                    e.Offset_BX = UInt32.Parse(nextValue());
+                    e.Offset_BY = UInt32.Parse(nextValue());
+                    e.Offset_HY = UInt32.Parse(nextValue());
+
+                    e.Follow_enabled = nextValue() == "1";
+                    e.Follow_sprite = nextValue() == "1";
+                    e.Hitpoints = UInt32.Parse(nextValue());
+
+                    e.Obj_type = UInt32.Parse(nextValue());
+                    e.Hit_sprite = UInt32.Parse(nextValue());
+                    e.DesignerGroup = UInt32.Parse(nextValue());
+                }
+                catch (Exception ex)
+                {
+                    crashed = true;
+                }
+
+                yield return e;
+            }
+        }
+
+        public static IEnumerable<DesignerEventLoc> ParseLoc(FileSystemPath file, int offset)
+        {
+            using var stream = File.OpenRead(file);
+
+            stream.Position = offset;
+
+            string readString()
+            {
+                string str = "";
+
+                char[] ch;
+
+                while ((ch = Encoding.ASCII.GetChars(new byte[]
+                {
+                    (byte)stream.ReadByte()
+                })).First() != 0)
+                    str += new string(ch);
+
+                return str;
+            }
+
+            while (stream.Position < stream.Length)
+            {
+                yield return new DesignerEventLoc()
+                {
+                    LocKey = readString(),
+                    Name = readString(),
+                    Description = readString(),
+                };
+            }
+        }
+
+        public class DesignerEvent
+        {
+            public string Name { get; set; }
+
+            public string DESFile { get; set; }
+
+            public uint UnkGroup { get; set; }
+
+            public string ETAFile { get; set; }
+
+            public int[] EventCommands { get; set; }
+
+            public int XPosition { get; set; }
+
+            public int YPosition { get; set; }
+
+            public uint Etat { get; set; }
+
+            public uint SubEtat { get; set; }
+            
+            public uint Offset_BX { get; set; }
+
+            public uint Offset_BY { get; set; }
+
+            public uint Offset_HY { get; set; }
+
+            public bool Follow_enabled { get; set; }
+
+            public bool Follow_sprite { get; set; }
+
+            public uint Hitpoints { get; set; }
+
+            public uint Obj_type { get; set; }
+
+            public uint Hit_sprite { get; set; }
+
+            public uint DesignerGroup { get; set; }
+        }
+
+        public class DesignerEventLoc
+        {
+            public string LocKey { get; set; }
+
+            public string Name { get; set; }
+
+            public string Description { get; set; }
+        }
     }
 }

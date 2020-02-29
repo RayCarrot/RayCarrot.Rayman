@@ -1,4 +1,6 @@
-﻿namespace RayCarrot.Rayman.Rayman1
+﻿using System;
+
+namespace RayCarrot.Rayman.Rayman1
 {
     /// <summary>
     /// The data for an event for a Rayman 1 .lev file on PC
@@ -51,7 +53,7 @@
 
         public ushort HitPoints { get; set; }
 
-        public byte Group { get; set; }
+        public byte UnkGroup { get; set; }
 
         public byte HitSprite { get; set; }
 
@@ -102,7 +104,7 @@
             OffsetHY = reader.Read<byte>();
             FollowSprite = reader.Read<byte>();
             HitPoints = reader.Read<ushort>();
-            Group = reader.Read<byte>();
+            UnkGroup = reader.Read<byte>();
             HitSprite = reader.Read<byte>();
 
             Unknown10 = new BinarySerializableList<byte>(6);
@@ -148,7 +150,7 @@
             writer.Write(OffsetHY);
             writer.Write(FollowSprite);
             writer.Write(HitPoints);
-            writer.Write(Group);
+            writer.Write(UnkGroup);
             writer.Write(HitSprite);
 
             writer.Write(Unknown10);
@@ -157,6 +159,11 @@
             writer.Write(FollowEnabled);
 
             writer.Write(Unknown12);
+        }
+
+        public override string ToString()
+        {
+            return $"({XPosition}, {YPosition})";
         }
     }
 }

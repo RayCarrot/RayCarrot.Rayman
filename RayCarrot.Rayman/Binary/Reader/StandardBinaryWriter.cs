@@ -57,7 +57,7 @@ namespace RayCarrot.Rayman
             Write(bytes);
 
             // Write the null value
-            Write(0x00);
+            Write((byte)0x00);
         }
 
         /// <summary>
