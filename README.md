@@ -11,7 +11,7 @@ Allows reading and writing to the data available in the common Rayman ubi.ini fi
 Allows reading and writing to supported binary files. Below is a list of the currently supported files.
 
 #### Rayman 1
-* Level files (.lev) - (WIP)
+Rayman 1 has been moved to [Ray1Map](https://github.com/Adsolution/Ray1Map)
 
 #### OpenSpace
 * Archives (.cnt)
