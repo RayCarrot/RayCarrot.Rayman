@@ -44,25 +44,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Binary\IBinarySerializableArchive.cs" />
-    <Compile Include="Binary\Archive\IArchiveFileGenerator.cs" />
+    <Compile Include="Archive\IBinarySerializableArchive.cs" />
+    <Compile Include="Archive\IArchiveFileGenerator.cs" />
     <Compile Include="Encoder\MultiXORDataEncoder.cs" />
     <Compile Include="Bitmap\BitmapLock.cs" />
     <Compile Include="Bitmap\RawBitmapData.cs" />
+    <Compile Include="OpenSpace\BinarySerializerExtensions.cs" />
     <Compile Include="OpenSpace\GF\OpenSpaceGFFormat.cs" />
     <Compile Include="OpenSpace\GF\OpenSpaceGFFormatExtensions.cs" />
-    <Compile Include="UbiArt\Common\SerializableList.cs" />
-    <Compile Include="Binary\DataReader\IBinaryDataReader.cs" />
-    <Compile Include="Binary\DataReader\IBinaryDataWriter.cs" />
-    <Compile Include="Binary\Settings\BinarySerializerSettings.cs" />
-    <Compile Include="Binary\Settings\BinaryBoolEncoding.cs" />
-    <Compile Include="Binary\Settings\BinaryStringEncoding.cs" />
-    <Compile Include="Binary\DataReader\BinaryDataReader.cs" />
-    <Compile Include="Binary\DataReader\BinaryDataWriter.cs" />
-    <Compile Include="Binary\Settings\ByteOrder.cs" />
-    <Compile Include="Binary\Reader\StandardBinaryReader.cs" />
-    <Compile Include="Binary\Reader\StandardBinaryWriter.cs" />
-    <Compile Include="Common\BinarySerializableException.cs" />
+    <Compile Include="OpenSpace\Settings\OpenSpaceSettings.cs" />
     <Compile Include="Common\ImageExtensions.cs" />
     <Compile Include="Common\GameModeBaseAttribute.cs" />
     <Compile Include="Compression\7Zip SDK\Common\CommandLineParser.cs" />
@@ -90,17 +80,20 @@
     <Compile Include="OpenSpace\SaveData\Rayman3PCSaveDataLevel.cs" />
     <Compile Include="Encoder\Rayman3SaveDataEncoder.cs" />
     <Compile Include="OpenSpace\Settings\OpenSpaceGameModeInfoAttribute.cs" />
-    <Compile Include="OpenSpace\Helpers\OpenSpaceSerializerHelpers.cs" />
-    <Compile Include="OpenSpace\Settings\OpenSpaceGameModeExtensions.cs" />
-    <Compile Include="Binary\Archive\ArchiveFileGenerator.cs" />
+    <Compile Include="Archive\ArchiveFileGenerator.cs" />
     <Compile Include="Encoder\SevenZipEncoder.cs" />
+    <Compile Include="UbiArt\BinarySerializerExtensions.cs" />
+    <Compile Include="UbiArt\Common\ValuePairs\UbiArtKeyValuePair.cs" />
+    <Compile Include="UbiArt\Common\ValuePairs\UbiArtObjKeyValuePair.cs" />
+    <Compile Include="UbiArt\Common\ValuePairs\UbiArtObjKeyObjValuePair.cs" />
+    <Compile Include="UbiArt\Common\ValuePairs\UbiArtKeyObjValuePair.cs" />
     <Compile Include="UbiArt\IPK\UbiArtTEXFile.cs" />
-    <Compile Include="Binary\TextEncoding\TextEncoding.cs" />
-    <Compile Include="Binary\TextEncoding\TextEncodingExtensions.cs" />
     <Compile Include="Encoder\ZLibEncoder.cs" />
-    <Compile Include="UbiArt\Localization\BaseUbiArtLocalizationData.cs" />
+    <Compile Include="UbiArt\Localization\UbiArtFiestaRunLocStringValuePair.cs" />
+    <Compile Include="UbiArt\Localization\UbiArtLocalizationData.cs" />
     <Compile Include="UbiArt\Localization\FiestaRunLocalizationData.cs" />
     <Compile Include="UbiArt\Localization\UbiArtLocalizationAudio.cs" />
+    <Compile Include="UbiArt\Localization\UbiArtLocStringValuePair.cs" />
     <Compile Include="UbiArt\SaveData\Origins\OriginsPCSaveData.cs" />
     <Compile Include="UbiArt\SaveData\Legends\LegendsPCSaveData.cs" />
     <Compile Include="UbiArt\Common\LocalisationId.cs" />
@@ -110,32 +103,24 @@
     <Compile Include="UbiArt\Common\UbiArtGeneric.cs" />
     <Compile Include="UbiArt\Common\UbiArtPath.cs" />
     <Compile Include="UbiArt\Common\UbiArtStringID.cs" />
-    <Compile Include="UbiArt\Settings\UbiArtGameModeExtensions.cs" />
     <Compile Include="UbiArt\Settings\UbiArtGameMode.cs" />
     <Compile Include="OpenSpace\Settings\OpenSpaceEngineVersion.cs" />
     <Compile Include="UbiArt\Settings\UbiArtPlatform.cs" />
     <Compile Include="UbiArt\Settings\UbiArtGame.cs" />
     <Compile Include="OpenSpace\CNT\OpenSpaceCntFileEntry.cs" />
     <Compile Include="OpenSpace\GF\OpenSpaceGFFile.cs" />
-    <Compile Include="UbiArt\Common\SerializableDictionary.cs" />
-    <Compile Include="Binary\IBinarySerializable.cs" />
     <Compile Include="OpenSpace\CNT\OpenSpaceCntData.cs" />
-    <Compile Include="UbiArt\Common\SerializablePair.cs" />
     <Compile Include="UbiArt\Settings\UbiArtSettings.cs" />
     <Compile Include="UbiArt\IPK\UbiArtIpkData.cs" />
     <Compile Include="UbiArt\IPK\UbiArtIPKFileEntry.cs" />
-    <Compile Include="Binary\BinaryDataSerializer.cs" />
     <Compile Include="UbiArt\SaveData\FiestaRun\FiestaRunWin10EditionSaveData.cs" />
     <Compile Include="UbiArt\SaveData\FiestaRun\FiestaRunPCSaveDataLevel.cs" />
-    <Compile Include="UbiArt\Localization\UbiArtLocalizationData.cs" />
     <Compile Include="UbiArt\SaveData\JungleRun\JungleRunPCSaveData.cs" />
     <Compile Include="UbiArt\SaveData\JungleRun\JungleRunPCSaveDataLevel.cs" />
-    <Compile Include="Binary\Common\BinarySerializableList.cs" />
     <Compile Include="OpenSpace\Settings\OpenSpaceGame.cs" />
     <Compile Include="OpenSpace\Settings\OpenSpaceGameMode.cs" />
     <Compile Include="UbiArt\Settings\UbiArtGameModeInfoAttribute.cs" />
     <Compile Include="OpenSpace\Settings\OpenSpacePlatform.cs" />
-    <Compile Include="OpenSpace\Settings\OpenSpaceSettings.cs" />
     <Compile Include="UbiIni\DataModels\Enums\R2Languages.cs" />
     <Compile Include="UbiIni\DataModels\Enums\R2ParticuleRate.cs" />
     <Compile Include="UbiIni\DataModels\Enums\R3Languages.cs" />
@@ -153,7 +138,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="DotNetZip">
-      <Version>1.13.6</Version>
+      <Version>1.13.7</Version>
     </PackageReference>
     <PackageReference Include="ini-parser">
       <Version>2.5.2</Version>
@@ -170,6 +155,12 @@
     <PackageReference Include="System.Drawing.Common">
       <Version>4.7.0</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\RayCarrot.Binary\RayCarrot.Binary\RayCarrot.Binary.csproj">
+      <Project>{fbbb053c-d02e-439d-b589-320fc21dd60c}</Project>
+      <Name>RayCarrot.Binary</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

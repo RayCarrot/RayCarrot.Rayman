@@ -1,30 +1,31 @@
-﻿namespace RayCarrot.Rayman.UbiArt
+﻿using System.Text;
+using RayCarrot.Binary;
+
+namespace RayCarrot.Rayman.UbiArt
 {
     /// <summary>
     /// Settings for serializing UbiArt game formats
     /// </summary>
     public class UbiArtSettings : BinarySerializerSettings
     {
+        #region Constructor
+
         /// <summary>
         /// Default constructor
         /// </summary>
+        /// <param name="endian">The endianness</param>
+        /// <param name="textEncoding">The text encoding to use</param>
         /// <param name="game">The game</param>
         /// <param name="platform">The platform</param>
-        /// <param name="byteOrder">The byte order to use</param>
-        /// <param name="textEncoding">The text encoding to use</param>
-        public UbiArtSettings(UbiArtGame game, UbiArtPlatform platform, ByteOrder byteOrder, TextEncoding textEncoding)
+        public UbiArtSettings(Endian endian, Encoding textEncoding, UbiArtGame game, UbiArtPlatform platform) : base(endian, textEncoding)
         {
-            // Set base properties
-            ByteOrder = byteOrder;
-            Encoding = textEncoding.GetEncoding();
-            StringEncoding = BinaryStringEncoding.LengthPrefixed;
-            BoolEncoding = BinaryBoolEncoding.Int32;
-
-            // Set properties
             Game = game;
             Platform = platform;
-            DeserializeMipmaps = true;
         }
+
+        #endregion
+
+        #region Public Methods
 
         /// <summary>
         /// The game
@@ -36,9 +37,44 @@
         /// </summary>
         public UbiArtPlatform Platform { get; }
 
+        #endregion
+
+        #region Public Static Methods
+
         /// <summary>
-        /// Indicates if mipmaps should be deserialized (if available). Setting this to false will improve deserializing performance for certain games, but will not allow the deserialized file to be serialized without new mipmaps being generated
+        /// Gets the default settings based on the game and platform
         /// </summary>
-        public bool DeserializeMipmaps { get; set; }
+        /// <param name="game">The game</param>
+        /// <param name="platform">The platform</param>
+        /// <returns>The settings</returns>
+        public static UbiArtSettings GetDefaultSettings(UbiArtGame game, UbiArtPlatform platform)
+        {
+            var isLittleEndian = game == UbiArtGame.RaymanOrigins && platform == UbiArtPlatform.Nintendo3DS;
+
+            Encoding getEncoding()
+            {
+                if (game != UbiArtGame.RaymanOrigins)
+                    return Encoding.UTF8;
+
+                return isLittleEndian ? Encoding.Unicode : Encoding.BigEndianUnicode;
+            }
+
+            return new UbiArtSettings(isLittleEndian ? Endian.Little : Endian.Big, getEncoding(), game, platform);
+        }
+
+        /// <summary>
+        /// Gets the default settings for save files based on the game and platform
+        /// </summary>
+        /// <param name="game">The game</param>
+        /// <param name="platform">The platform</param>
+        /// <returns>The settings</returns>
+        public static UbiArtSettings GetSaveSettings(UbiArtGame game, UbiArtPlatform platform)
+        {
+            var isLittleEndian = game == UbiArtGame.RaymanJungleRun || game == UbiArtGame.RaymanFiestaRun || (game == UbiArtGame.RaymanOrigins && platform == UbiArtPlatform.Nintendo3DS);
+
+            return new UbiArtSettings(isLittleEndian ? Endian.Little : Endian.Big, Encoding.UTF8, game, platform);
+        }
+
+        #endregion
     }
 }

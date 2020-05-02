@@ -1,19 +1,12 @@
-﻿namespace RayCarrot.Rayman.UbiArt
+﻿using RayCarrot.Binary;
+
+namespace RayCarrot.Rayman.UbiArt
 {
     /// <summary>
     /// The save file data used for Rayman Legends on PC
     /// </summary>
-    public class LegendsPCSaveData : IBinarySerializable<UbiArtSettings>
+    public class LegendsPCSaveData : IBinarySerializable
     {
-        #region Public Static Properties
-
-        /// <summary>
-        /// Gets the default serializer
-        /// </summary>
-        public static BinaryDataSerializer<LegendsPCSaveData, UbiArtSettings> GetSerializer() => new BinaryDataSerializer<LegendsPCSaveData, UbiArtSettings>(UbiArtGameMode.RaymanLegendsPC.GetSettings());
-
-        #endregion
-
         #region Public Properties
 
         /// <summary>
@@ -38,27 +31,15 @@
         #region Public Methods
 
         /// <summary>
-        /// Deserializes the data from the stream into this instance
+        /// Handles the serialization using the specified serializer
         /// </summary>
-        /// <param name="reader">The reader to use to read from the stream</param>
-        public void Deserialize(IBinaryDataReader<UbiArtSettings> reader)
+        /// <param name="s">The serializer</param>
+        public void Serialize(IBinarySerializer s)
         {
-            Unknown1 = reader.ReadBytes(528);
-            Unknown2 = reader.Read<bool>();
-            SaveData = reader.Read<PersistentGameData_Universe>();
-            Unknown3 = reader.ReadRemainingBytes();
-        }
-
-        /// <summary>
-        /// Serializes the data from this instance to the stream
-        /// </summary>
-        /// <param name="writer">The writer to use to write to the stream</param>
-        public void Serialize(IBinaryDataWriter<UbiArtSettings> writer)
-        {
-            writer.Write(Unknown1);
-            writer.Write(Unknown2);
-            writer.Write(SaveData);
-            writer.Write(Unknown3);
+            Unknown1 = s.SerializeArray<byte>(Unknown1, 528, name: nameof(Unknown1));
+            Unknown2 = s.SerializeBool<uint>(Unknown2, name: nameof(Unknown2));
+            SaveData = s.SerializeObject<PersistentGameData_Universe>(SaveData, name: nameof(SaveData));
+            Unknown3 = s.SerializeArray<byte>(Unknown3, (int)(s.Stream.Length - s.Stream.Position), name: nameof(Unknown3));
         }
 
         #endregion
@@ -68,12 +49,12 @@
         /// <summary>
         /// The main save data for a Rayman Legends save slot
         /// </summary>
-        public class PersistentGameData_Universe : IBinarySerializable<UbiArtSettings>
+        public class PersistentGameData_Universe : IBinarySerializable
         {
             /// <summary>
             /// The save data for each level
             /// </summary>
-            public SerializableDictionary<UbiArtStringID, UbiArtGeneric<PersistentGameData_Level>> Levels { get; set; }
+            public UbiArtObjKeyObjValuePair<UbiArtStringID, UbiArtGeneric<PersistentGameData_Level>>[] Levels { get; set; }
 
             public SaveSession Rewards { get; set; }
 
@@ -83,11 +64,11 @@
 
             public PersistentGameData_BubbleDreamerData BubbleDreamer { get; set; }
 
-            public SerializableList<int> UnlockedPets { get; set; }
+            public int[] UnlockedPets { get; set; }
 
-            public SerializableList<PetRewardData> PetsDailyReward { get; set; }
+            public PetRewardData[] PetsDailyReward { get; set; }
 
-            public SerializableList<St_petCups> UnlockedCupsForPets { get; set; }
+            public St_petCups[] UnlockedCupsForPets { get; set; }
 
             public uint GivenPetCount { get; set; }
 
@@ -97,7 +78,7 @@
 
             public bool HasShownMessageAllPet { get; set; }
 
-            public SerializableList<Message> Messages { get; set; }
+            public Message[] Messages { get; set; }
 
             public uint MessagesTotalCount { get; set; }
 
@@ -133,21 +114,21 @@
 
             public uint RetroMapUnlockedCounter { get; set; }
 
-            public SerializableList<UbiArtStringID> MrDarkUnlockCount { get; set; }
+            public UbiArtStringID[] MrDarkUnlockCount { get; set; }
 
             public uint CatchEmAllIndex { get; set; }
 
-            public SerializableList<UbiArtStringID> NewCostumes { get; set; }
+            public UbiArtStringID[] NewCostumes { get; set; }
 
-            public SerializableList<UbiArtStringID> CostumeUnlockSeen { get; set; }
+            public UbiArtStringID[] CostumeUnlockSeen { get; set; }
 
-            public SerializableList<UbiArtStringID> RetroUnlocks { get; set; }
+            public UbiArtStringID[] RetroUnlocks { get; set; }
 
-            public SerializableList<UnlockedDoor> NewUnlockedDoor { get; set; }
+            public UnlockedDoor[] NewUnlockedDoor { get; set; }
 
-            public SerializableList<RO2_LuckyTicketReward> LuckyTicketRewardList { get; set; }
+            public RO2_LuckyTicketReward[] LuckyTicketRewardList { get; set; }
 
-            public SerializableList<NodeDataStruct> NodeData { get; set; }
+            public NodeDataStruct[] NodeData { get; set; }
 
             public uint LuckyTicketsRewardGivenCounter { get; set; }
 
@@ -173,13 +154,13 @@
 
             public bool UplayDoneReward3 { get; set; }
 
-            public SerializableList<UbiArtStringID> PlayedDiamondCupSequence { get; set; }
+            public UbiArtStringID[] PlayedDiamondCupSequence { get; set; }
 
-            public SerializableList<UbiArtStringID> Costumes { get; set; }
+            public UbiArtStringID[] Costumes { get; set; }
 
-            public SerializableList<uint> PlayedChallenge { get; set; }
+            public uint[] PlayedChallenge { get; set; }
 
-            public SerializableList<UbiArtStringID> PlayedInvasion { get; set; }
+            public UbiArtStringID[] PlayedInvasion { get; set; }
 
             public uint TvOffOptionEnabledNb { get; set; }
 
@@ -187,7 +168,7 @@
 
             public bool BarbaraCostumeUnlockSeen { get; set; }
 
-            public SerializableList<UbiArtStringID> WorldUnlockMessagesSeen { get; set; }
+            public UbiArtStringID[] WorldUnlockMessagesSeen { get; set; }
 
             public bool RetroWorldUnlockMessageSeen { get; set; }
 
@@ -203,9 +184,9 @@
 
             public bool ChallengeWorldUnlockMessageSeen { get; set; }
 
-            public SerializableList<UbiArtStringID> DoorUnlockMessageSeen { get; set; }
+            public UbiArtStringID[] DoorUnlockMessageSeen { get; set; }
 
-            public SerializableList<UbiArtStringID> DoorUnlockDRCMessageRequired { get; set; }
+            public UbiArtStringID[] DoorUnlockDRCMessageRequired { get; set; }
 
             public UbiArtStringID LuckyTicketRewardWorldName { get; set; }
 
@@ -229,172 +210,90 @@
 
             public NodeDataStruct DummmyNodeData { get; set; }
 
-            public void Deserialize(IBinaryDataReader<UbiArtSettings> reader)
+            public void Serialize(IBinarySerializer s)
             {
-                Levels = reader.Read<SerializableDictionary<UbiArtStringID, UbiArtGeneric<PersistentGameData_Level>>>();
-                Rewards = reader.Read<SaveSession>();
-                Score = reader.Read<PersistentGameData_Score>();
-                Profile = reader.Read<ProfileData>();
-                BubbleDreamer = reader.Read<PersistentGameData_BubbleDreamerData>();
-                UnlockedPets = reader.Read<SerializableList<int>>();
-                PetsDailyReward = reader.Read<SerializableList<PetRewardData>>();
-                UnlockedCupsForPets = reader.Read<SerializableList<St_petCups>>();
-                GivenPetCount = reader.Read<uint>();
-                NewPetsUnlocked = reader.Read<bool>();
-                FirstPetShown = reader.Read<bool>();
-                HasShownMessageAllPet = reader.Read<bool>();
-                Messages = reader.Read<SerializableList<Message>>();
-                MessagesTotalCount = reader.Read<uint>();
-                Messages_onlineDate = reader.Read<UbiArtDateTime>();
-                Messages_localDate = reader.Read<UbiArtDateTime>();
-                Messages_readDrcCount = reader.Read<uint>();
-                Messages_interactDrcCount = reader.Read<uint>();
-                Messages_lastSeenMessageHandle = reader.Read<uint>();
-                Messages_tutoCount = reader.Read<uint>();
-                Messages_drcCountSinceLastInteract = reader.Read<uint>();
-                PlayerCard_displayedCount = reader.Read<uint>();
-                PlayerCard_tutoSeen = reader.Read<bool>();
-                GameCompleted = reader.Read<bool>();
-                TimeToCompleteGameInSec = reader.Read<uint>();
-                TimeSpendInGameInSec = reader.Read<uint>();
-                TeensiesBonusCounter = reader.Read<uint>();
-                LuckyTicketsCounter = reader.Read<uint>();
-                LuckyTicketLevelCount = reader.Read<uint>();
-                RetroMapUnlockedCounter = reader.Read<uint>();
-                MrDarkUnlockCount = reader.Read<SerializableList<UbiArtStringID>>();
-                CatchEmAllIndex = reader.Read<uint>();
-                NewCostumes = reader.Read<SerializableList<UbiArtStringID>>();
-                CostumeUnlockSeen = reader.Read<SerializableList<UbiArtStringID>>();
-                RetroUnlocks = reader.Read<SerializableList<UbiArtStringID>>();
-                NewUnlockedDoor = reader.Read<SerializableList<UnlockedDoor>>();
-                LuckyTicketRewardList = reader.Read<SerializableList<RO2_LuckyTicketReward>>();
-                NodeData = reader.Read<SerializableList<NodeDataStruct>>();
-                LuckyTicketsRewardGivenCounter = reader.Read<uint>();
-                ConsecutiveLuckyTicketCount = reader.Read<uint>();
-                TicketReminderMessageCount = reader.Read<uint>();
-                DisplayGhosts = reader.Read<uint>();
-                UplayDoneAction0 = reader.Read<bool>();
-                UplayDoneAction1 = reader.Read<bool>();
-                UplayDoneAction2 = reader.Read<bool>();
-                UplayDoneAction3 = reader.Read<bool>();
-                UplayDoneReward0 = reader.Read<bool>();
-                UplayDoneReward1 = reader.Read<bool>();
-                UplayDoneReward2 = reader.Read<bool>();
-                UplayDoneReward3 = reader.Read<bool>();
-                PlayedDiamondCupSequence = reader.Read<SerializableList<UbiArtStringID>>();
-                Costumes = reader.Read<SerializableList<UbiArtStringID>>();
-                PlayedChallenge = reader.Read<SerializableList<uint>>();
-                PlayedInvasion = reader.Read<SerializableList<UbiArtStringID>>();
-                TvOffOptionEnabledNb = reader.Read<uint>();
-                TvOffOptionActivatedTime = reader.Read<uint>();
-                BarbaraCostumeUnlockSeen = reader.Read<bool>();
-                WorldUnlockMessagesSeen = reader.Read<SerializableList<UbiArtStringID>>();
-                RetroWorldUnlockMessageSeen = reader.Read<bool>();
-                FreedAllTeensiesMessageSeen = reader.Read<bool>();
-                MisterDarkCompletionMessageSeen = reader.Read<bool>();
-                FirstInvasionMessageSeen = reader.Read<bool>();
-                InvitationTutoSeen = reader.Read<bool>();
-                MessageSeen8Bit = reader.Read<bool>();
-                ChallengeWorldUnlockMessageSeen = reader.Read<bool>();
-                DoorUnlockMessageSeen = reader.Read<SerializableList<UbiArtStringID>>();
-                DoorUnlockDRCMessageRequired = reader.Read<SerializableList<UbiArtStringID>>();
-                LuckyTicketRewardWorldName = reader.Read<UbiArtStringID>();
-                IsUGCMiiverseWarningSet = reader.Read<bool>();
-                Reward39Failed = reader.Read<int>();
-                UnlockPrivilegesData = reader.Read<string>();
-                IsDemoRewardChecked = reader.Read<int>();
-                PrisonerDataDummy = reader.Read<PrisonerData>();
-                PersistentGameDataLevelDummy = reader.Read<PersistentGameData_Level>();
-                MessageDummy = reader.Read<Message>();
-                UnlockedDoorDummy = reader.Read<UnlockedDoor>();
-                BubbleDreamerDataDummy = reader.Read<PersistentGameData_BubbleDreamerData>();
-                DummmyNodeData = reader.Read<NodeDataStruct>();
-            }
-
-            public void Serialize(IBinaryDataWriter<UbiArtSettings> writer)
-            { 
-                writer.Write(Levels);
-                writer.Write(Rewards);
-                writer.Write(Score);
-                writer.Write(Profile);
-                writer.Write(BubbleDreamer);
-                writer.Write(UnlockedPets);
-                writer.Write(PetsDailyReward);
-                writer.Write(UnlockedCupsForPets);
-                writer.Write(GivenPetCount);
-                writer.Write(NewPetsUnlocked);
-                writer.Write(FirstPetShown);
-                writer.Write(HasShownMessageAllPet);
-                writer.Write(Messages);
-                writer.Write(MessagesTotalCount);
-                writer.Write(Messages_onlineDate);
-                writer.Write(Messages_localDate);
-                writer.Write(Messages_readDrcCount);
-                writer.Write(Messages_interactDrcCount);
-                writer.Write(Messages_lastSeenMessageHandle);
-                writer.Write(Messages_tutoCount);
-                writer.Write(Messages_drcCountSinceLastInteract);
-                writer.Write(PlayerCard_displayedCount);
-                writer.Write(PlayerCard_tutoSeen);
-                writer.Write(GameCompleted);
-                writer.Write(TimeToCompleteGameInSec);
-                writer.Write(TimeSpendInGameInSec);
-                writer.Write(TeensiesBonusCounter);
-                writer.Write(LuckyTicketsCounter);
-                writer.Write(LuckyTicketLevelCount);
-                writer.Write(RetroMapUnlockedCounter);
-                writer.Write(MrDarkUnlockCount);
-                writer.Write(CatchEmAllIndex);
-                writer.Write(NewCostumes);
-                writer.Write(CostumeUnlockSeen);
-                writer.Write(RetroUnlocks);
-                writer.Write(NewUnlockedDoor);
-                writer.Write(LuckyTicketRewardList);
-                writer.Write(NodeData);
-                writer.Write(LuckyTicketsRewardGivenCounter);
-                writer.Write(ConsecutiveLuckyTicketCount);
-                writer.Write(TicketReminderMessageCount);
-                writer.Write(DisplayGhosts);
-                writer.Write(UplayDoneAction0);
-                writer.Write(UplayDoneAction1);
-                writer.Write(UplayDoneAction2);
-                writer.Write(UplayDoneAction3);
-                writer.Write(UplayDoneReward0);
-                writer.Write(UplayDoneReward1);
-                writer.Write(UplayDoneReward2);
-                writer.Write(UplayDoneReward3);
-                writer.Write(PlayedDiamondCupSequence);
-                writer.Write(Costumes);
-                writer.Write(PlayedChallenge);
-                writer.Write(PlayedInvasion);
-                writer.Write(TvOffOptionEnabledNb);
-                writer.Write(TvOffOptionActivatedTime );
-                writer.Write(BarbaraCostumeUnlockSeen);
-                writer.Write(WorldUnlockMessagesSeen);
-                writer.Write(RetroWorldUnlockMessageSeen );
-                writer.Write(FreedAllTeensiesMessageSeen);
-                writer.Write(MisterDarkCompletionMessageSeen);
-                writer.Write(FirstInvasionMessageSeen);
-                writer.Write(InvitationTutoSeen);
-                writer.Write(MessageSeen8Bit);
-                writer.Write(ChallengeWorldUnlockMessageSeen);
-                writer.Write(DoorUnlockMessageSeen);
-                writer.Write(DoorUnlockDRCMessageRequired);
-                writer.Write(LuckyTicketRewardWorldName);
-                writer.Write(IsUGCMiiverseWarningSet);
-                writer.Write(Reward39Failed);
-                writer.Write(UnlockPrivilegesData);
-                writer.Write(IsDemoRewardChecked);
-                writer.Write(PrisonerDataDummy);
-                writer.Write(PersistentGameDataLevelDummy);
-                writer.Write(MessageDummy);
-                writer.Write(UnlockedDoorDummy);
-                writer.Write(BubbleDreamerDataDummy);
-                writer.Write(DummmyNodeData);
+                Levels = s.SerializeUbiArtObjectArray<UbiArtObjKeyObjValuePair<UbiArtStringID, UbiArtGeneric<PersistentGameData_Level>>>(Levels, name: nameof(Levels));
+                Rewards = s.SerializeObject<SaveSession>(Rewards, name: nameof(Rewards));
+                Score = s.SerializeObject<PersistentGameData_Score>(Score, name: nameof(Score));
+                Profile = s.SerializeObject<ProfileData>(Profile, name: nameof(Profile));
+                BubbleDreamer = s.SerializeObject<PersistentGameData_BubbleDreamerData>(BubbleDreamer, name: nameof(BubbleDreamer));
+                UnlockedPets = s.SerializeUbiArtArray<int>(UnlockedPets, name: nameof(UnlockedPets));
+                PetsDailyReward = s.SerializeUbiArtObjectArray<PetRewardData>(PetsDailyReward, name: nameof(PetsDailyReward));
+                UnlockedCupsForPets = s.SerializeUbiArtObjectArray<St_petCups>(UnlockedCupsForPets, name: nameof(UnlockedCupsForPets));
+                GivenPetCount = s.Serialize<uint>(GivenPetCount, name: nameof(GivenPetCount));
+                NewPetsUnlocked = s.SerializeBool<uint>(NewPetsUnlocked, name: nameof(NewPetsUnlocked));
+                FirstPetShown = s.SerializeBool<uint>(FirstPetShown, name: nameof(FirstPetShown));
+                HasShownMessageAllPet = s.SerializeBool<uint>(HasShownMessageAllPet, name: nameof(HasShownMessageAllPet));
+                Messages = s.SerializeUbiArtObjectArray<Message>(Messages, name: nameof(Messages));
+                MessagesTotalCount = s.Serialize<uint>(MessagesTotalCount, name: nameof(MessagesTotalCount));
+                Messages_onlineDate = s.SerializeObject<UbiArtDateTime>(Messages_onlineDate, name: nameof(Messages_onlineDate));
+                Messages_localDate = s.SerializeObject<UbiArtDateTime>(Messages_localDate, name: nameof(Messages_localDate));
+                Messages_readDrcCount = s.Serialize<uint>(Messages_readDrcCount, name: nameof(Messages_readDrcCount));
+                Messages_interactDrcCount = s.Serialize<uint>(Messages_interactDrcCount, name: nameof(Messages_interactDrcCount));
+                Messages_lastSeenMessageHandle = s.Serialize<uint>(Messages_lastSeenMessageHandle, name: nameof(Messages_lastSeenMessageHandle));
+                Messages_tutoCount = s.Serialize<uint>(Messages_tutoCount, name: nameof(Messages_tutoCount));
+                Messages_drcCountSinceLastInteract = s.Serialize<uint>(Messages_drcCountSinceLastInteract, name: nameof(Messages_drcCountSinceLastInteract));
+                PlayerCard_displayedCount = s.Serialize<uint>(PlayerCard_displayedCount, name: nameof(PlayerCard_displayedCount));
+                PlayerCard_tutoSeen = s.SerializeBool<uint>(PlayerCard_tutoSeen, name: nameof(PlayerCard_tutoSeen));
+                GameCompleted = s.SerializeBool<uint>(GameCompleted, name: nameof(GameCompleted));
+                TimeToCompleteGameInSec = s.Serialize<uint>(TimeToCompleteGameInSec, name: nameof(TimeToCompleteGameInSec));
+                TimeSpendInGameInSec = s.Serialize<uint>(TimeSpendInGameInSec, name: nameof(TimeSpendInGameInSec));
+                TeensiesBonusCounter = s.Serialize<uint>(TeensiesBonusCounter, name: nameof(TeensiesBonusCounter));
+                LuckyTicketsCounter = s.Serialize<uint>(LuckyTicketsCounter, name: nameof(LuckyTicketsCounter));
+                LuckyTicketLevelCount = s.Serialize<uint>(LuckyTicketLevelCount, name: nameof(LuckyTicketLevelCount));
+                RetroMapUnlockedCounter = s.Serialize<uint>(RetroMapUnlockedCounter, name: nameof(RetroMapUnlockedCounter));
+                MrDarkUnlockCount = s.SerializeUbiArtObjectArray<UbiArtStringID>(MrDarkUnlockCount, name: nameof(MrDarkUnlockCount));
+                CatchEmAllIndex = s.Serialize<uint>(CatchEmAllIndex, name: nameof(CatchEmAllIndex));
+                NewCostumes = s.SerializeUbiArtObjectArray<UbiArtStringID>(NewCostumes, name: nameof(NewCostumes));
+                CostumeUnlockSeen = s.SerializeUbiArtObjectArray<UbiArtStringID>(CostumeUnlockSeen, name: nameof(CostumeUnlockSeen));
+                RetroUnlocks = s.SerializeUbiArtObjectArray<UbiArtStringID>(RetroUnlocks, name: nameof(RetroUnlocks));
+                NewUnlockedDoor = s.SerializeUbiArtObjectArray<UnlockedDoor>(NewUnlockedDoor, name: nameof(NewUnlockedDoor));
+                LuckyTicketRewardList = s.SerializeUbiArtObjectArray<RO2_LuckyTicketReward>(LuckyTicketRewardList, name: nameof(LuckyTicketRewardList));
+                NodeData = s.SerializeUbiArtObjectArray<NodeDataStruct>(NodeData, name: nameof(NodeData));
+                LuckyTicketsRewardGivenCounter = s.Serialize<uint>(LuckyTicketsRewardGivenCounter, name: nameof(LuckyTicketsRewardGivenCounter));
+                ConsecutiveLuckyTicketCount = s.Serialize<uint>(ConsecutiveLuckyTicketCount, name: nameof(ConsecutiveLuckyTicketCount));
+                TicketReminderMessageCount = s.Serialize<uint>(TicketReminderMessageCount, name: nameof(TicketReminderMessageCount));
+                DisplayGhosts = s.Serialize<uint>(DisplayGhosts, name: nameof(DisplayGhosts));
+                UplayDoneAction0 = s.SerializeBool<uint>(UplayDoneAction0, name: nameof(UplayDoneAction0));
+                UplayDoneAction1 = s.SerializeBool<uint>(UplayDoneAction1, name: nameof(UplayDoneAction1));
+                UplayDoneAction2 = s.SerializeBool<uint>(UplayDoneAction2, name: nameof(UplayDoneAction2));
+                UplayDoneAction3 = s.SerializeBool<uint>(UplayDoneAction3, name: nameof(UplayDoneAction3));
+                UplayDoneReward0 = s.SerializeBool<uint>(UplayDoneReward0, name: nameof(UplayDoneReward0));
+                UplayDoneReward1 = s.SerializeBool<uint>(UplayDoneReward1, name: nameof(UplayDoneReward1));
+                UplayDoneReward2 = s.SerializeBool<uint>(UplayDoneReward2, name: nameof(UplayDoneReward2));
+                UplayDoneReward3 = s.SerializeBool<uint>(UplayDoneReward3, name: nameof(UplayDoneReward3));
+                PlayedDiamondCupSequence = s.SerializeUbiArtObjectArray<UbiArtStringID>(PlayedDiamondCupSequence, name: nameof(PlayedDiamondCupSequence));
+                Costumes = s.SerializeUbiArtObjectArray<UbiArtStringID>(Costumes, name: nameof(Costumes));
+                PlayedChallenge = s.SerializeUbiArtArray<uint>(PlayedChallenge, name: nameof(PlayedChallenge));
+                PlayedInvasion = s.SerializeUbiArtObjectArray<UbiArtStringID>(PlayedInvasion, name: nameof(PlayedInvasion));
+                TvOffOptionEnabledNb = s.Serialize<uint>(TvOffOptionEnabledNb, name: nameof(TvOffOptionEnabledNb));
+                TvOffOptionActivatedTime = s.Serialize<uint>(TvOffOptionActivatedTime, name: nameof(TvOffOptionActivatedTime));
+                BarbaraCostumeUnlockSeen = s.SerializeBool<uint>(BarbaraCostumeUnlockSeen, name: nameof(BarbaraCostumeUnlockSeen));
+                WorldUnlockMessagesSeen = s.SerializeUbiArtObjectArray<UbiArtStringID>(WorldUnlockMessagesSeen, name: nameof(WorldUnlockMessagesSeen));
+                RetroWorldUnlockMessageSeen = s.SerializeBool<uint>(RetroWorldUnlockMessageSeen, name: nameof(RetroWorldUnlockMessageSeen));
+                FreedAllTeensiesMessageSeen = s.SerializeBool<uint>(FreedAllTeensiesMessageSeen, name: nameof(FreedAllTeensiesMessageSeen));
+                MisterDarkCompletionMessageSeen = s.SerializeBool<uint>(MisterDarkCompletionMessageSeen, name: nameof(MisterDarkCompletionMessageSeen));
+                FirstInvasionMessageSeen = s.SerializeBool<uint>(FirstInvasionMessageSeen, name: nameof(FirstInvasionMessageSeen));
+                InvitationTutoSeen = s.SerializeBool<uint>(InvitationTutoSeen, name: nameof(InvitationTutoSeen));
+                MessageSeen8Bit = s.SerializeBool<uint>(MessageSeen8Bit, name: nameof(MessageSeen8Bit));
+                ChallengeWorldUnlockMessageSeen = s.SerializeBool<uint>(ChallengeWorldUnlockMessageSeen, name: nameof(ChallengeWorldUnlockMessageSeen));
+                DoorUnlockMessageSeen = s.SerializeUbiArtObjectArray<UbiArtStringID>(DoorUnlockMessageSeen, name: nameof(DoorUnlockMessageSeen));
+                DoorUnlockDRCMessageRequired = s.SerializeUbiArtObjectArray<UbiArtStringID>(DoorUnlockDRCMessageRequired, name: nameof(DoorUnlockDRCMessageRequired));
+                LuckyTicketRewardWorldName = s.SerializeObject<UbiArtStringID>(LuckyTicketRewardWorldName, name: nameof(LuckyTicketRewardWorldName));
+                IsUGCMiiverseWarningSet = s.SerializeBool<uint>(IsUGCMiiverseWarningSet, name: nameof(IsUGCMiiverseWarningSet));
+                Reward39Failed = s.Serialize<int>(Reward39Failed, name: nameof(Reward39Failed));
+                UnlockPrivilegesData = s.SerializeLengthPrefixedString(UnlockPrivilegesData, name: nameof(UnlockPrivilegesData));
+                IsDemoRewardChecked = s.Serialize<int>(IsDemoRewardChecked, name: nameof(IsDemoRewardChecked));
+                PrisonerDataDummy = s.SerializeObject<PrisonerData>(PrisonerDataDummy, name: nameof(PrisonerDataDummy));
+                PersistentGameDataLevelDummy = s.SerializeObject<PersistentGameData_Level>(PersistentGameDataLevelDummy, name: nameof(PersistentGameDataLevelDummy));
+                MessageDummy = s.SerializeObject<Message>(MessageDummy, name: nameof(MessageDummy));
+                UnlockedDoorDummy = s.SerializeObject<UnlockedDoor>(UnlockedDoorDummy, name: nameof(UnlockedDoorDummy));
+                BubbleDreamerDataDummy = s.SerializeObject<PersistentGameData_BubbleDreamerData>(BubbleDreamerDataDummy, name: nameof(BubbleDreamerDataDummy));
+                DummmyNodeData = s.SerializeObject<NodeDataStruct>(DummmyNodeData, name: nameof(DummmyNodeData));
             }
         }
 
-        public class Message : IBinarySerializable<UbiArtSettings>
+        public class Message : IBinarySerializable
         {
             public uint Message_handle { get; set; }
 
@@ -426,13 +325,13 @@
 
             public bool LockedAfterInteract { get; set; }
 
-            public SerializableList<SmartLocId> Buttons { get; set; }
+            public SmartLocId[] Buttons { get; set; }
 
-            public SerializableList<Attribute> Attributes { get; set; }
+            public Attribute[] Attributes { get; set; }
 
-            public SerializableList<Marker> Markers { get; set; }
+            public Marker[] Markers { get; set; }
 
-            public class Marker : IBinarySerializable<UbiArtSettings>
+            public class Marker : IBinarySerializable
             {
                 public SmartLocId LocId { get; set; }
 
@@ -440,86 +339,51 @@
 
                 public float FontSize { get; set; }
 
-                public void Deserialize(IBinaryDataReader<UbiArtSettings> reader)
+                public void Serialize(IBinarySerializer s)
                 {
-                    LocId = reader.Read<SmartLocId>();
-                    Color = reader.Read<uint>();
-                    FontSize = reader.Read<float>();
-                }
-
-                public void Serialize(IBinaryDataWriter<UbiArtSettings> writer)
-                {
-                    writer.Write(LocId);
-                    writer.Write(Color);
-                    writer.Write(FontSize);
+                    LocId = s.SerializeObject<SmartLocId>(LocId, name: nameof(LocId));
+                    Color = s.Serialize<uint>(Color, name: nameof(Color));
+                    FontSize = s.Serialize<float>(FontSize, name: nameof(FontSize));
                 }
             }
 
-            public class Attribute : IBinarySerializable<UbiArtSettings>
+            public class Attribute : IBinarySerializable
             {
                 public uint Type { get; set; }
 
                 public uint Value { get; set; }
 
-                public void Deserialize(IBinaryDataReader<UbiArtSettings> reader)
+                public void Serialize(IBinarySerializer s)
                 {
-                    Type = reader.Read<uint>();
-                    Value = reader.Read<uint>();
-                }
-
-                public void Serialize(IBinaryDataWriter<UbiArtSettings> writer)
-                {
-                    writer.Write(Type);
-                    writer.Write(Value);
+                    Type = s.Serialize<uint>(Type, name: nameof(Type));
+                    Value = s.Serialize<uint>(Value, name: nameof(Value));
                 }
             }
 
-            public void Deserialize(IBinaryDataReader<UbiArtSettings> reader)
+            public void Serialize(IBinarySerializer s)
             {
-                Message_handle = reader.Read<uint>();
-                Type = reader.Read<uint>();
-                Onlinedate = reader.Read<UbiArtDateTime>();
-                LocalDate = reader.Read<UbiArtDateTime>();
-                PersistentSeconds = reader.Read<uint>();
-                Title = reader.Read<SmartLocId>();
-                Body = reader.Read<SmartLocId>();
-                IsPrompt = reader.Read<bool>();
-                IsDrc = reader.Read<bool>();
-                HasBeenRead = reader.Read<bool>();
-                IsOnline = reader.Read<bool>();
-                RemoveAfterRead = reader.Read<bool>();
-                HasBeenInteract = reader.Read<bool>();
-                RemoveAfterInteract = reader.Read<bool>();
-                LockedAfterInteract = reader.Read<bool>();
-                Buttons = reader.Read<SerializableList<SmartLocId>>();
-                Attributes = reader.Read<SerializableList<Attribute>>();
-                Markers = reader.Read<SerializableList<Marker>>();
-            }
-
-            public void Serialize(IBinaryDataWriter<UbiArtSettings> writer)
-            {
-                writer.Write(Message_handle);
-                writer.Write(Type);
-                writer.Write(Onlinedate);
-                writer.Write(LocalDate);
-                writer.Write(PersistentSeconds);
-                writer.Write(Title);
-                writer.Write(Body);
-                writer.Write(IsPrompt);
-                writer.Write(IsDrc);
-                writer.Write(HasBeenRead);
-                writer.Write(IsOnline);
-                writer.Write(RemoveAfterRead);
-                writer.Write(HasBeenInteract);
-                writer.Write(RemoveAfterInteract);
-                writer.Write(LockedAfterInteract);
-                writer.Write(Buttons);
-                writer.Write(Attributes);
-                writer.Write(Markers);
+                Message_handle = s.Serialize<uint>(Message_handle, name: nameof(Message_handle));
+                Type = s.Serialize<uint>(Type, name: nameof(Type));
+                Onlinedate = s.SerializeObject<UbiArtDateTime>(Onlinedate, name: nameof(Onlinedate));
+                LocalDate = s.SerializeObject<UbiArtDateTime>(LocalDate, name: nameof(LocalDate));
+                PersistentSeconds = s.Serialize<uint>(PersistentSeconds, name: nameof(PersistentSeconds));
+                Title = s.SerializeObject<SmartLocId>(Title, name: nameof(Title));
+                Body = s.SerializeObject<SmartLocId>(Body, name: nameof(Body));
+                IsPrompt = s.SerializeBool<uint>(IsPrompt, name: nameof(IsPrompt));
+                IsDrc = s.SerializeBool<uint>(IsDrc, name: nameof(IsDrc));
+                HasBeenRead = s.SerializeBool<uint>(HasBeenRead, name: nameof(HasBeenRead));
+                IsOnline = s.SerializeBool<uint>(IsOnline, name: nameof(IsOnline));
+                RemoveAfterRead = s.SerializeBool<uint>(RemoveAfterRead, name: nameof(RemoveAfterRead));
+                HasBeenInteract = s.SerializeBool<uint>(HasBeenInteract, name: nameof(HasBeenInteract));
+                RemoveAfterInteract = s.SerializeBool<uint>(RemoveAfterInteract, name: nameof(RemoveAfterInteract));
+                LockedAfterInteract = s.SerializeBool<uint>(LockedAfterInteract, name: nameof(LockedAfterInteract));
+                Buttons = s.SerializeUbiArtObjectArray<SmartLocId>(Buttons, name: nameof(Buttons));
+                Attributes = s.SerializeUbiArtObjectArray<Attribute>(Attributes, name: nameof(Attributes));
+                Markers = s.SerializeUbiArtObjectArray<Marker>(Markers, name: nameof(Markers));
             }
         }
 
-        public class PersistentGameData_Level : IBinarySerializable<UbiArtSettings>
+        public class PersistentGameData_Level : IBinarySerializable
         {
             #region Public Properties
 
@@ -531,7 +395,7 @@
 
             public float BestTime { get; set; }
 
-            public SerializableList<PrisonerData> FreedPrisoners { get; set; }
+            public PrisonerData[] FreedPrisoners { get; set; }
 
             public uint Cups { get; set; }
 
@@ -547,7 +411,7 @@
 
             public uint LuckyTicketsLeft { get; set; }
 
-            public SerializableList<ObjectPath> SequenceAlreadySeen { get; set; }
+            public ObjectPath[] SequenceAlreadySeen { get; set; }
 
             public int OnlineSynced { get; set; }
 
@@ -555,75 +419,54 @@
 
             #region Public Methods
 
-            public void Deserialize(IBinaryDataReader<UbiArtSettings> reader)
+            /// <summary>
+            /// Handles the serialization using the specified serializer
+            /// </summary>
+            /// <param name="s">The serializer</param>
+            public void Serialize(IBinarySerializer s)
             {
-                Id = reader.Read<UbiArtStringID>();
-                BestLumsTaken = reader.Read<uint>();
-                BestDistance = reader.Read<float>();
-                BestTime = reader.Read<float>();
-                FreedPrisoners = reader.Read<SerializableList<PrisonerData>>();
-                Cups = reader.Read<uint>();
-                Medals = reader.Read<uint>();
-                Completed = reader.Read<bool>();
-                IsVisited = reader.Read<bool>();
-                BestTimeSent = reader.Read<bool>();
-                Type = reader.Read<uint>();
-                LuckyTicketsLeft = reader.Read<uint>();
-                SequenceAlreadySeen = reader.Read<SerializableList<ObjectPath>>();
-                OnlineSynced = reader.Read<int>();
-            }
-
-            public void Serialize(IBinaryDataWriter<UbiArtSettings> writer)
-            {
-                writer.Write(Id);
-                writer.Write(BestLumsTaken);
-                writer.Write(BestDistance);
-                writer.Write(BestTime);
-                writer.Write(FreedPrisoners);
-                writer.Write(Cups);
-                writer.Write(Medals);
-                writer.Write(Completed);
-                writer.Write(IsVisited);
-                writer.Write(BestTimeSent);
-                writer.Write(Type);
-                writer.Write(LuckyTicketsLeft);
-                writer.Write(SequenceAlreadySeen);
-                writer.Write(OnlineSynced);
+                Id = s.SerializeObject<UbiArtStringID>(Id, name: nameof(Id));
+                BestLumsTaken = s.Serialize<uint>(BestLumsTaken, name: nameof(BestLumsTaken));
+                BestDistance = s.Serialize<float>(BestDistance, name: nameof(BestDistance));
+                BestTime = s.Serialize<float>(BestTime, name: nameof(BestTime));
+                FreedPrisoners = s.SerializeUbiArtObjectArray<PrisonerData>(FreedPrisoners, name: nameof(FreedPrisoners));
+                Cups = s.Serialize<uint>(Cups, name: nameof(Cups));
+                Medals = s.Serialize<uint>(Medals, name: nameof(Medals));
+                Completed = s.SerializeBool<uint>(Completed, name: nameof(Completed));
+                IsVisited = s.SerializeBool<uint>(IsVisited, name: nameof(IsVisited));
+                BestTimeSent = s.SerializeBool<uint>(BestTimeSent, name: nameof(BestTimeSent));
+                Type = s.Serialize<uint>(Type, name: nameof(Type));
+                LuckyTicketsLeft = s.Serialize<uint>(LuckyTicketsLeft, name: nameof(LuckyTicketsLeft));
+                SequenceAlreadySeen = s.SerializeUbiArtObjectArray<ObjectPath>(SequenceAlreadySeen, name: nameof(SequenceAlreadySeen));
+                OnlineSynced = s.Serialize<int>(OnlineSynced, name: nameof(OnlineSynced));
             }
 
             #endregion
         }
 
-        public class SaveSession : IBinarySerializable<UbiArtSettings>
+        public class SaveSession : IBinarySerializable
         {
-            public SerializableList<float> Tags { get; set; }
+            public float[] Tags { get; set; }
 
-            public SerializableList<float> Timers { get; set; }
+            public float[] Timers { get; set; }
 
-            public SerializableDictionary<UbiArtStringID, bool> RewardsState { get; set; }
+            public UbiArtObjKeyValuePair<UbiArtStringID, bool>[] RewardsState { get; set; }
 
-            public void Deserialize(IBinaryDataReader<UbiArtSettings> reader)
+            public void Serialize(IBinarySerializer s)
             {
-                Tags = reader.Read<SerializableList<float>>();
-                Timers = reader.Read<SerializableList<float>>();
-                RewardsState = reader.Read<SerializableDictionary<UbiArtStringID, bool>>();
-            }
-
-            public void Serialize(IBinaryDataWriter<UbiArtSettings> writer)
-            {
-                writer.Write(Tags);
-                writer.Write(Timers);
-                writer.Write(RewardsState);
+                Tags = s.SerializeUbiArtArray<float>(Tags, name: nameof(Tags));
+                Timers = s.SerializeUbiArtArray<float>(Timers, name: nameof(Timers));
+                RewardsState = s.SerializeUbiArtObjectArray<UbiArtObjKeyValuePair<UbiArtStringID, bool>>(RewardsState, name: nameof(RewardsState));
             }
         }
 
-        public class PersistentGameData_Score : IBinarySerializable<UbiArtSettings>
+        public class PersistentGameData_Score : IBinarySerializable
         {
             #region Public Properties
 
-            public SerializableList<uint> PlayersLumCount { get; set; }
+            public uint[] PlayersLumCount { get; set; }
 
-            public SerializableList<uint> TreasuresLumCount { get; set; }
+            public uint[] TreasuresLumCount { get; set; }
 
             public int LocalLumsCount { get; set; }
 
@@ -635,28 +478,23 @@
 
             #region Public Methods
 
-            public void Deserialize(IBinaryDataReader<UbiArtSettings> reader)
+            /// <summary>
+            /// Handles the serialization using the specified serializer
+            /// </summary>
+            /// <param name="s">The serializer</param>
+            public void Serialize(IBinarySerializer s)
             {
-                PlayersLumCount = reader.Read<SerializableList<uint>>();
-                TreasuresLumCount = reader.Read<SerializableList<uint>>();
-                LocalLumsCount = reader.Read<int>();
-                PendingLumsCount = reader.Read<int>();
-                TempLumsCount = reader.Read<int>();
-            }
-
-            public void Serialize(IBinaryDataWriter<UbiArtSettings> writer)
-            {
-                writer.Write(PlayersLumCount);
-                writer.Write(TreasuresLumCount);
-                writer.Write(LocalLumsCount);
-                writer.Write(PendingLumsCount);
-                writer.Write(TempLumsCount);
+                PlayersLumCount = s.SerializeUbiArtArray<uint>(PlayersLumCount, name: nameof(PlayersLumCount));
+                TreasuresLumCount = s.SerializeUbiArtArray<uint>(TreasuresLumCount, name: nameof(TreasuresLumCount));
+                LocalLumsCount = s.Serialize<int>(LocalLumsCount, name: nameof(LocalLumsCount));
+                PendingLumsCount = s.Serialize<int>(PendingLumsCount, name: nameof(PendingLumsCount));
+                TempLumsCount = s.Serialize<int>(TempLumsCount, name: nameof(TempLumsCount));
             }
 
             #endregion
         }
 
-        public class ProfileData : IBinarySerializable<UbiArtSettings>
+        public class ProfileData : IBinarySerializable
         {
             public int Pid { get; set; }
 
@@ -684,42 +522,29 @@
 
             public uint TotalChallengePlayed { get; set; }
 
-            public void Deserialize(IBinaryDataReader<UbiArtSettings> reader)
+            /// <summary>
+            /// Handles the serialization using the specified serializer
+            /// </summary>
+            /// <param name="s">The serializer</param>
+            public void Serialize(IBinarySerializer s)
             {
-                Pid = reader.Read<int>();
-                Name = reader.Read<string>();
-                StatusIcon = reader.Read<uint>();
-                Country = reader.Read<int>();
-                GlobalMedalsRank = reader.Read<uint>();
-                GlobalMedalsMaxRank = reader.Read<uint>();
-                DiamondMedals = reader.Read<uint>();
-                GoldMedals = reader.Read<uint>();
-                SilverMedals = reader.Read<uint>();
-                BronzeMedals = reader.Read<uint>();
-                PlayerStats = reader.Read<PlayerStatsData>();
-                Costume = reader.Read<uint>();
-                TotalChallengePlayed = reader.Read<uint>();
-            }
-
-            public void Serialize(IBinaryDataWriter<UbiArtSettings> writer)
-            {
-                writer.Write(Pid);
-                writer.Write(Name);
-                writer.Write(StatusIcon);
-                writer.Write(Country);
-                writer.Write(GlobalMedalsRank);
-                writer.Write(GlobalMedalsMaxRank);
-                writer.Write(DiamondMedals);
-                writer.Write(GoldMedals);
-                writer.Write(SilverMedals);
-                writer.Write(BronzeMedals);
-                writer.Write(PlayerStats);
-                writer.Write(Costume);
-                writer.Write(TotalChallengePlayed);
+                Pid = s.Serialize<int>(Pid, name: nameof(Pid));
+                Name = s.SerializeLengthPrefixedString(Name, name: nameof(Name));
+                StatusIcon = s.Serialize<uint>(StatusIcon, name: nameof(StatusIcon));
+                Country = s.Serialize<int>(Country, name: nameof(Country));
+                GlobalMedalsRank = s.Serialize<uint>(GlobalMedalsRank, name: nameof(GlobalMedalsRank));
+                GlobalMedalsMaxRank = s.Serialize<uint>(GlobalMedalsMaxRank, name: nameof(GlobalMedalsMaxRank));
+                DiamondMedals = s.Serialize<uint>(DiamondMedals, name: nameof(DiamondMedals));
+                GoldMedals = s.Serialize<uint>(GoldMedals, name: nameof(GoldMedals));
+                SilverMedals = s.Serialize<uint>(SilverMedals, name: nameof(SilverMedals));
+                BronzeMedals = s.Serialize<uint>(BronzeMedals, name: nameof(BronzeMedals));
+                PlayerStats = s.SerializeObject<PlayerStatsData>(PlayerStats, name: nameof(PlayerStats));
+                Costume = s.Serialize<uint>(Costume, name: nameof(Costume));
+                TotalChallengePlayed = s.Serialize<uint>(TotalChallengePlayed, name: nameof(TotalChallengePlayed));
             }
         }
 
-        public class PlayerStatsData : IBinarySerializable<UbiArtSettings>
+        public class PlayerStatsData : IBinarySerializable
         {
             public PlayerStatsDataItem Lums { get; set; }
 
@@ -731,45 +556,30 @@
 
             public PlayerStatsDataItem Deaths { get; set; }
 
-            public class PlayerStatsDataItem : IBinarySerializable<UbiArtSettings>
+            public class PlayerStatsDataItem : IBinarySerializable
             {
                 public float Value { get; set; }
 
                 public uint Rank { get; set; }
 
-                public void Deserialize(IBinaryDataReader<UbiArtSettings> reader)
+                public void Serialize(IBinarySerializer s)
                 {
-                    Value = reader.Read<float>();
-                    Rank = reader.Read<uint>();
-                }
-
-                public void Serialize(IBinaryDataWriter<UbiArtSettings> writer)
-                {
-                    writer.Write(Value);
-                    writer.Write(Rank);
+                    Value = s.Serialize<float>(Value, name: nameof(Value));
+                    Rank = s.Serialize<uint>(Rank, name: nameof(Rank));
                 }
             }
 
-            public void Deserialize(IBinaryDataReader<UbiArtSettings> reader)
+            public void Serialize(IBinarySerializer s)
             {
-                Lums = reader.Read<PlayerStatsDataItem>();
-                Distance = reader.Read<PlayerStatsDataItem>();
-                Kills = reader.Read<PlayerStatsDataItem>();
-                Jumps = reader.Read<PlayerStatsDataItem>();
-                Deaths = reader.Read<PlayerStatsDataItem>();
-            }
-
-            public void Serialize(IBinaryDataWriter<UbiArtSettings> writer)
-            {
-                writer.Write(Lums);
-                writer.Write(Distance);
-                writer.Write(Kills);
-                writer.Write(Jumps);
-                writer.Write(Deaths);
+                Lums = s.SerializeObject<PlayerStatsDataItem>(Lums, name: nameof(Lums));
+                Distance = s.SerializeObject<PlayerStatsDataItem>(Distance, name: nameof(Distance));
+                Kills = s.SerializeObject<PlayerStatsDataItem>(Kills, name: nameof(Kills));
+                Jumps = s.SerializeObject<PlayerStatsDataItem>(Jumps, name: nameof(Jumps));
+                Deaths = s.SerializeObject<PlayerStatsDataItem>(Deaths, name: nameof(Deaths));
             }
         }
 
-        public class PersistentGameData_BubbleDreamerData : IBinarySerializable<UbiArtSettings>
+        public class PersistentGameData_BubbleDreamerData : IBinarySerializable
         {
             #region Public Properties
 
@@ -785,38 +595,27 @@
 
             public uint TutoCount { get; set; }
 
-            public SerializableList<bool> DisplayQuoteStates { get; set; }
+            public bool[] DisplayQuoteStates { get; set; }
 
             #endregion
 
             #region Public Methods
 
-            public void Deserialize(IBinaryDataReader<UbiArtSettings> reader)
+            public void Serialize(IBinarySerializer s)
             {
-                HasMet = reader.Read<bool>();
-                UpdateRequested = reader.Read<bool>();
-                HasWonPetCup = reader.Read<bool>();
-                TeensyLocksOpened = reader.Read<uint>();
-                ChallengeLocksOpened = reader.Read<uint>();
-                TutoCount = reader.Read<uint>();
-                DisplayQuoteStates = reader.Read<SerializableList<bool>>();
-            }
-
-            public void Serialize(IBinaryDataWriter<UbiArtSettings> writer)
-            {
-                writer.Write(HasMet);
-                writer.Write(UpdateRequested);
-                writer.Write(HasWonPetCup);
-                writer.Write(TeensyLocksOpened);
-                writer.Write(ChallengeLocksOpened);
-                writer.Write(TutoCount);
-                writer.Write(DisplayQuoteStates);
+                HasMet = s.SerializeBool<uint>(HasMet, name: nameof(HasMet));
+                UpdateRequested = s.SerializeBool<uint>(UpdateRequested, name: nameof(UpdateRequested));
+                HasWonPetCup = s.SerializeBool<uint>(HasWonPetCup, name: nameof(HasWonPetCup));
+                TeensyLocksOpened = s.Serialize<uint>(TeensyLocksOpened, name: nameof(TeensyLocksOpened));
+                ChallengeLocksOpened = s.Serialize<uint>(ChallengeLocksOpened, name: nameof(ChallengeLocksOpened));
+                TutoCount = s.Serialize<uint>(TutoCount, name: nameof(TutoCount));
+                DisplayQuoteStates = s.SerializeUbiArtArray<bool>(DisplayQuoteStates, name: nameof(DisplayQuoteStates));
             }
 
             #endregion
         }
 
-        public class PetRewardData : IBinarySerializable<UbiArtSettings>
+        public class PetRewardData : IBinarySerializable
         {
             public uint LastSpawnDay { get; set; }
 
@@ -826,43 +625,29 @@
 
             public uint RewardType { get; set; }
 
-            public void Deserialize(IBinaryDataReader<UbiArtSettings> reader)
+            public void Serialize(IBinarySerializer s)
             {
-                LastSpawnDay = reader.Read<uint>();
-                MaxRewardNb = reader.Read<uint>();
-                RemainingRewards = reader.Read<uint>();
-                RewardType = reader.Read<uint>();
-            }
-
-            public void Serialize(IBinaryDataWriter<UbiArtSettings> writer)
-            {
-                writer.Write(LastSpawnDay);
-                writer.Write(MaxRewardNb);
-                writer.Write(RemainingRewards);
-                writer.Write(RewardType);
+                LastSpawnDay = s.Serialize<uint>(LastSpawnDay, name: nameof(LastSpawnDay));
+                MaxRewardNb = s.Serialize<uint>(MaxRewardNb, name: nameof(MaxRewardNb));
+                RemainingRewards = s.Serialize<uint>(RemainingRewards, name: nameof(RemainingRewards));
+                RewardType = s.Serialize<uint>(RewardType, name: nameof(RewardType));
             }
         }
 
-        public class St_petCups : IBinarySerializable<UbiArtSettings>
+        public class St_petCups : IBinarySerializable
         {
             public int Family { get; set; }
 
             public uint Cups { get; set; }
 
-            public void Deserialize(IBinaryDataReader<UbiArtSettings> reader)
+            public void Serialize(IBinarySerializer s)
             {
-                Family = reader.Read<int>();
-                Cups = reader.Read<uint>();
-            }
-
-            public void Serialize(IBinaryDataWriter<UbiArtSettings> writer)
-            {
-                writer.Write(Family);
-                writer.Write(Cups);
+                Family = s.Serialize<int>(Family, name: nameof(Family));
+                Cups = s.Serialize<uint>(Cups, name: nameof(Cups));
             }
         }
 
-        public class UnlockedDoor : IBinarySerializable<UbiArtSettings>
+        public class UnlockedDoor : IBinarySerializable
         {
             #region Public Properties
 
@@ -876,24 +661,17 @@
 
             #region Public Methods
 
-            public void Deserialize(IBinaryDataReader<UbiArtSettings> reader)
+            public void Serialize(IBinarySerializer s)
             {
-                WorldTag = reader.Read<UbiArtStringID>();
-                Type = reader.Read<uint>();
-                IsNew = reader.Read<bool>();
-            }
-
-            public void Serialize(IBinaryDataWriter<UbiArtSettings> writer)
-            {
-                writer.Write(WorldTag);
-                writer.Write(Type);
-                writer.Write(IsNew);
+                WorldTag = s.SerializeObject<UbiArtStringID>(WorldTag, name: nameof(WorldTag));
+                Type = s.Serialize<uint>(Type, name: nameof(Type));
+                IsNew = s.SerializeBool<uint>(IsNew, name: nameof(IsNew));
             }
 
             #endregion
         }
 
-        public class RO2_LuckyTicketReward : IBinarySerializable<UbiArtSettings>
+        public class RO2_LuckyTicketReward : IBinarySerializable
         {
             #region Public Properties
 
@@ -905,22 +683,16 @@
 
             #region Public Methods
 
-            public void Deserialize(IBinaryDataReader<UbiArtSettings> reader)
+            public void Serialize(IBinarySerializer s)
             {
-                ID = reader.Read<uint>();
-                Type = reader.Read<uint>();
-            }
-
-            public void Serialize(IBinaryDataWriter<UbiArtSettings> writer)
-            {
-                writer.Write(ID);
-                writer.Write(Type);
+                ID = s.Serialize<uint>(ID, name: nameof(ID));
+                Type = s.Serialize<uint>(Type, name: nameof(Type));
             }
 
             #endregion
         }
 
-        public class NodeDataStruct : IBinarySerializable<UbiArtSettings>
+        public class NodeDataStruct : IBinarySerializable
         {
             #region Public Properties
 
@@ -936,26 +708,18 @@
 
             #region Public Methods
 
-            public void Deserialize(IBinaryDataReader<UbiArtSettings> reader)
+            public void Serialize(IBinarySerializer s)
             {
-                Tag = reader.Read<UbiArtStringID>();
-                UnteaseSeen = reader.Read<bool>();
-                UnlockSeend = reader.Read<bool>();
-                SentUnlockMessage = reader.Read<bool>();
-            }
-
-            public void Serialize(IBinaryDataWriter<UbiArtSettings> writer)
-            {
-                writer.Write(Tag);
-                writer.Write(UnteaseSeen);
-                writer.Write(UnlockSeend);
-                writer.Write(SentUnlockMessage);
+                Tag = s.SerializeObject<UbiArtStringID>(Tag, name: nameof(Tag));
+                UnteaseSeen = s.SerializeBool<uint>(UnteaseSeen, name: nameof(UnteaseSeen));
+                UnlockSeend = s.SerializeBool<uint>(UnlockSeend, name: nameof(UnlockSeend));
+                SentUnlockMessage = s.SerializeBool<uint>(SentUnlockMessage, name: nameof(SentUnlockMessage));
             }
 
             #endregion
         }
 
-        public class PrisonerData : IBinarySerializable<UbiArtSettings>
+        public class PrisonerData : IBinarySerializable
         {
             #region Public Properties
 
@@ -971,7 +735,7 @@
 
             #region Enums
 
-            public enum Index
+            public enum Index : uint
             {
                 Map1 = 0,
                 Map2 = 1,
@@ -982,7 +746,8 @@
                 Map7 = 6,
                 Map8 = 7,
             }
-            public enum Prisoner
+
+            public enum Prisoner : uint
             {
                 Soldier = 0,
                 Baby = 1,
@@ -997,20 +762,12 @@
 
             #region Public Methods
 
-            public void Deserialize(IBinaryDataReader<UbiArtSettings> reader)
+            public void Serialize(IBinarySerializer s)
             {
-                Path = reader.Read<UbiArtPath>();
-                IsFree = reader.Read<bool>();
-                IndexType = (Index)reader.Read<int>();
-                VisualType = (Prisoner)reader.Read<int>();
-            }
-
-            public void Serialize(IBinaryDataWriter<UbiArtSettings> writer)
-            {
-                writer.Write(Path);
-                writer.Write(IsFree);
-                writer.Write((int)IndexType);
-                writer.Write((int)VisualType);
+                Path = s.SerializeObject<UbiArtPath>(Path, name: nameof(Path));
+                IsFree = s.SerializeBool<uint>(IsFree, name: nameof(IsFree));
+                IndexType = s.Serialize<Index>(IndexType, name: nameof(IndexType));
+                VisualType = s.Serialize<Prisoner>(VisualType, name: nameof(VisualType));
             }
 
             #endregion

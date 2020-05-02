@@ -1,27 +1,21 @@
-﻿namespace RayCarrot.Rayman.UbiArt
+﻿using RayCarrot.Binary;
+
+namespace RayCarrot.Rayman.UbiArt
 {
     /// <summary>
     /// The save file data used for Rayman Fiesta Run Windows 10 Edition in the .dat file
     /// </summary>
-    public class FiestaRunWin10EditionSaveData : IBinarySerializable<BinarySerializerSettings>
+    public class FiestaRunWin10EditionSaveData : IBinarySerializable
     {
-        /// <summary>
-        /// Gets the default serializer
-        /// </summary>
-        public static BinaryDataSerializer<FiestaRunWin10EditionSaveData, BinarySerializerSettings> GetSerializer() => new BinaryDataSerializer<FiestaRunWin10EditionSaveData, BinarySerializerSettings>(new BinarySerializerSettings()
-        {
-            ByteOrder = ByteOrder.LittleEndian
-        });
-
         /// <summary>
         /// The file begins with two unknown bytes, presumably a 16-bit integer. The value is always 2.
         /// </summary>
-        public short Unknown { get; set; }
+        public ushort Unknown { get; set; }
 
         /// <summary>
         /// The data for the levels. The count is always 72.
         /// </summary>
-        public BinarySerializableList<FiestaRunPCSaveDataLevel> Levels { get; set; }
+        public FiestaRunPCSaveDataLevel[] Levels { get; set; }
 
         /// <summary>
         /// Unknown bytes
@@ -31,7 +25,7 @@
         /// <summary>
         /// The number of available Lums
         /// </summary>
-        public int Lums { get; set; }
+        public uint Lums { get; set; }
 
         /// <summary>
         /// The remaining unknown bytes in the file
@@ -39,50 +33,25 @@
         public byte[] Unknown2 { get; set; }
 
         /// <summary>
-        /// Deserializes the data from the stream into this instance
+        /// Handles the serialization using the specified serializer
         /// </summary>
-        /// <param name="reader">The reader to use to read from the stream</param>
-        public void Deserialize(IBinaryDataReader<BinarySerializerSettings> reader)
+        /// <param name="s">The serializer</param>
+        public void Serialize(IBinarySerializer s)
         {
             // Read the unknown value
-            Unknown = reader.Read<short>();
+            Unknown = s.Serialize<ushort>(Unknown, name: nameof(Unknown));
 
             // Create the level collection
-            Levels = new BinarySerializableList<FiestaRunPCSaveDataLevel>(72);
-
-            // Read the level collection
-            Levels.Deserialize(reader);
+            Levels = s.SerializeObjectArray<FiestaRunPCSaveDataLevel>(Levels, 72, name: nameof(Levels));
 
             // Read unknown bytes
-            Unknown1 = reader.ReadBytes(128);
+            Unknown1 = s.SerializeArray<byte>(Unknown1, 128, name: nameof(Unknown1));
 
             // Read Lums
-            Lums = reader.Read<int>();
+            Lums = s.Serialize<uint>(Lums, name: nameof(Lums));
 
             // Read remaining bytes
-            Unknown2 = reader.ReadRemainingBytes();
-        }
-
-        /// <summary>
-        /// Serializes the data from this instance to the stream
-        /// </summary>
-        /// <param name="writer">The writer to use to write to the stream</param>
-        public void Serialize(IBinaryDataWriter<BinarySerializerSettings> writer)
-        {
-            // Write the unknown value
-            writer.Write(Unknown);
-
-            // Serialize the level collection
-            writer.Write(Levels);
-
-            // Write unknown bytes
-            writer.Write(Unknown1);
-
-            // Write Lums
-            writer.Write(Lums);
-
-            // Write remaining bytes
-            writer.Write(Unknown2);
+            Unknown2 = s.SerializeArray<byte>(Unknown2, (int)(s.Stream.Length - s.Stream.Position), name: nameof(Unknown2));
         }
     }
 }

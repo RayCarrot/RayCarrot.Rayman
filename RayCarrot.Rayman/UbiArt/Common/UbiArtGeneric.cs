@@ -1,22 +1,22 @@
-﻿namespace RayCarrot.Rayman.UbiArt
+﻿using RayCarrot.Binary;
+
+namespace RayCarrot.Rayman.UbiArt
 {
-    public class UbiArtGeneric<T> : IBinarySerializable<UbiArtSettings>
-        where T : IBinarySerializable<UbiArtSettings>
+    public class UbiArtGeneric<T> : IBinarySerializable
+        where T : IBinarySerializable, new()
     {
         public UbiArtStringID Name { get; set; }
 
         public T Object { get; set; }
 
-        public void Deserialize(IBinaryDataReader<UbiArtSettings> reader)
+        /// <summary>
+        /// Handles the serialization using the specified serializer
+        /// </summary>
+        /// <param name="s">The serializer</param>
+        public void Serialize(IBinarySerializer s)
         {
-            Name = reader.Read<UbiArtStringID>();
-            Object = reader.Read<T>();
-        }
-
-        public void Serialize(IBinaryDataWriter<UbiArtSettings> writer)
-        {
-            writer.Write(Name);
-            writer.Write(Object);
+            Name = s.SerializeObject<UbiArtStringID>(Name, name: nameof(Name));
+            Object = s.SerializeObject<T>(Object, name: nameof(Object));
         }
     }
 }

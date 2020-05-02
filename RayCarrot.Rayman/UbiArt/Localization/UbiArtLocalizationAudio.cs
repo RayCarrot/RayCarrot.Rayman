@@ -1,9 +1,11 @@
-﻿namespace RayCarrot.Rayman.UbiArt
+﻿using RayCarrot.Binary;
+
+namespace RayCarrot.Rayman.UbiArt
 {
     /// <summary>
     /// UbiArt localization audio data
     /// </summary>
-    public class UbiArtLocalizationAudio : IBinarySerializable<BinarySerializerSettings>
+    public class UbiArtLocalizationAudio : IBinarySerializable
     {
         /// <summary>
         /// Unknown value
@@ -21,25 +23,14 @@
         public uint Unknown1 { get; set; }
 
         /// <summary>
-        /// Deserializes the data from the stream into this instance
+        /// Handles the serialization using the specified serializer
         /// </summary>
-        /// <param name="reader">The reader to use to read from the stream</param>
-        public void Deserialize(IBinaryDataReader<BinarySerializerSettings> reader)
+        /// <param name="s">The serializer</param>
+        public void Serialize(IBinarySerializer s)
         {
-            Unknown0 = reader.Read<uint>();
-            AudioFile = reader.Read<string>();
-            Unknown1 = reader.Read<uint>();
-        }
-
-        /// <summary>
-        /// Serializes the data from this instance to the stream
-        /// </summary>
-        /// <param name="writer">The writer to use to write to the stream</param>
-        public void Serialize(IBinaryDataWriter<BinarySerializerSettings> writer)
-        {
-            writer.Write(Unknown0);
-            writer.Write(AudioFile);
-            writer.Write(Unknown1);
+            Unknown0 = s.Serialize<uint>(Unknown0, name: nameof(Unknown0));
+            AudioFile = s.SerializeLengthPrefixedString(AudioFile, name: nameof(AudioFile));
+            Unknown1 = s.Serialize<uint>(Unknown1, name: nameof(Unknown1));
         }
     }
 }

@@ -1,17 +1,14 @@
-﻿namespace RayCarrot.Rayman.UbiArt
+﻿using RayCarrot.Binary;
+
+namespace RayCarrot.Rayman.UbiArt
 {
-    public class LocalisationId : IBinarySerializable<UbiArtSettings>
+    public class LocalisationId : IBinarySerializable
     {
         public uint ID { get; set; }
 
-        public void Deserialize(IBinaryDataReader<UbiArtSettings> reader)
+        public void Serialize(IBinarySerializer s)
         {
-            ID = reader.Read<uint>();
-        }
-
-        public void Serialize(IBinaryDataWriter<UbiArtSettings> writer)
-        {
-            writer.Write(ID);
+            ID = s.Serialize<uint>(ID, name: nameof(ID));
         }
     }
 }

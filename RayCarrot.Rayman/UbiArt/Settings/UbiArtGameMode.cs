@@ -54,70 +54,70 @@
     /// </summary>
     public enum UbiArtGameMode
     {
-        [UbiArtGameModeInfo("Rayman Origins (PC)", UbiArtGame.RaymanOrigins, UbiArtPlatform.PC, ByteOrder.BigEndian, TextEncoding.BigEndianUnicode)]
+        [UbiArtGameModeInfo("Rayman Origins (PC)", UbiArtGame.RaymanOrigins, UbiArtPlatform.PC)]
         RaymanOriginsPC,
 
-        [UbiArtGameModeInfo("Rayman Origins (PS3)", UbiArtGame.RaymanOrigins, UbiArtPlatform.PlayStation3, ByteOrder.BigEndian, TextEncoding.BigEndianUnicode)]
+        [UbiArtGameModeInfo("Rayman Origins (PS3)", UbiArtGame.RaymanOrigins, UbiArtPlatform.PlayStation3)]
         RaymanOriginsPS3,
 
-        [UbiArtGameModeInfo("Rayman Origins (Wii)", UbiArtGame.RaymanOrigins, UbiArtPlatform.Wii, ByteOrder.BigEndian, TextEncoding.BigEndianUnicode)]
+        [UbiArtGameModeInfo("Rayman Origins (Wii)", UbiArtGame.RaymanOrigins, UbiArtPlatform.Wii)]
         RaymanOriginsWii,
 
-        [UbiArtGameModeInfo("Rayman Origins (PS Vita)", UbiArtGame.RaymanOrigins, UbiArtPlatform.PSVita, ByteOrder.BigEndian, TextEncoding.BigEndianUnicode)]
+        [UbiArtGameModeInfo("Rayman Origins (PS Vita)", UbiArtGame.RaymanOrigins, UbiArtPlatform.PSVita)]
         RaymanOriginsPSVita,
 
-        [UbiArtGameModeInfo("Rayman Origins (3DS)", UbiArtGame.RaymanOrigins, UbiArtPlatform.Nintendo3DS, ByteOrder.LittleEndian, TextEncoding.Unicode)]
+        [UbiArtGameModeInfo("Rayman Origins (3DS)", UbiArtGame.RaymanOrigins, UbiArtPlatform.Nintendo3DS)]
         RaymanOrigins3DS,
 
-        [UbiArtGameModeInfo("Rayman Jungle Run (PC)", UbiArtGame.RaymanJungleRun, UbiArtPlatform.PC, ByteOrder.BigEndian, TextEncoding.BigEndianUnicode)]
+        [UbiArtGameModeInfo("Rayman Jungle Run (PC)", UbiArtGame.RaymanJungleRun, UbiArtPlatform.PC)]
         RaymanJungleRunPC,
 
-        [UbiArtGameModeInfo("Rayman Jungle Run (Android)", UbiArtGame.RaymanJungleRun, UbiArtPlatform.Android, ByteOrder.BigEndian, TextEncoding.BigEndianUnicode)]
+        [UbiArtGameModeInfo("Rayman Jungle Run (Android)", UbiArtGame.RaymanJungleRun, UbiArtPlatform.Android)]
         RaymanJungleRunAndroid,
 
-        [UbiArtGameModeInfo("Rayman Legends (PC)", UbiArtGame.RaymanLegends, UbiArtPlatform.PC, ByteOrder.BigEndian, TextEncoding.UTF8)]
+        [UbiArtGameModeInfo("Rayman Legends (PC)", UbiArtGame.RaymanLegends, UbiArtPlatform.PC)]
         RaymanLegendsPC,
 
-        [UbiArtGameModeInfo("Rayman Legends (Wii U)", UbiArtGame.RaymanLegends, UbiArtPlatform.WiiU, ByteOrder.BigEndian, TextEncoding.UTF8)]
+        [UbiArtGameModeInfo("Rayman Legends (Wii U)", UbiArtGame.RaymanLegends, UbiArtPlatform.WiiU)]
         RaymanLegendsWiiU,
 
-        [UbiArtGameModeInfo("Rayman Legends (PS Vita)", UbiArtGame.RaymanLegends, UbiArtPlatform.PSVita, ByteOrder.BigEndian, TextEncoding.UTF8)]
+        [UbiArtGameModeInfo("Rayman Legends (PS Vita)", UbiArtGame.RaymanLegends, UbiArtPlatform.PSVita)]
         RaymanLegendsPSVita,
 
-        [UbiArtGameModeInfo("Rayman Legends (PS4)", UbiArtGame.RaymanLegends, UbiArtPlatform.PlayStation4, ByteOrder.BigEndian, TextEncoding.UTF8)]
+        [UbiArtGameModeInfo("Rayman Legends (PS4)", UbiArtGame.RaymanLegends, UbiArtPlatform.PlayStation4)]
         RaymanLegendsPS4,
 
-        [UbiArtGameModeInfo("Rayman Legends (Switch)", UbiArtGame.RaymanLegends, UbiArtPlatform.NintendoSwitch, ByteOrder.BigEndian, TextEncoding.UTF8)]
+        [UbiArtGameModeInfo("Rayman Legends (Switch)", UbiArtGame.RaymanLegends, UbiArtPlatform.NintendoSwitch)]
         RaymanLegendsSwitch,
 
-        [UbiArtGameModeInfo("Rayman Fiesta Run (PC)", UbiArtGame.RaymanFiestaRun, UbiArtPlatform.PC, ByteOrder.BigEndian, TextEncoding.BigEndianUnicode)]
+        [UbiArtGameModeInfo("Rayman Fiesta Run (PC)", UbiArtGame.RaymanFiestaRun, UbiArtPlatform.PC)]
         RaymanFiestaRunPC,
 
-        [UbiArtGameModeInfo("Rayman Fiesta Run (Android)", UbiArtGame.RaymanJungleRun, UbiArtPlatform.Android, ByteOrder.BigEndian, TextEncoding.BigEndianUnicode)]
+        [UbiArtGameModeInfo("Rayman Fiesta Run (Android)", UbiArtGame.RaymanJungleRun, UbiArtPlatform.Android)]
         RaymanFiestaRunAndroid,
 
-        [UbiArtGameModeInfo("Rayman Adventures (Android)", UbiArtGame.RaymanAdventures, UbiArtPlatform.Android, ByteOrder.BigEndian, TextEncoding.UTF8)]
+        [UbiArtGameModeInfo("Rayman Adventures (Android)", UbiArtGame.RaymanAdventures, UbiArtPlatform.Android)]
         RaymanAdventuresAndroid,
 
-        [UbiArtGameModeInfo("Rayman Adventures (iOS)", UbiArtGame.RaymanAdventures, UbiArtPlatform.iOS, ByteOrder.BigEndian, TextEncoding.UTF8)]
+        [UbiArtGameModeInfo("Rayman Adventures (iOS)", UbiArtGame.RaymanAdventures, UbiArtPlatform.iOS)]
         RaymanAdventuresiOS,
 
-        [UbiArtGameModeInfo("Rayman Mini (Mac)", UbiArtGame.RaymanMini, UbiArtPlatform.Mac, ByteOrder.BigEndian, TextEncoding.UTF8)]
+        [UbiArtGameModeInfo("Rayman Mini (Mac)", UbiArtGame.RaymanMini, UbiArtPlatform.Mac)]
         RaymanMiniMac,
 
-        [UbiArtGameModeInfo("Child of Light (PC)", UbiArtGame.ChildOfLight, UbiArtPlatform.PC, ByteOrder.BigEndian, TextEncoding.UTF8)]
+        [UbiArtGameModeInfo("Child of Light (PC)", UbiArtGame.ChildOfLight, UbiArtPlatform.PC)]
         ChildOfLightPC,
 
-        [UbiArtGameModeInfo("Child of Light (PS Vita)", UbiArtGame.ChildOfLight, UbiArtPlatform.PSVita, ByteOrder.BigEndian, TextEncoding.UTF8)]
+        [UbiArtGameModeInfo("Child of Light (PS Vita)", UbiArtGame.ChildOfLight, UbiArtPlatform.PSVita)]
         ChildOfLightPSVita,
 
-        [UbiArtGameModeInfo("Valiant Hearts (Android)", UbiArtGame.ValiantHearts, UbiArtPlatform.Android, ByteOrder.BigEndian, TextEncoding.UTF8)]
+        [UbiArtGameModeInfo("Valiant Hearts (Android)", UbiArtGame.ValiantHearts, UbiArtPlatform.Android)]
         ValiantHeartsAndroid,
 
-        [UbiArtGameModeInfo("Just Dance 2017 (Wii U)", UbiArtGame.JustDance2017, UbiArtPlatform.WiiU, ByteOrder.BigEndian, TextEncoding.UTF8)]
+        [UbiArtGameModeInfo("Just Dance 2017 (Wii U)", UbiArtGame.JustDance2017, UbiArtPlatform.WiiU)]
         JustDance2017WiiU,
 
-        [UbiArtGameModeInfo("Gravity Falls (3DS)", UbiArtGame.GravityFalls, UbiArtPlatform.Nintendo3DS, ByteOrder.BigEndian, TextEncoding.UTF8)]
+        [UbiArtGameModeInfo("Gravity Falls (3DS)", UbiArtGame.GravityFalls, UbiArtPlatform.Nintendo3DS)]
         GravityFalls3DS,
     }
 }

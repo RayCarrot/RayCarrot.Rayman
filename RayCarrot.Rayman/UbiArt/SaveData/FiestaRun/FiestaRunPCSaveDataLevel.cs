@@ -1,9 +1,11 @@
-﻿namespace RayCarrot.Rayman.UbiArt
+﻿using RayCarrot.Binary;
+
+namespace RayCarrot.Rayman.UbiArt
 {
     /// <summary>
     /// The level progression data for Rayman Fiesta Run on PC
     /// </summary>
-    public class FiestaRunPCSaveDataLevel : IBinarySerializable<UbiArtSettings>
+    public class FiestaRunPCSaveDataLevel : IBinarySerializable
     {
         /// <summary>
         /// The last amount of Lums earned in the level. Max is 100.
@@ -26,27 +28,15 @@
         public byte[] Unknown2 { get; set; }
 
         /// <summary>
-        /// Deserializes the data from the stream into this instance
+        /// Handles the serialization using the specified serializer
         /// </summary>
-        /// <param name="reader">The reader to use to read from the stream</param>
-        public void Deserialize(IBinaryDataReader<UbiArtSettings> reader)
+        /// <param name="s">The serializer</param>
+        public void Serialize(IBinarySerializer s)
         {
-            Lums = reader.Read<byte>();
-            TeensiesFreed = reader.Read<byte>();
-            Unknown1 = reader.Read<byte>();
-            Unknown2 = reader.ReadBytes(11);
-        }
-
-        /// <summary>
-        /// Serializes the data from this instance to the stream
-        /// </summary>
-        /// <param name="writer">The writer to use to write to the stream</param>
-        public void Serialize(IBinaryDataWriter<UbiArtSettings> writer)
-        {
-            writer.Write(Lums);
-            writer.Write(TeensiesFreed);
-            writer.Write(Unknown1);
-            writer.Write(Unknown2);
+            Lums = s.Serialize<byte>(Lums, name: nameof(Lums));
+            TeensiesFreed = s.Serialize<byte>(TeensiesFreed, name: nameof(TeensiesFreed));
+            Unknown1 = s.Serialize<byte>(Unknown1, name: nameof(Unknown1));
+            Unknown2 = s.SerializeArray<byte>(Unknown2, 11, name: nameof(Unknown2));
         }
 
         public override string ToString()

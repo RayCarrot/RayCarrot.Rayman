@@ -1,57 +1,39 @@
-﻿namespace RayCarrot.Rayman.UbiArt
+﻿using RayCarrot.Binary;
+
+namespace RayCarrot.Rayman.UbiArt
 {
-    public class ObjectPath : IBinarySerializable<UbiArtSettings>
+    public class ObjectPath : IBinarySerializable
     {
-        public SerializableList<Level> Levels { get; set; }
+        public Level[] Levels { get; set; }
 
         public string Id { get; set; }
 
         public bool Absolute { get; set; }
 
-        public class Level : IBinarySerializable<UbiArtSettings>
+        public class Level : IBinarySerializable
         {
             public string Name { get; set; }
 
             public bool Parent { get; set; }
 
-            public void Deserialize(IBinaryDataReader<UbiArtSettings> reader)
+            public void Serialize(IBinarySerializer s)
             {
-                Name = reader.Read<string>();
-                Parent = reader.Read<bool>();
-            }
-
-            public void Serialize(IBinaryDataWriter<UbiArtSettings> writer)
-            {
-                writer.Write(Name);
-                writer.Write(Parent);
+                Name = s.SerializeLengthPrefixedString(Name, name: nameof(Name));
+                Parent = s.SerializeBool<uint>(Parent);
             }
         }
 
-        public void Deserialize(IBinaryDataReader<UbiArtSettings> reader)
+        public void Serialize(IBinarySerializer s)
         {
-            if (reader.SerializerSettings.Game == UbiArtGame.RaymanOrigins)
+            if (s.GetSettings<UbiArtSettings>().Game == UbiArtGame.RaymanOrigins)
             {
-                Id = reader.Read<string>();
+                Id = s.SerializeLengthPrefixedString(Id, name: nameof(Id));
             }
             else
             {
-                Levels = reader.Read<SerializableList<Level>>();
-                Id = reader.Read<string>();
-                Absolute = reader.Read<bool>();
-            }
-        }
-
-        public void Serialize(IBinaryDataWriter<UbiArtSettings> writer)
-        {
-            if (writer.SerializerSettings.Game == UbiArtGame.RaymanOrigins)
-            {
-                writer.Write(Id);
-            }
-            else
-            {
-                writer.Write(Levels);
-                writer.Write(Id);
-                writer.Write(Absolute);
+                Levels = s.SerializeUbiArtObjectArray<Level>(Levels, name: nameof(Levels));
+                Id = s.SerializeLengthPrefixedString(Id, name: nameof(Id));
+                Absolute = s.SerializeBool<uint>(Absolute, name: nameof(Absolute));
             }
         }
     }

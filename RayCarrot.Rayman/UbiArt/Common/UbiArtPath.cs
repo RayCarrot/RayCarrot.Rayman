@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using RayCarrot.Binary;
 using RayCarrot.IO;
 
 namespace RayCarrot.Rayman.UbiArt
@@ -7,7 +8,7 @@ namespace RayCarrot.Rayman.UbiArt
     /// <summary>
     /// A path for UbiArt games. The directory separator character is '/'
     /// </summary>
-    public class UbiArtPath : IBinarySerializable<UbiArtSettings>
+    public class UbiArtPath : IBinarySerializable
     {
         #region Constructors
 
@@ -81,55 +82,29 @@ namespace RayCarrot.Rayman.UbiArt
         #region Public Methods
 
         /// <summary>
-        /// Deserializes the data from the stream into this instance
+        /// Handles the serialization using the specified serializer
         /// </summary>
-        /// <param name="reader">The reader to use to read from the stream</param>
-        public void Deserialize(IBinaryDataReader<UbiArtSettings> reader)
+        /// <param name="s">The serializer</param>
+        public void Serialize(IBinarySerializer s)
         {
             // Just Dance reads the values in reverse
-            if (reader.SerializerSettings.Game == UbiArtGame.JustDance2017)
+            if (s.GetSettings<UbiArtSettings>().Game == UbiArtGame.JustDance2017)
             {
                 // Read the path
-                FileName = reader.Read<string>();
-                DirectoryPath = reader.Read<string>();
+                FileName = s.SerializeLengthPrefixedString(FileName, name: nameof(FileName));
+                DirectoryPath = s.SerializeLengthPrefixedString(DirectoryPath, name: nameof(DirectoryPath));
             }
             else
             {
                 // Read the path
-                DirectoryPath = reader.Read<string>();
-                FileName = reader.Read<string>();
+                DirectoryPath = s.SerializeLengthPrefixedString(DirectoryPath, name: nameof(DirectoryPath));
+                FileName = s.SerializeLengthPrefixedString(FileName, name: nameof(FileName));
             }
 
-            StringID = reader.Read<UbiArtStringID>();
+            StringID = s.SerializeObject<UbiArtStringID>(StringID, name: nameof(StringID));
 
-            if (reader.SerializerSettings.Game != UbiArtGame.RaymanOrigins)
-                Flags = reader.Read<uint>();
-        }
-
-        /// <summary>
-        /// Serializes the data from this instance to the stream
-        /// </summary>
-        /// <param name="writer">The writer to use to write to the stream</param>
-        public void Serialize(IBinaryDataWriter<UbiArtSettings> writer)
-        {
-            // Just Dance reads the values in reverse
-            if (writer.SerializerSettings.Game == UbiArtGame.JustDance2017)
-            {
-                // Write the path
-                writer.Write(FileName);
-                writer.Write(DirectoryPath);
-            }
-            else
-            {
-                // Write the path
-                writer.Write(DirectoryPath);
-                writer.Write(FileName);
-            }
-
-            writer.Write(StringID);
-
-            if (writer.SerializerSettings.Game != UbiArtGame.RaymanOrigins)
-                writer.Write(Flags);
+            if (s.GetSettings<UbiArtSettings>().Game != UbiArtGame.RaymanOrigins)
+                Flags = s.Serialize<uint>(Flags, name: nameof(Flags));
         }
 
         #endregion

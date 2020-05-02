@@ -1,23 +1,12 @@
-﻿namespace RayCarrot.Rayman.UbiArt
+﻿using RayCarrot.Binary;
+
+namespace RayCarrot.Rayman.UbiArt
 {
     /// <summary>
     /// The data used for a file entry within a .ipk file
     /// </summary>
-    public class UbiArtIPKFileEntry : IBinarySerializable<UbiArtSettings>
+    public class UbiArtIPKFileEntry : IBinarySerializable
     {
-        #region Constructor
-
-        /// <summary>
-        /// Default constructor
-        /// </summary>
-        /// <param name="ipkVersion"></param>
-        public UbiArtIPKFileEntry(uint ipkVersion)
-        {
-            IPKVersion = ipkVersion;
-        }
-
-        #endregion
-
         #region Public Properties
 
         /// <summary>
@@ -67,57 +56,28 @@
         #region Public Methods
 
         /// <summary>
-        /// Deserializes the data from the stream into this instance
+        /// Handles the serialization using the specified serializer
         /// </summary>
-        /// <param name="reader">The reader to use to read from the stream</param>
-        public void Deserialize(IBinaryDataReader<UbiArtSettings> reader)
+        /// <param name="s">The serializer</param>
+        public void Serialize(IBinarySerializer s)
         {
             // 3DS files can not be serialized separately
             if (IPKVersion == 4)
                 throw new BinarySerializableException("File data for IPK 4 can not be serialized separately");
 
             // Read common values
-            OffsetCount = reader.Read<uint>();
-            Size = reader.Read<uint>();
-            CompressedSize = reader.Read<uint>();
-            TStamp = reader.Read<ulong>();
-            Offsets = new ulong[OffsetCount];
+            OffsetCount = s.Serialize<uint>(OffsetCount, name: nameof(OffsetCount));
+            Size = s.Serialize<uint>(Size, name: nameof(Size));
+            CompressedSize = s.Serialize<uint>(CompressedSize, name: nameof(CompressedSize));
+            TStamp = s.Serialize<ulong>(TStamp, name: nameof(TStamp));
 
-            for (int i = 0; i < OffsetCount; i++)
-                Offsets[i] = reader.Read<ulong>();
+            Offsets = s.SerializeArray<ulong>(Offsets, (int)OffsetCount, name: nameof(Offsets));
 
             // For any game after Origins the path is in the standard format
             if (IPKVersion >= 5)
-                Path = reader.Read<UbiArtPath>();
+                Path = s.SerializeObject<UbiArtPath>(Path, name: nameof(Path));
             else
-                Path = new UbiArtPath(reader.Read<string>());
-        }
-
-        /// <summary>
-        /// Serializes the data from this instance to the stream
-        /// </summary>
-        /// <param name="writer">The writer to use to write to the stream</param>
-        public void Serialize(IBinaryDataWriter<UbiArtSettings> writer)
-        {
-            // 3DS files can not be serialized separately
-            if (IPKVersion == 4)
-                throw new BinarySerializableException("File data for IPK 4 can not be serialized separately");
-
-            // Write common values
-            writer.Write(OffsetCount);
-            writer.Write(Size);
-            writer.Write(CompressedSize);
-            writer.Write(TStamp);
-
-            // Write each offset
-            foreach (var offset in Offsets)
-                writer.Write(offset);
-
-            // For any game after Origins the path is in the standard format
-            if (IPKVersion >= 5)
-                writer.Write(Path);
-            else
-                writer.Write(Path.FullPath);
+                Path = new UbiArtPath(s.SerializeLengthPrefixedString(Path?.FullPath, name: nameof(Path)));
         }
 
         #endregion

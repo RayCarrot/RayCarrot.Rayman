@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Text;
+using RayCarrot.Binary;
 using RayCarrot.Extensions;
 
 namespace RayCarrot.Rayman.UbiArt
 {
     [TypeConverter(typeof(UbiArtStringIDTypeConverter))]
-    public class UbiArtStringID : IBinarySerializable<UbiArtSettings>
+    public class UbiArtStringID : IBinarySerializable
     {
         #region Constructors
 
@@ -129,14 +130,13 @@ namespace RayCarrot.Rayman.UbiArt
 
         #region Public Methods
 
-        public void Deserialize(IBinaryDataReader<UbiArtSettings> reader)
+        /// <summary>
+        /// Handles the serialization using the specified serializer
+        /// </summary>
+        /// <param name="s">The serializer</param>
+        public void Serialize(IBinarySerializer s)
         {
-            ID = reader.Read<uint>();
-        }
-
-        public void Serialize(IBinaryDataWriter<UbiArtSettings> writer)
-        {
-            writer.Write(ID);
+            ID = s.Serialize<uint>(ID, name: nameof(ID));
         }
 
         #endregion

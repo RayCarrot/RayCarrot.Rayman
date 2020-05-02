@@ -1,23 +1,15 @@
 ﻿using RayCarrot.Extensions;
 using System;
 using System.IO;
+using RayCarrot.Binary;
 
 namespace RayCarrot.Rayman.OpenSpace
 {
     /// <summary>
     /// The archive data used for the .cnt files from OpenSpace games
     /// </summary>
-    public class OpenSpaceCntData : IBinarySerializableArchive<OpenSpaceSettings, OpenSpaceCntFileEntry>
+    public class OpenSpaceCntData : IBinarySerializableArchive<OpenSpaceCntFileEntry>
     {
-        #region Public Static Properties
-
-        /// <summary>
-        /// Gets the default serializer
-        /// </summary>
-        public static BinaryDataSerializer<OpenSpaceCntData, OpenSpaceSettings> GetSerializer(OpenSpaceSettings settings) => new BinaryDataSerializer<OpenSpaceCntData, OpenSpaceSettings>(settings);
-
-        #endregion
-
         #region Public Properties
 
         /// <summary>
@@ -53,75 +45,6 @@ namespace RayCarrot.Rayman.OpenSpace
         #endregion
 
         #region Public Methods
-
-        /// <summary>
-        /// Deserializes the data from the stream into this instance
-        /// </summary>
-        /// <param name="reader">The reader to use to read from the stream</param>
-        public void Deserialize(IBinaryDataReader<OpenSpaceSettings> reader)
-        {
-            // Read the directory and file count
-            var dirCount = reader.Read<int>();
-            var fileCount = reader.Read<int>();
-
-            // Read header info
-            IsXORUsed = reader.Read<byte>() == 1;
-            IsChecksumUsed = reader.Read<byte>() == 1;
-            XORKey = reader.Read<byte>();
-
-            // Create the list
-            Directories = new string[dirCount];
-
-            // Read directory paths
-            for (int i = 0; i < dirCount; i++)
-                Directories[i] = OpenSpaceSerializerHelpers.ReadEncryptedString(reader, XORKey, IsXORUsed);
-
-            // Read the directory checksum
-            DirChecksum = reader.Read<byte>();
-
-            // Create the array
-            Files = new OpenSpaceCntFileEntry[fileCount];
-
-            // Read file info
-            for (int i = 0; i < fileCount; i++)
-            {
-                // Create the new file data and pass in the XOR key
-                var file = new OpenSpaceCntFileEntry(XORKey);
-
-                // Deserialize the file data
-                file.Deserialize(reader);
-
-                // Add the file info
-                Files[i] = file;
-            }
-        }
-
-        /// <summary>
-        /// Serializes the data from this instance to the stream
-        /// </summary>
-        /// <param name="writer">The writer to use to write to the stream</param>
-        public void Serialize(IBinaryDataWriter<OpenSpaceSettings> writer)
-        {
-            // Write the directory and file count
-            writer.Write(Directories.Length);
-            writer.Write(Files.Length);
-
-            // Read header info
-            writer.Write((byte)(IsXORUsed ? 1 : 0));
-            writer.Write((byte)(IsChecksumUsed ? 1 : 0));
-            writer.Write(XORKey);
-
-            // Write directory paths
-            foreach (var dir in Directories)
-                OpenSpaceSerializerHelpers.WriteEncryptedString(writer, dir, XORKey, IsXORUsed);
-
-            // Write directory checksum
-            writer.Write(DirChecksum);
-
-            // Write files
-            foreach (var file in Files)
-                writer.Write(file);
-        }
 
         /// <summary>
         /// Writes every listed file entry based on its offset to the file, getting the contents from the generator
@@ -169,10 +92,36 @@ namespace RayCarrot.Rayman.OpenSpace
             using var stream = new MemoryStream();
 
             // Serialize the header only
-            GetSerializer(settings).Serialize(stream, this);
+            BinarySerializableHelpers.WriteToStream(this, stream, settings);
 
             // Get the position, which will be the size of the header
             return (int)stream.Position;
+        }
+
+        /// <summary>
+        /// Handles the serialization using the specified serializer
+        /// </summary>
+        /// <param name="s">The serializer</param>
+        public void Serialize(IBinarySerializer s)
+        {
+            // Serialize the directory and file array sizes
+            Directories = s.SerializeArraySize<string, int>(Directories, name: nameof(Directories));
+            Files = s.SerializeArraySize<OpenSpaceCntFileEntry, int>(Files, name: nameof(Files));
+
+            // Serialize header info
+            IsXORUsed = s.Serialize<bool>(IsXORUsed, name: nameof(IsXORUsed));
+            IsChecksumUsed = s.Serialize<bool>(IsChecksumUsed, name: nameof(IsChecksumUsed));
+            XORKey = s.Serialize<byte>(XORKey, name: nameof(XORKey));
+
+            // Serialize the directory paths
+            for (int i = 0; i < Directories.Length; i++)
+                Directories[i] = s.SerializeOpenSpaceEncryptedString(Directories[i], IsXORUsed ? XORKey : (byte)0, name: $"{nameof(Directories)}[{i}]");
+
+            // Serialize the directory checksum
+            DirChecksum = s.Serialize<byte>(DirChecksum, name: nameof(DirChecksum));
+
+            // Serialize the file info
+            Files = s.SerializeObjectArray<OpenSpaceCntFileEntry>(Files, Files.Length, (s, o) => o.XORKey = IsXORUsed ? XORKey : (byte)0, name: nameof(Files));
         }
 
         #endregion

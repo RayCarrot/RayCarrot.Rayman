@@ -1,14 +1,13 @@
 ﻿using System.IO;
+using RayCarrot.Binary;
 
 namespace RayCarrot.Rayman
 {
     /// <summary>
-    /// Used for objects which can be serialized using a <see cref="BinaryDataReader{Settings}"/> and <see cref="BinaryDataWriter{Settings}"/> which contain an archive
+    /// Defines a serializable binary archive file
     /// </summary>
-    /// <typeparam name="Settings">The type of serializer settings</typeparam>
-    /// <typeparam name="FileEntry">The type of file entry</typeparam>
-    public interface IBinarySerializableArchive<in Settings, FileEntry> : IBinarySerializable<Settings>
-        where Settings : BinarySerializerSettings
+    /// <typeparam name="FileEntry">The file entry type</typeparam>
+    public interface IBinarySerializableArchive<FileEntry> : IBinarySerializable
     {
         /// <summary>
         /// Writes every listed file entry based on its offset to the file, getting the contents from the generator

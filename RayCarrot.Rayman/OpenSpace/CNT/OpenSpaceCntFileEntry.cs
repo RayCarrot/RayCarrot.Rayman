@@ -1,23 +1,22 @@
 ﻿using System;
 using System.IO;
+using RayCarrot.Binary;
 
 namespace RayCarrot.Rayman.OpenSpace
 {
     /// <summary>
     /// The data used for a file entry within a .cnt file
     /// </summary>
-    public class OpenSpaceCntFileEntry : IBinarySerializable<OpenSpaceSettings>
+    public class OpenSpaceCntFileEntry : IBinarySerializable
     {
         #region Constructor
 
         /// <summary>
         /// Default constructor
         /// </summary>
-        /// <param name="xorKey">The XOR key</param>
-        public OpenSpaceCntFileEntry(byte xorKey)
+        public OpenSpaceCntFileEntry()
         {
-            XORKey = xorKey;
-            FileXORKey = FileXORKey = new byte[]
+            FileXORKey = new byte[]
             {
                 0, 0, 0, 0
             };
@@ -77,40 +76,26 @@ namespace RayCarrot.Rayman.OpenSpace
         }
 
         /// <summary>
-        /// Deserializes the data from the stream into this instance
-        /// </summary>
-        /// <param name="reader">The reader to use to read from the stream</param>
-        public void Deserialize(IBinaryDataReader<OpenSpaceSettings> reader)
-        {
-            DirectoryIndex = reader.Read<int>();
-            FileName = OpenSpaceSerializerHelpers.ReadEncryptedString(reader, XORKey, XORKey != 0);
-            FileXORKey = reader.ReadBytes(4);
-            Checksum = reader.Read<uint>();
-            Pointer = reader.Read<int>();
-            Size = reader.Read<int>();
-        }
-
-        /// <summary>
-        /// Serializes the data from this instance to the stream
-        /// </summary>
-        /// <param name="writer">The writer to use to write to the stream</param>
-        public void Serialize(IBinaryDataWriter<OpenSpaceSettings> writer)
-        {
-            writer.Write(DirectoryIndex);
-            OpenSpaceSerializerHelpers.WriteEncryptedString(writer, FileName, XORKey, XORKey != 0);
-            writer.Write(FileXORKey);
-            writer.Write(Checksum);
-            writer.Write(Pointer);
-            writer.Write(Size);
-        }
-
-        /// <summary>
         /// Returns a string that represents the current object.
         /// </summary>
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()
         {
             return $"{DirectoryIndex}: {FileName}";
+        }
+
+        /// <summary>
+        /// Handles the serialization using the specified serializer
+        /// </summary>
+        /// <param name="s">The serializer</param>
+        public void Serialize(IBinarySerializer s)
+        {
+            DirectoryIndex = s.Serialize<int>(DirectoryIndex, name: nameof(DirectoryIndex));
+            FileName = s.SerializeOpenSpaceEncryptedString(FileName, XORKey, name: nameof(FileName));
+            FileXORKey = s.SerializeArray<byte>(FileXORKey, 4, name: nameof(FileXORKey));
+            Checksum = s.Serialize<uint>(Checksum, name: nameof(Checksum));
+            Pointer = s.Serialize<int>(Pointer, name: nameof(Pointer));
+            Size = s.Serialize<int>(Size, name: nameof(Size));
         }
 
         #endregion

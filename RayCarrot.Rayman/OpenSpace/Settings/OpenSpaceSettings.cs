@@ -1,50 +1,29 @@
 ﻿using System;
 using System.Text;
+using RayCarrot.Binary;
 using RayCarrot.Extensions;
 
 namespace RayCarrot.Rayman.OpenSpace
 {
     /// <summary>
-    /// Settings for serializing OpenSpace game formats
+    /// Binary settings for serializing OpenSpace game formats
     /// </summary>
     public class OpenSpaceSettings : BinarySerializerSettings
     {
+        #region Constructor
+
         /// <summary>
         /// Default constructor
         /// </summary>
+        /// <param name="endian">The endianness</param>
+        /// <param name="textEncoding">The text encoding to use</param>
         /// <param name="game">The game</param>
         /// <param name="platform">The platform</param>
-        public OpenSpaceSettings(OpenSpaceGame game, OpenSpacePlatform platform)
+        public OpenSpaceSettings(Endian endian, Encoding textEncoding, OpenSpaceGame game, OpenSpacePlatform platform) : base(endian, textEncoding)
         {
-            // Set base properties
-            Encoding = Encoding.UTF8;
-            StringEncoding = BinaryStringEncoding.LengthPrefixed;
-            BoolEncoding = BinaryBoolEncoding.Int32;
-
             // Set the properties
             Game = game;
             Platform = platform;
-
-            // Set the byte order based on platform
-            switch (platform)
-            {
-                case OpenSpacePlatform.PC:
-                case OpenSpacePlatform.iOS:
-                case OpenSpacePlatform.DreamCast:
-                case OpenSpacePlatform.PlayStation2:
-                case OpenSpacePlatform.NintendoDS:
-                case OpenSpacePlatform.Nintendo3DS:
-                    ByteOrder = ByteOrder.LittleEndian;
-                    break;
-
-                case OpenSpacePlatform.GameCube:
-                case OpenSpacePlatform.Nintendo64:
-                    ByteOrder = ByteOrder.BigEndian;
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(platform), platform, null);
-            }
 
             // Get the engine version
             foreach (var version in EnumHelpers.GetValues<OpenSpaceEngineVersion>())
@@ -56,6 +35,10 @@ namespace RayCarrot.Rayman.OpenSpace
                 break;
             }
         }
+
+        #endregion
+
+        #region Public Properties
 
         /// <summary>
         /// The game
@@ -71,5 +54,45 @@ namespace RayCarrot.Rayman.OpenSpace
         /// The platform
         /// </summary>
         public OpenSpacePlatform Platform { get; }
+
+        #endregion
+
+        #region Public Static Methods
+
+        /// <summary>
+        /// Gets the default settings based on the game and platform
+        /// </summary>
+        /// <param name="game">The game</param>
+        /// <param name="platform">The platform</param>
+        /// <returns>The settings</returns>
+        public static OpenSpaceSettings GetDefaultSettings(OpenSpaceGame game, OpenSpacePlatform platform)
+        {
+            Endian endian;
+
+            // Set the byte order based on platform
+            switch (platform)
+            {
+                case OpenSpacePlatform.PC:
+                case OpenSpacePlatform.iOS:
+                case OpenSpacePlatform.DreamCast:
+                case OpenSpacePlatform.PlayStation2:
+                case OpenSpacePlatform.NintendoDS:
+                case OpenSpacePlatform.Nintendo3DS:
+                    endian = Endian.Little;
+                    break;
+
+                case OpenSpacePlatform.GameCube:
+                case OpenSpacePlatform.Nintendo64:
+                    endian = Endian.Big;
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(platform), platform, null);
+            }
+
+            return new OpenSpaceSettings(endian, Encoding.GetEncoding(1252), game, platform);
+        }
+
+        #endregion
     }
 }

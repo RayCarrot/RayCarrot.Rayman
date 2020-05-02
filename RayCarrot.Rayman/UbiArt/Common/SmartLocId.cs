@@ -1,6 +1,8 @@
-﻿namespace RayCarrot.Rayman.UbiArt
+﻿using RayCarrot.Binary;
+
+namespace RayCarrot.Rayman.UbiArt
 {
-    public class SmartLocId : IBinarySerializable<UbiArtSettings>
+    public class SmartLocId : IBinarySerializable
     {
         public string DefaultText { get; set; }
 
@@ -8,18 +10,15 @@
 
         public bool UseText { get; set; }
 
-        public void Deserialize(IBinaryDataReader<UbiArtSettings> reader)
+        /// <summary>
+        /// Handles the serialization using the specified serializer
+        /// </summary>
+        /// <param name="s">The serializer</param>
+        public void Serialize(IBinarySerializer s)
         {
-            DefaultText = reader.Read<string>();
-            LocId = reader.Read<LocalisationId>();
-            UseText = reader.Read<bool>();
-        }
-
-        public void Serialize(IBinaryDataWriter<UbiArtSettings> writer)
-        {
-            writer.Write(DefaultText);
-            writer.Write(LocId);
-            writer.Write(UseText);
+            DefaultText = s.SerializeLengthPrefixedString(DefaultText, name: nameof(DefaultText));
+            LocId = s.SerializeObject<LocalisationId>(LocId, name: nameof(LocId));
+            UseText = s.SerializeBool<uint>(UseText, name: nameof(UseText));
         }
     }
 }

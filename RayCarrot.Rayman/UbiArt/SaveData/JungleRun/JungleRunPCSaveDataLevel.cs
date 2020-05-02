@@ -1,11 +1,12 @@
 ﻿using System;
+using RayCarrot.Binary;
 
 namespace RayCarrot.Rayman.UbiArt
 {
     /// <summary>
     /// The level progression data for Rayman Jungle Run on PC
     /// </summary>
-    public class JungleRunPCSaveDataLevel : IBinarySerializable<BinarySerializerSettings>
+    public class JungleRunPCSaveDataLevel : IBinarySerializable
     {
         /// <summary>
         /// Indicates if the level is locked
@@ -15,33 +16,22 @@ namespace RayCarrot.Rayman.UbiArt
         /// <summary>
         /// The highest amount of Lums earned in the level. Max is 100.
         /// </summary>
-        public short LumsRecord { get; set; }
+        public ushort LumsRecord { get; set; }
 
         /// <summary>
-        /// The level record time. This value is only used for the Livid Dead levels.
+        /// The level record time in milliseconds. This value is only used for the Livid Dead levels.
         /// </summary>
-        public TimeSpan RecordTime { get; set; }
+        public uint RecordTime { get; set; }
 
         /// <summary>
-        /// Deserializes the data from the stream into this instance
+        /// Handles the serialization using the specified serializer
         /// </summary>
-        /// <param name="reader">The reader to use to read from the stream</param>
-        public void Deserialize(IBinaryDataReader<BinarySerializerSettings> reader)
+        /// <param name="s">The serializer</param>
+        public void Serialize(IBinarySerializer s)
         {
-            IsLocked = reader.Read<bool>();
-            LumsRecord = reader.Read<short>();
-            RecordTime = new TimeSpan(0, 0, 0, 0, (int)reader.Read<uint>());
-        }
-
-        /// <summary>
-        /// Serializes the data from this instance to the stream
-        /// </summary>
-        /// <param name="writer">The writer to use to write to the stream</param>
-        public void Serialize(IBinaryDataWriter<BinarySerializerSettings> writer)
-        {
-            writer.Write(IsLocked);
-            writer.Write(LumsRecord);
-            writer.Write((uint)RecordTime.TotalMilliseconds);
+            IsLocked = s.SerializeBool<byte>(IsLocked, name: nameof(IsLocked));
+            LumsRecord = s.Serialize<ushort>(LumsRecord, name: nameof(LumsRecord));
+            RecordTime = s.Serialize<uint>(RecordTime, name: nameof(RecordTime));
         }
     }
 }

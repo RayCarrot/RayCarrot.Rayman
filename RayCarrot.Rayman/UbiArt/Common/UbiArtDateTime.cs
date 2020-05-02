@@ -1,20 +1,21 @@
-﻿namespace RayCarrot.Rayman.UbiArt
+﻿using RayCarrot.Binary;
+
+namespace RayCarrot.Rayman.UbiArt
 {
     /// <summary>
     /// Date time data for a UbiArt game
     /// </summary>
-    public class UbiArtDateTime : IBinarySerializable<UbiArtSettings>
+    public class UbiArtDateTime : IBinarySerializable
     {
         public ulong Value { get; set; }
 
-        public void Deserialize(IBinaryDataReader<UbiArtSettings> reader)
+        /// <summary>
+        /// Handles the serialization using the specified serializer
+        /// </summary>
+        /// <param name="s">The serializer</param>
+        public void Serialize(IBinarySerializer s)
         {
-            Value = reader.Read<ulong>();
-        }
-
-        public void Serialize(IBinaryDataWriter<UbiArtSettings> writer)
-        {
-            writer.Write(Value);
+            Value = s.Serialize<ulong>(Value, name: nameof(Value));
         }
     }
 }

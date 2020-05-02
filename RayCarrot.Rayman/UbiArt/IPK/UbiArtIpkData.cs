@@ -4,6 +4,7 @@ using RayCarrot.IO;
 using System;
 using System.IO;
 using System.Linq;
+using RayCarrot.Binary;
 
 namespace RayCarrot.Rayman.UbiArt
 {
@@ -32,22 +33,14 @@ namespace RayCarrot.Rayman.UbiArt
     Rayman Adventures 3.9.0 (iOS):               8       12       10        1        1        1   127895         -   3037303110        277216
     Rayman Mini 1.0 (Mac):                       8       12       12        1        1        1     3771         -   800679911         3771
     Rayman Mini 1.1 (Mac):                       8       12       12        1        1        1     3826         -   2057063881        3826
+    Rayman Mini 1.2 (Mac):                       8       12       12        1        1        1     4533         -   2293139714        4533
     */
 
     /// <summary>
     /// The archive data used for the .ipk files from UbiArt games
     /// </summary>
-    public class UbiArtIpkData : IBinarySerializableArchive<UbiArtSettings, UbiArtIPKFileEntry>
+    public class UbiArtIpkData : IBinarySerializableArchive<UbiArtIPKFileEntry>
     {
-        #region Public Static Methods
-
-        /// <summary>
-        /// Gets the default serializer
-        /// </summary>
-        public static BinaryDataSerializer<UbiArtIpkData, UbiArtSettings> GetSerializer(UbiArtSettings settings) => new BinaryDataSerializer<UbiArtIpkData, UbiArtSettings>(settings);
-
-        #endregion
-
         #region Constructor
 
         /// <summary>
@@ -181,117 +174,61 @@ namespace RayCarrot.Rayman.UbiArt
         #region Public Methods
 
         /// <summary>
-        /// Deserializes the data from the stream into this instance
+        /// Handles the serialization using the specified serializer
         /// </summary>
-        /// <param name="reader">The reader to use to read from the stream</param>
-        public void Deserialize(IBinaryDataReader<UbiArtSettings> reader)
+        /// <param name="s">The serializer</param>
+        public void Serialize(IBinarySerializer s)
         {
-            // Read and verify the magic header
-            MagicHeader = reader.Read<uint>();
+            // Serialize and verify the magic header
+            MagicHeader = s.Serialize<uint>(MagicHeader, name: nameof(MagicHeader));
 
             if (MagicHeader != 0x50EC12BA)
                 throw new Exception("The IPK header is not valid");
-            
-            // Read version
-            Version = reader.Read<uint>();
 
-            // Read first unknown value
-            Unknown1 = reader.Read<uint>();
+            // Serialize version
+            Version = s.Serialize<uint>(Version, name: nameof(Version));
 
-            // Read second unknown value if version is above or equal to 8
+            // Serialize first unknown value
+            Unknown1 = s.Serialize<uint>(Unknown1, name: nameof(Unknown1));
+
+            // Serialize second unknown value if version is above or equal to 8
             if (Version >= 8)
-                Unknown2 = reader.Read<uint>();
+                Unknown2 = s.Serialize<uint>(Unknown2, name: nameof(Unknown2));
 
-            // Read offset and file count
-            BaseOffset = reader.Read<uint>();
-            FilesCount = reader.Read<uint>();
+            // Serialize offset and file count
+            BaseOffset = s.Serialize<uint>(BaseOffset, name: nameof(BaseOffset));
+            FilesCount = s.Serialize<uint>(FilesCount, name: nameof(FilesCount));
 
-            // Read unknown values
-            Unknown3 = reader.Read<bool>();
-            Unknown4 = reader.Read<bool>();
-            Unknown5 = reader.Read<bool>();
-            Unknown6 = reader.Read<uint>();
+            // Serialize unknown values
+            Unknown3 = s.SerializeBool<uint>(Unknown3, name: nameof(Unknown3));
+            Unknown4 = s.SerializeBool<uint>(Unknown4, name: nameof(Unknown4));
+            Unknown5 = s.SerializeBool<uint>(Unknown5, name: nameof(Unknown5));
+            Unknown6 = s.Serialize<uint>(Unknown6, name: nameof(Unknown6));
 
-            if (reader.SerializerSettings.Game == UbiArtGame.ValiantHearts)
-                Unknown9 = reader.Read<uint>();
+            if (s.GetSettings<UbiArtSettings>().Game == UbiArtGame.ValiantHearts)
+                Unknown9 = s.Serialize<uint>(Unknown9, name: nameof(Unknown9));
 
-            Unknown7 = reader.Read<uint>();
-            EngineVersion = reader.Read<uint>();
+            Unknown7 = s.Serialize<uint>(Unknown7, name: nameof(Unknown7));
+            EngineVersion = s.Serialize<uint>(EngineVersion, name: nameof(EngineVersion));
 
             if (SupportsCompressedBlock)
             {
-                BlockSize = reader.Read<uint>();
-                BlockCompressedSize = reader.Read<uint>();
+                BlockSize = s.Serialize<uint>(BlockSize, name: nameof(BlockSize));
+                BlockCompressedSize = s.Serialize<uint>(BlockCompressedSize, name: nameof(BlockCompressedSize));
             }
 
-            // Get the file count (for the file array)
-            var fileCount = reader.Read<uint>();
+            // Serialize the file array size
+            Files = s.SerializeArraySize<UbiArtIPKFileEntry, uint>(Files, name: nameof(Files));
 
             // NOTE: So far this only appears to be the case for the bundle_pc32.ipk file used in Child of Light
-            if (fileCount != FilesCount)
-                RCFCore.Logger?.LogWarningSource($"The initial file count {FilesCount} does not match the file array size {fileCount}");
+            if (Files.Length != FilesCount)
+                RCFCore.Logger?.LogWarningSource($"The initial file count {FilesCount} does not match the file array size {Files.Length}");
 
-            // Read the file entries
-            Files = new UbiArtIPKFileEntry[fileCount];
+            // Serialize the file entries
+            Files = s.SerializeObjectArray<UbiArtIPKFileEntry>(Files, Files.Length, (s, o) => o.IPKVersion = Version, name: nameof(Files));
 
-            for (int i = 0; i < fileCount; i++)
-            {
-                var file = new UbiArtIPKFileEntry(Version);
-
-                file.Deserialize(reader);
-
-                Files[i] = file;
-            }
-
-            if (reader.BaseStream.Position != BaseOffset)
-                throw new BinarySerializableException("Offset value is incorrect.");
-        }
-
-        /// <summary>
-        /// Serializes the data from this instance to the stream
-        /// </summary>
-        /// <param name="writer">The writer to use to write to the stream</param>
-        public void Serialize(IBinaryDataWriter<UbiArtSettings> writer)
-        {
-            // Write ID and version
-            writer.Write(MagicHeader);
-            writer.Write(Version);
-
-            // Write first unknown value
-            writer.Write(Unknown1);
-
-            // Write second unknown value if version is above or equal to 8
-            if (Version >= 8)
-                writer.Write(Unknown2);
-
-            // Write offset and file count
-            writer.Write(BaseOffset);
-            writer.Write(FilesCount);
-
-            // Write unknown values
-            writer.Write(Unknown3);
-            writer.Write(Unknown4);
-            writer.Write(Unknown5);
-            writer.Write(Unknown6);
-
-            if (writer.SerializerSettings.Game == UbiArtGame.ValiantHearts)
-                writer.Write(Unknown9);
-
-            writer.Write(Unknown7);
-            writer.Write(EngineVersion);
-
-            if (SupportsCompressedBlock)
-            {
-                writer.Write(BlockSize);
-                writer.Write(BlockCompressedSize);
-            }
-
-            // Write the file count (for the file array)
-            writer.Write(Files.Length);
-
-            // Write the file entries
-            foreach (var file in Files)
-                writer.Write(file);
+            if (s.Stream.Position != BaseOffset)
+                RCFCore.Logger?.LogWarningSource($"Offset value {BaseOffset} doesn't match file entry end offset {s.Stream.Position}");
         }
 
         /// <summary>
@@ -414,7 +351,7 @@ namespace RayCarrot.Rayman.UbiArt
             using var stream = new MemoryStream();
 
             // Serialize the header only
-            GetSerializer(settings).Serialize(stream, this);
+            BinarySerializableHelpers.WriteToStream(this, stream, settings);
 
             // Get the position, which will be the size of the header
             return (uint)stream.Position;

@@ -1,19 +1,36 @@
-﻿using System.Text;
+﻿using RayCarrot.Binary;
 
 namespace RayCarrot.Rayman.UbiArt
 {
     /// <summary>
     /// The localization data for Rayman Fiesta Run
     /// </summary>
-    public class FiestaRunLocalizationData : BaseUbiArtLocalizationData<SerializablePair<string, string>>
+    public class FiestaRunLocalizationData : IBinarySerializable
     {
         /// <summary>
-        /// Gets the default serializer
+        /// The localized strings, categorized by the language index and the localization ID
         /// </summary>
-        public static BinaryDataSerializer<FiestaRunLocalizationData, BinarySerializerSettings> GetSerializer() => new BinaryDataSerializer<FiestaRunLocalizationData, BinarySerializerSettings>(new BinarySerializerSettings()
+        public UbiArtFiestaRunLocStringValuePair[] Strings { get; set; }
+
+        /// <summary>
+        /// The audio to use for each localized string
+        /// </summary>
+        public UbiArtKeyObjValuePair<int, UbiArtLocalizationAudio>[] Audio { get; set; }
+
+        /// <summary>
+        /// Unknown list of paths
+        /// </summary>
+        public string[] Paths { get; set; }
+
+        /// <summary>
+        /// Handles the serialization using the specified serializer
+        /// </summary>
+        /// <param name="s">The serializer</param>
+        public void Serialize(IBinarySerializer s)
         {
-            ByteOrder = ByteOrder.BigEndian,
-            Encoding = Encoding.BigEndianUnicode
-        });
+            Strings = s.SerializeUbiArtObjectArray<UbiArtFiestaRunLocStringValuePair>(Strings, name: nameof(Strings));
+            Audio = s.SerializeUbiArtObjectArray<UbiArtKeyObjValuePair<int, UbiArtLocalizationAudio>>(Audio, name: nameof(Audio));
+            Paths = s.SerializeUbiArtArray<string>(Paths, name: nameof(Paths));
+        }
     }
 }

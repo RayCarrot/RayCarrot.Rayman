@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
+using RayCarrot.Binary;
 using RayCarrot.CarrotFramework.Abstractions;
 using RayCarrot.Extensions;
 
@@ -11,17 +12,8 @@ namespace RayCarrot.Rayman.OpenSpace
     /// <summary>
     /// The data used for a .gf file for OpenSpace games
     /// </summary>
-    public class OpenSpaceGFFile : IBinarySerializable<OpenSpaceSettings>
+    public class OpenSpaceGFFile : IBinarySerializable
     {
-        #region Public Static Properties
-
-        /// <summary>
-        /// Gets the default serializer
-        /// </summary>
-        public static BinaryDataSerializer<OpenSpaceGFFile, OpenSpaceSettings> GetSerializer(OpenSpaceSettings settings) => new BinaryDataSerializer<OpenSpaceGFFile, OpenSpaceSettings>(settings);
-
-        #endregion
-
         #region Public Properties
 
         /// <summary>
@@ -656,69 +648,86 @@ namespace RayCarrot.Rayman.OpenSpace
         }
 
         /// <summary>
-        /// Deserializes the data from the stream into this instance
+        /// Handles the serialization using the specified serializer
         /// </summary>
-        /// <param name="reader">The reader to use to read from the stream</param>
-        public void Deserialize(IBinaryDataReader<OpenSpaceSettings> reader)
+        /// <param name="s">The serializer</param>
+        public void Serialize(IBinarySerializer s)
         {
-            // Read the version
-            if (reader.SerializerSettings.EngineVersion == OpenSpaceEngineVersion.Montreal)
-                Version = reader.Read<byte>();
+            // Get the settings
+            var settings = s.GetSettings<OpenSpaceSettings>();
 
-            // Read the format
-            else if (reader.SerializerSettings.Platform != OpenSpacePlatform.iOS && reader.SerializerSettings.Game != OpenSpaceGame.TonicTroubleSpecialEdition)
-                Format = reader.Read<uint>();
+            // Serialize the version
+            if (settings.EngineVersion == OpenSpaceEngineVersion.Montreal)
+                Version = s.Serialize<byte>(Version, name: nameof(Version));
 
-            // Read the size
-            Width = reader.Read<uint>();
-            Height = reader.Read<uint>();
+            // Serialize the format
+            else if (settings.Platform != OpenSpacePlatform.iOS && settings.Game != OpenSpaceGame.TonicTroubleSpecialEdition)
+                Format = s.Serialize<uint>(Format, name: nameof(Format));
 
-            // Read the channels
-            Channels = reader.Read<byte>();
+            // Serialize the size
+            Width = s.Serialize<uint>(Width, name: nameof(Width));
+            Height = s.Serialize<uint>(Height, name: nameof(Height));
 
-            if (reader.SerializerSettings.Platform == OpenSpacePlatform.iOS || reader.SerializerSettings.Game == OpenSpaceGame.TonicTroubleSpecialEdition)
+            // Serialize the channels
+            Channels = s.Serialize<byte>(Channels, name: nameof(Channels));
+
+            if (settings.Platform == OpenSpacePlatform.iOS || settings.Game == OpenSpaceGame.TonicTroubleSpecialEdition)
                 Format = Channels == 4 ? 8888u : 888u;
 
             // Default the mipmap count to 0
             MipmapCount = 0;
 
             // Check if mipmaps are used
-            if (SupportsMipmaps(reader.SerializerSettings))
-                MipmapCount = reader.Read<byte>();
+            if (SupportsMipmaps(settings))
+                MipmapCount = s.Serialize<byte>(MipmapCount, name: nameof(MipmapCount));
 
-            // Set the pixel count
-            PixelCount = Width * Height;
-
-            // Enumerate each mipmap size
-            foreach (Size size in GetMipmapSizes())
+            // Only calculate the pixel count if reading
+            if (s.IsReading)
             {
-                // Get the mipmap pixel count
-                var count = (uint)(size.Width * size.Height);
+                // Set the pixel count
+                PixelCount = Width * Height;
 
-                // Add to the total pixel count
-                PixelCount += count;
+                // Enumerate each mipmap size
+                foreach (Size size in GetMipmapSizes())
+                {
+                    // Get the mipmap pixel count
+                    var count = (uint)(size.Width * size.Height);
+
+                    // Add to the total pixel count
+                    PixelCount += count;
+                }
             }
 
-            // Read the repeat byte
-            RepeatByte = reader.Read<byte>();
+            // Serialize the repeat byte
+            RepeatByte = s.Serialize<byte>(RepeatByte, name: nameof(RepeatByte));
 
-            // Read Montreal specific values
-            if (reader.SerializerSettings.EngineVersion == OpenSpaceEngineVersion.Montreal)
+            // Serialize Montreal specific values
+            if (settings.EngineVersion == OpenSpaceEngineVersion.Montreal)
             {
-                PaletteNumColors = reader.Read<ushort>();
-                PaletteBytesPerColor = reader.Read<byte>();
+                PaletteNumColors = s.Serialize<ushort>(PaletteNumColors, name: nameof(PaletteNumColors));
+                PaletteBytesPerColor = s.Serialize<byte>(PaletteBytesPerColor, name: nameof(PaletteBytesPerColor));
 
-                MontrealByte1 = reader.Read<byte>();
-                MontrealByte2 = reader.Read<byte>();
-                MontrealByte3 = reader.Read<byte>();
-                MontrealNum4 = reader.Read<uint>();
+                MontrealByte1 = s.Serialize<byte>(MontrealByte1, name: nameof(MontrealByte1));
+                MontrealByte2 = s.Serialize<byte>(MontrealByte2, name: nameof(MontrealByte2));
+                MontrealByte3 = s.Serialize<byte>(MontrealByte3, name: nameof(MontrealByte3));
+                MontrealNum4 = s.Serialize<uint>(MontrealNum4, name: nameof(MontrealNum4));
 
-                PixelCount = reader.Read<uint>(); // Hype has mipmaps
-                var montrealType = reader.Read<byte>();
+                PixelCount = s.Serialize<uint>(PixelCount, name: nameof(PixelCount)); // Hype has mipmaps
 
-                if (PaletteNumColors != 0 && PaletteBytesPerColor != 0)
-                    Palette = reader.ReadBytes(PaletteBytesPerColor * PaletteNumColors);
+                // Get the current Montreal type based on the format
+                var montrealType = (byte)(Format switch
+                {
+                    0 => 5,
+                    565 => 10,
+                    1555 => 11,
+                    4444 => 12,
+                    _ => throw new BinarySerializableException($"Unknown Montreal GF format {Format}")
+                });
 
+                // Serialize the Montreal type
+                montrealType = s.Serialize<byte>(montrealType, name: nameof(montrealType));
+
+                // Set the format based on the Montreal type
                 Format = montrealType switch
                 {
                     5 => 0u,
@@ -727,164 +736,123 @@ namespace RayCarrot.Rayman.OpenSpace
                     12 => 4444u,
                     _ => throw new BinarySerializableException($"Unknown Montreal GF format {montrealType}")
                 };
+
+                if (PaletteNumColors != 0 && PaletteBytesPerColor != 0)
+                    Palette = s.SerializeArray<byte>(Palette, PaletteBytesPerColor * PaletteNumColors, name: nameof(Palette));
             }
 
-            // Create the data array
-            PixelData = new byte[Channels * PixelCount];
-
-            // Keep track of the current channel
-            int channel = 0;
-
-            // Enumerate each channel
-            while (channel < Channels)
+            // TODO: Might be better to simply serialize the data block and then compress/decompress it somewhere else?
+            // Handle the byte data serialization differently depending on if we're reading or writing due to it being compressed
+            if (s.IsReading)
             {
-                int pixel = 0;
+                // Create the data array
+                PixelData = new byte[Channels * PixelCount];
 
-                // Enumerate through each pixel
-                while (pixel < PixelCount)
+                // Keep track of the current channel
+                int channel = 0;
+
+                // Enumerate each channel
+                while (channel < Channels)
                 {
-                    // Read the pixel
-                    byte b1 = reader.Read<byte>();
+                    int pixel = 0;
 
-                    // If it's the repeat byte...
-                    if (b1 == RepeatByte)
+                    // Enumerate through each pixel
+                    while (pixel < PixelCount)
                     {
-                        // Get the value to repeat
-                        byte value = reader.Read<byte>();
+                        // Read the pixel
+                        byte b1 = s.Serialize<byte>(default, name: nameof(b1));
 
-                        // Get the number of times to repeat
-                        byte count = reader.Read<byte>();
+                        // If it's the repeat byte...
+                        if (b1 == RepeatByte)
+                        {
+                            // Get the value to repeat
+                            byte value = s.Serialize<byte>(default, name: nameof(value));
 
-                        // Repeat the value the specified number of times
-                        for (int i = 0; i < count; ++i)
+                            // Get the number of times to repeat
+                            byte count = s.Serialize<byte>(default, name: nameof(count));
+
+                            // Repeat the value the specified number of times
+                            for (int i = 0; i < count; ++i)
+                            {
+                                // Set the value
+                                PixelData[channel + pixel * Channels] = value;
+
+                                pixel++;
+                            }
+                        }
+                        else
                         {
                             // Set the value
-                            PixelData[channel + pixel * Channels] = value;
-
+                            PixelData[channel + pixel * Channels] = b1;
                             pixel++;
                         }
                     }
-                    else
-                    {
-                        // Set the value
-                        PixelData[channel + pixel * Channels] = b1;
-                        pixel++;
-                    }
+
+                    channel++;
                 }
-
-                channel++;
             }
-        }
-
-        /// <summary>
-        /// Serializes the data from this instance to the stream
-        /// </summary>
-        /// <param name="writer">The writer to use to write to the stream</param>
-        public void Serialize(IBinaryDataWriter<OpenSpaceSettings> writer)
-        {
-            // Write the format or version
-            if (writer.SerializerSettings.EngineVersion == OpenSpaceEngineVersion.Montreal)
-                writer.Write(Version);
-            else if (writer.SerializerSettings.Platform != OpenSpacePlatform.iOS && writer.SerializerSettings.Game != OpenSpaceGame.TonicTroubleSpecialEdition)
-                writer.Write(Format);
-
-            // Write the size
-            writer.Write(Width);
-            writer.Write(Height);
-
-            // Write the channel count
-            writer.Write(Channels);
-
-            // Write the number of mipmaps
-            if (SupportsMipmaps(writer.SerializerSettings))
-                writer.Write(MipmapCount);
-
-            // Write the repeat byte
-            writer.Write(RepeatByte);
-
-            if (writer.SerializerSettings.EngineVersion == OpenSpaceEngineVersion.Montreal)
+            else
             {
-                writer.Write(PaletteNumColors);
-                writer.Write(PaletteBytesPerColor);
+                // Keep track of the current channel
+                int channel = 0;
 
-                writer.Write(MontrealByte1);
-                writer.Write(MontrealByte2);
-                writer.Write(MontrealByte3);
-                writer.Write(MontrealNum4);
-
-                writer.Write(PixelCount);
-                writer.Write((byte)(Format switch
+                // Enumerate each channel
+                while (channel < Channels)
                 {
-                    0 => 5,
-                    565 => 10,
-                    1555 => 11,
-                    4444 => 12,
-                    _ => throw new BinarySerializableException($"Unknown Montreal GF format {Format}")
-                }));
+                    int pixelIndex = 0;
+                    int pixelDataIndex() => pixelIndex * Channels + channel;
 
-                if (PaletteNumColors != 0 && PaletteBytesPerColor != 0)
-                    writer.Write(Palette);
-            }
-
-            // Keep track of the current channel
-            int channel = 0;
-
-            // Enumerate each channel
-            while (channel < Channels)
-            {
-                int pixelIndex = 0;
-                int pixelDataIndex() => pixelIndex * Channels + channel;
-
-                // Enumerate through each pixel
-                while (pixelIndex < PixelCount)
-                {
-                    // Get the pixel
-                    var pixelData = PixelData[pixelDataIndex()];
-
-                    // Check if it equals the next two pixels or the repeat byte
-                    if ((pixelDataIndex() + 2 < PixelData.Length && pixelData == PixelData[pixelDataIndex() + 1] && pixelData == PixelData[pixelDataIndex() + 2]) || pixelData == RepeatByte)
+                    // Enumerate through each pixel
+                    while (pixelIndex < PixelCount)
                     {
-                        // Get the value to repeat
-                        var repeatValue = pixelData;
+                        // Get the pixel
+                        var pixelData = PixelData[pixelDataIndex()];
 
-                        // Start repeating by writing the repeat byte
-                        writer.Write(RepeatByte);
-
-                        // Write the pixel to repeat
-                        writer.Write(repeatValue);
-
-                        // Keep track of how many times we repeat
-                        byte repeatCount = 0;
-
-                        // Check each value until we break
-                        while (pixelIndex < PixelCount)
+                        // Check if it equals the next two pixels or the repeat byte
+                        if ((pixelDataIndex() + 2 < PixelData.Length && pixelData == PixelData[pixelDataIndex() + 1] && pixelData == PixelData[pixelDataIndex() + 2]) || pixelData == RepeatByte)
                         {
-                            // Get the data
-                            pixelData = PixelData[pixelDataIndex()];
+                            // Get the value to repeat
+                            var repeatValue = pixelData;
 
-                            // Make sure it's still equal to the value and we haven't reached the maximum value
-                            if (pixelData != repeatValue || repeatCount >= Byte.MaxValue)
-                                break;
+                            // Start repeating by writing the repeat byte
+                            s.Serialize<byte>(RepeatByte, name: nameof(RepeatByte));
 
-                            // Increment the index and count
-                            pixelIndex++;
-                            repeatCount++;
+                            // Write the pixel to repeat
+                            s.Serialize<byte>(repeatValue, name: nameof(repeatValue));
+
+                            // Keep track of how many times we repeat
+                            byte repeatCount = 0;
+
+                            // Check each value until we break
+                            while (pixelIndex < PixelCount)
+                            {
+                                // Get the data
+                                pixelData = PixelData[pixelDataIndex()];
+
+                                // Make sure it's still equal to the value and we haven't reached the maximum value
+                                if (pixelData != repeatValue || repeatCount >= Byte.MaxValue)
+                                    break;
+
+                                // Increment the index and count
+                                pixelIndex++;
+                                repeatCount++;
+                            }
+
+                            // Write the repeat count
+                            s.Serialize<byte>(repeatCount, name: nameof(repeatCount));
                         }
+                        else
+                        {
+                            // Write the pixel
+                            s.Serialize<byte>(pixelData, name: nameof(pixelData));
 
-                        // Write the repeat count
-                        writer.Write(repeatCount);
+                            // Increment the index
+                            pixelIndex++;
+                        }
                     }
-                    else
-                    {
-                        // Write the pixel
-                        writer.Write(pixelData);
 
-                        // Increment the index
-                        pixelIndex++;
-                    }
+                    channel++;
                 }
-
-                channel++;
             }
         }
 

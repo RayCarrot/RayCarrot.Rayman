@@ -1,9 +1,11 @@
-﻿namespace RayCarrot.Rayman.OpenSpace
+﻿using RayCarrot.Binary;
+
+namespace RayCarrot.Rayman.OpenSpace
 {
     /// <summary>
     /// The data for a Rayman 3 save file level on PC
     /// </summary>
-    public class Rayman3PCSaveDataLevel : IBinarySerializable<BinarySerializerSettings>
+    public class Rayman3PCSaveDataLevel : IBinarySerializable
     {
         /// <summary>
         /// The cages
@@ -16,23 +18,13 @@
         public int Score { get; set; }
 
         /// <summary>
-        /// Deserializes the data from the stream into this instance
+        /// Handles the serialization using the specified serializer
         /// </summary>
-        /// <param name="reader">The reader to use to read from the stream</param>
-        public void Deserialize(IBinaryDataReader<BinarySerializerSettings> reader)
+        /// <param name="s">The serializer</param>
+        public void Serialize(IBinarySerializer s)
         {
-            Cages = reader.Read<int>();
-            Score = reader.Read<int>();
-        }
-
-        /// <summary>
-        /// Serializes the data from this instance to the stream
-        /// </summary>
-        /// <param name="writer">The writer to use to write to the stream</param>
-        public void Serialize(IBinaryDataWriter<BinarySerializerSettings> writer)
-        {
-            writer.Write(Cages);
-            writer.Write(Score);
+            Cages = s.Serialize<int>(Cages, name: nameof(Cages));
+            Score = s.Serialize<int>(Score, name: nameof(Score));
         }
     }
 }

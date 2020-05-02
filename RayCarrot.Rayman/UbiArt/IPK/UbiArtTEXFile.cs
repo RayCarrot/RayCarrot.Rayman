@@ -1,21 +1,13 @@
-﻿using RayCarrot.CarrotFramework.Abstractions;
+﻿using RayCarrot.Binary;
+using RayCarrot.CarrotFramework.Abstractions;
 
 namespace RayCarrot.Rayman.UbiArt
 {
     /// <summary>
     /// Data for a UbiArt TEX file
     /// </summary>
-    public class UbiArtTEXFile : IBinarySerializable<UbiArtSettings>
+    public class UbiArtTEXFile : IBinarySerializable
     {
-        #region Public Static Methods
-
-        /// <summary>
-        /// Gets the default serializer
-        /// </summary>
-        public static BinaryDataSerializer<UbiArtTEXFile, UbiArtSettings> GetSerializer(UbiArtSettings settings) => new BinaryDataSerializer<UbiArtTEXFile, UbiArtSettings>(settings);
-
-        #endregion
-
         #region Public Properties
 
         /// <summary>
@@ -81,82 +73,46 @@ namespace RayCarrot.Rayman.UbiArt
         #region Public Methods
 
         /// <summary>
-        /// Deserializes the data from the stream into this instance
+        /// Handles the serialization using the specified serializer
         /// </summary>
-        /// <param name="reader">The reader to use to read from the stream</param>
-        public void Deserialize(IBinaryDataReader<UbiArtSettings> reader)
+        /// <param name="s">The serializer</param>
+        public void Serialize(IBinarySerializer s)
         {
-            Version = reader.Read<uint>();
-            Signature = reader.Read<uint>();
+            Version = s.Serialize<uint>(Version, name: nameof(Version));
+            Signature = s.Serialize<uint>(Signature, name: nameof(Signature));
 
             if (Signature != 0x54455800)
                 throw new BinarySerializableException("The file is not a valid UbiArt texture");
 
-            HdrSize = reader.Read<uint>();
+            HdrSize = s.Serialize<uint>(HdrSize, name: nameof(HdrSize));
 
-            TextureSize = reader.Read<uint>();
-            Width = reader.Read<ushort>();
-            Height = reader.Read<ushort>();
-            UnknownX = reader.Read<ushort>();
-            UnknownY = reader.Read<ushort>();
+            TextureSize = s.Serialize<uint>(TextureSize, name: nameof(TextureSize));
+            Width = s.Serialize<ushort>(Width, name: nameof(Width));
+            Height = s.Serialize<ushort>(Height, name: nameof(Height));
+            UnknownX = s.Serialize<ushort>(UnknownX, name: nameof(UnknownX));
+            UnknownY = s.Serialize<ushort>(UnknownY, name: nameof(UnknownY));
 
             if (Version == 16 || Version == 17)
-                Unknown6 = reader.Read<uint>();
+                Unknown6 = s.Serialize<uint>(Unknown6, name: nameof(Unknown6));
 
-            TextureSize2 = reader.Read<uint>();
+            TextureSize2 = s.Serialize<uint>(TextureSize2, name: nameof(TextureSize2));
 
-            Unknown0 = reader.Read<uint>();
-            Unknown1 = reader.Read<uint>();
-            Unknown2 = reader.Read<uint>();
-
-            if (Version > 10)
-                Unknown3 = reader.Read<uint>();
-
-            Unknown4 = reader.Read<uint>();
+            Unknown0 = s.Serialize<uint>(Unknown0, name: nameof(Unknown0));
+            Unknown1 = s.Serialize<uint>(Unknown1, name: nameof(Unknown1));
+            Unknown2 = s.Serialize<uint>(Unknown2, name: nameof(Unknown2));
 
             if (Version > 10)
-                Unknown5 = reader.Read<uint>();
+                Unknown3 = s.Serialize<uint>(Unknown3, name: nameof(Unknown3));
 
-            TextureData = reader.ReadRemainingBytes();
+            Unknown4 = s.Serialize<uint>(Unknown4, name: nameof(Unknown4));
+
+            if (Version > 10)
+                Unknown5 = s.Serialize<uint>(Unknown5, name: nameof(Unknown5));
+
+            TextureData = s.SerializeArray<byte>(TextureData, (int)(s.Stream.Length - s.Stream.Position), name: nameof(TextureData));
 
             if (TextureData.Length != TextureSize && TextureSize != 0)
                 RCFCore.Logger?.LogDebugSource($"The TEX file length {TextureData.Length} doesn't match the set size of {TextureSize} and {TextureSize2}");
-        }
-
-        /// <summary>
-        /// Serializes the data from this instance to the stream
-        /// </summary>
-        /// <param name="writer">The writer to use to write to the stream</param>
-        public void Serialize(IBinaryDataWriter<UbiArtSettings> writer)
-        {
-            writer.Write(Version);
-            writer.Write(Signature);
-
-            writer.Write(HdrSize);
-
-            writer.Write(TextureSize);
-            writer.Write(Width);
-            writer.Write(Height);
-            writer.Write(UnknownX);
-            writer.Write(UnknownY);
-
-            if (Version == 16 || Version == 17)
-                writer.Write(Unknown6);
-
-            writer.Write(TextureSize2);
-            writer.Write(Unknown0);
-            writer.Write(Unknown1);
-            writer.Write(Unknown2);
-
-            if (Version > 10)
-                writer.Write(Unknown3);
-
-            writer.Write(Unknown4);
-
-            if (Version > 10)
-                writer.Write(Unknown5);
-
-            writer.Write(TextureData);
         }
 
         #endregion

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text;
+﻿using RayCarrot.Binary;
 
 namespace RayCarrot.Rayman.OpenSpace
 {
@@ -9,22 +8,8 @@ namespace RayCarrot.Rayman.OpenSpace
     /// <summary>
     /// The data for a Rayman 3 save file on PC
     /// </summary>
-    public class Rayman3PCSaveData : IBinarySerializable<OpenSpaceSettings>
+    public class Rayman3PCSaveData : IBinarySerializable
     {
-        /// <summary>
-        /// Gets the default serializer
-        /// </summary>
-        public static BinaryDataSerializer<Rayman3PCSaveData, OpenSpaceSettings> GetSerializer()
-        {
-            var settings = OpenSpaceGameMode.Rayman3PC.GetSettings();
-
-            settings.StringEncoding = BinaryStringEncoding.NullTerminated;
-            settings.ByteOrder = ByteOrder.LittleEndian;
-            settings.Encoding = Encoding.UTF8;
-
-            return new BinaryDataSerializer<Rayman3PCSaveData, OpenSpaceSettings>(settings);
-        }
-
         /// <summary>
         /// The total amount of cages
         /// </summary>
@@ -38,7 +23,7 @@ namespace RayCarrot.Rayman.OpenSpace
         /// <summary>
         /// The data for each of the available levels. Count is always 9.
         /// </summary>
-        public BinarySerializableList<Rayman3PCSaveDataLevel> Levels { get; set; }
+        public Rayman3PCSaveDataLevel[] Levels { get; set; }
 
         /// <summary>
         /// Unknown values
@@ -97,63 +82,34 @@ namespace RayCarrot.Rayman.OpenSpace
         public byte[] Unknown3 { get; set; }
 
         /// <summary>
-        /// Deserializes the data from the stream into this instance
+        /// Handles the serialization using the specified serializer
         /// </summary>
-        /// <param name="reader">The reader to use to read from the stream</param>
-        public void Deserialize(IBinaryDataReader<OpenSpaceSettings> reader)
+        /// <param name="s">The serializer</param>
+        public void Serialize(IBinarySerializer s)
         {
-            TotalCages = reader.Read<int>();
-            TotalScore = reader.Read<int>();
+            TotalCages = s.Serialize<int>(TotalCages, name: nameof(TotalCages));
+            TotalScore = s.Serialize<int>(TotalScore, name: nameof(TotalScore));
 
-            Levels = new BinarySerializableList<Rayman3PCSaveDataLevel>(9);
-            Levels.Deserialize(reader);
+            Levels = s.SerializeObjectArray<Rayman3PCSaveDataLevel>(Levels, 9, name: nameof(Levels));
 
-            Unknown1 = reader.ReadBytes(33);
+            Unknown1 = s.SerializeArray<byte>(Unknown1, 33, name: nameof(Unknown1));
 
-            IsVibrationEnabled = reader.Read<bool>();
-            IsHorizontalInversionEnabled = reader.Read<bool>();
-            IsVerticalInversionEnabled = reader.Read<bool>();
+            // TODO: As they formatted as ints?
+            IsVibrationEnabled = s.Serialize<bool>(IsVibrationEnabled, name: nameof(IsVibrationEnabled));
+            IsHorizontalInversionEnabled = s.Serialize<bool>(IsHorizontalInversionEnabled, name: nameof(IsHorizontalInversionEnabled));
+            IsVerticalInversionEnabled = s.Serialize<bool>(IsVerticalInversionEnabled, name: nameof(IsVerticalInversionEnabled));
 
-            Unknown2 = reader.ReadBytes(64);
+            Unknown2 = s.SerializeArray<byte>(Unknown2, 64, name: nameof(Unknown2));
 
-            TotalScore2 = reader.Read<int>();
+            TotalScore2 = s.Serialize<int>(TotalScore2, name: nameof(TotalScore2));
 
-            Unknown4 = reader.Read<int>();
-            Unknown5 = reader.Read<int>();
+            Unknown4 = s.Serialize<int>(Unknown4, name: nameof(Unknown4));
+            Unknown5 = s.Serialize<int>(Unknown5, name: nameof(Unknown5));
 
-            CurrentLevel = reader.Read<string>();
+            // TODO: The length is probably fixed?
+            CurrentLevel = s.Serialize<string>(CurrentLevel, name: nameof(CurrentLevel));
 
-            Unknown3 = reader.ReadRemainingBytes();
-        }
-
-        /// <summary>
-        /// Serializes the data from this instance to the stream
-        /// </summary>
-        /// <param name="writer">The writer to use to write to the stream</param>
-        public void Serialize(IBinaryDataWriter<OpenSpaceSettings> writer)
-        {
-            throw new NotImplementedException();
-
-            writer.Write(TotalCages);
-            writer.Write(TotalScore);
-            writer.Write(Levels);
-
-            writer.Write(Unknown1);
-
-            writer.Write(IsVibrationEnabled);
-            writer.Write(IsHorizontalInversionEnabled);
-            writer.Write(IsVerticalInversionEnabled);
-
-            writer.Write(Unknown2);
-
-            writer.Write(TotalScore2);
-
-            writer.Write(Unknown4);
-            writer.Write(Unknown5);
-
-            writer.Write(CurrentLevel);
-
-            writer.Write(Unknown3);
+            Unknown3 = s.SerializeArray<byte>(Unknown3, (int)(s.Stream.Length - s.Stream.Position), name: nameof(Unknown3));
         }
     }
 }
