@@ -661,7 +661,7 @@ namespace RayCarrot.Rayman.OpenSpace
                 Version = s.Serialize<byte>(Version, name: nameof(Version));
 
             // Serialize the format
-            else if (settings.Platform != OpenSpacePlatform.iOS && settings.Game != OpenSpaceGame.TonicTroubleSpecialEdition)
+            else if (settings.Platform != Platform.iOS && settings.Game != OpenSpaceGame.TonicTroubleSpecialEdition)
                 Format = s.Serialize<uint>(Format, name: nameof(Format));
 
             // Serialize the size
@@ -671,7 +671,7 @@ namespace RayCarrot.Rayman.OpenSpace
             // Serialize the channels
             Channels = s.Serialize<byte>(Channels, name: nameof(Channels));
 
-            if (settings.Platform == OpenSpacePlatform.iOS || settings.Game == OpenSpaceGame.TonicTroubleSpecialEdition)
+            if (settings.Platform == Platform.iOS || settings.Game == OpenSpaceGame.TonicTroubleSpecialEdition)
                 Format = Channels == 4 ? 8888u : 888u;
 
             // Default the mipmap count to 0

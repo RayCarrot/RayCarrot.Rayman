@@ -14,7 +14,7 @@ namespace RayCarrot.Rayman.UbiArt
         /// <param name="displayName">The game mode display name</param>
         /// <param name="game">The game</param>
         /// <param name="platform">The platform</param>
-        public UbiArtGameModeInfoAttribute(string displayName, UbiArtGame game, UbiArtPlatform platform) : base(displayName)
+        public UbiArtGameModeInfoAttribute(string displayName, UbiArtGame game, Platform platform) : base(displayName)
         {
             Game = game;
             Platform = platform;
@@ -28,6 +28,6 @@ namespace RayCarrot.Rayman.UbiArt
         /// <summary>
         /// The platform
         /// </summary>
-        public UbiArtPlatform Platform { get; }
+        public Platform Platform { get; }
     }
 }

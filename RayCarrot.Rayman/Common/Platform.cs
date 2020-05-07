@@ -1,10 +1,20 @@
-﻿namespace RayCarrot.Rayman.UbiArt
+﻿namespace RayCarrot.Rayman
 {
     /// <summary>
-    /// The supported platforms for the UbiArt engine
+    /// Game platforms
     /// </summary>
-    public enum UbiArtPlatform
+    public enum Platform
     {
+        /// <summary>
+        /// Nintendo 64
+        /// </summary>
+        Nintendo64,
+
+        /// <summary>
+        /// Nintendo GameCube
+        /// </summary>
+        GameCube,
+
         /// <summary>
         /// Nintendo Wii
         /// </summary>
@@ -16,6 +26,11 @@
         WiiU,
 
         /// <summary>
+        /// Nintendo DS
+        /// </summary>
+        NintendoDS,
+
+        /// <summary>
         /// Nintendo 3DS
         /// </summary>
         Nintendo3DS,
@@ -24,6 +39,16 @@
         /// Nintendo 3DS
         /// </summary>
         NintendoSwitch,
+
+        /// <summary>
+        /// Sega DreamCast
+        /// </summary>
+        DreamCast,
+
+        /// <summary>
+        /// Sony PlayStation 2
+        /// </summary>
+        PlayStation2,
 
         /// <summary>
         /// Sony PlayStation 2

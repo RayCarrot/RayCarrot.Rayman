@@ -54,70 +54,70 @@
     /// </summary>
     public enum UbiArtGameMode
     {
-        [UbiArtGameModeInfo("Rayman Origins (PC)", UbiArtGame.RaymanOrigins, UbiArtPlatform.PC)]
+        [UbiArtGameModeInfo("Rayman Origins (PC)", UbiArtGame.RaymanOrigins, Rayman.Platform.PC)]
         RaymanOriginsPC,
 
-        [UbiArtGameModeInfo("Rayman Origins (PS3)", UbiArtGame.RaymanOrigins, UbiArtPlatform.PlayStation3)]
+        [UbiArtGameModeInfo("Rayman Origins (PS3)", UbiArtGame.RaymanOrigins, Rayman.Platform.PlayStation3)]
         RaymanOriginsPS3,
 
-        [UbiArtGameModeInfo("Rayman Origins (Wii)", UbiArtGame.RaymanOrigins, UbiArtPlatform.Wii)]
+        [UbiArtGameModeInfo("Rayman Origins (Wii)", UbiArtGame.RaymanOrigins, Rayman.Platform.Wii)]
         RaymanOriginsWii,
 
-        [UbiArtGameModeInfo("Rayman Origins (PS Vita)", UbiArtGame.RaymanOrigins, UbiArtPlatform.PSVita)]
+        [UbiArtGameModeInfo("Rayman Origins (PS Vita)", UbiArtGame.RaymanOrigins, Rayman.Platform.PSVita)]
         RaymanOriginsPSVita,
 
-        [UbiArtGameModeInfo("Rayman Origins (3DS)", UbiArtGame.RaymanOrigins, UbiArtPlatform.Nintendo3DS)]
+        [UbiArtGameModeInfo("Rayman Origins (3DS)", UbiArtGame.RaymanOrigins, Rayman.Platform.Nintendo3DS)]
         RaymanOrigins3DS,
 
-        [UbiArtGameModeInfo("Rayman Jungle Run (PC)", UbiArtGame.RaymanJungleRun, UbiArtPlatform.PC)]
+        [UbiArtGameModeInfo("Rayman Jungle Run (PC)", UbiArtGame.RaymanJungleRun, Rayman.Platform.PC)]
         RaymanJungleRunPC,
 
-        [UbiArtGameModeInfo("Rayman Jungle Run (Android)", UbiArtGame.RaymanJungleRun, UbiArtPlatform.Android)]
+        [UbiArtGameModeInfo("Rayman Jungle Run (Android)", UbiArtGame.RaymanJungleRun, Rayman.Platform.Android)]
         RaymanJungleRunAndroid,
 
-        [UbiArtGameModeInfo("Rayman Legends (PC)", UbiArtGame.RaymanLegends, UbiArtPlatform.PC)]
+        [UbiArtGameModeInfo("Rayman Legends (PC)", UbiArtGame.RaymanLegends, Rayman.Platform.PC)]
         RaymanLegendsPC,
 
-        [UbiArtGameModeInfo("Rayman Legends (Wii U)", UbiArtGame.RaymanLegends, UbiArtPlatform.WiiU)]
+        [UbiArtGameModeInfo("Rayman Legends (Wii U)", UbiArtGame.RaymanLegends, Rayman.Platform.WiiU)]
         RaymanLegendsWiiU,
 
-        [UbiArtGameModeInfo("Rayman Legends (PS Vita)", UbiArtGame.RaymanLegends, UbiArtPlatform.PSVita)]
+        [UbiArtGameModeInfo("Rayman Legends (PS Vita)", UbiArtGame.RaymanLegends, Rayman.Platform.PSVita)]
         RaymanLegendsPSVita,
 
-        [UbiArtGameModeInfo("Rayman Legends (PS4)", UbiArtGame.RaymanLegends, UbiArtPlatform.PlayStation4)]
+        [UbiArtGameModeInfo("Rayman Legends (PS4)", UbiArtGame.RaymanLegends, Rayman.Platform.PlayStation4)]
         RaymanLegendsPS4,
 
-        [UbiArtGameModeInfo("Rayman Legends (Switch)", UbiArtGame.RaymanLegends, UbiArtPlatform.NintendoSwitch)]
+        [UbiArtGameModeInfo("Rayman Legends (Switch)", UbiArtGame.RaymanLegends, Rayman.Platform.NintendoSwitch)]
         RaymanLegendsSwitch,
 
-        [UbiArtGameModeInfo("Rayman Fiesta Run (PC)", UbiArtGame.RaymanFiestaRun, UbiArtPlatform.PC)]
+        [UbiArtGameModeInfo("Rayman Fiesta Run (PC)", UbiArtGame.RaymanFiestaRun, Rayman.Platform.PC)]
         RaymanFiestaRunPC,
 
-        [UbiArtGameModeInfo("Rayman Fiesta Run (Android)", UbiArtGame.RaymanJungleRun, UbiArtPlatform.Android)]
+        [UbiArtGameModeInfo("Rayman Fiesta Run (Android)", UbiArtGame.RaymanJungleRun, Rayman.Platform.Android)]
         RaymanFiestaRunAndroid,
 
-        [UbiArtGameModeInfo("Rayman Adventures (Android)", UbiArtGame.RaymanAdventures, UbiArtPlatform.Android)]
+        [UbiArtGameModeInfo("Rayman Adventures (Android)", UbiArtGame.RaymanAdventures, Rayman.Platform.Android)]
         RaymanAdventuresAndroid,
 
-        [UbiArtGameModeInfo("Rayman Adventures (iOS)", UbiArtGame.RaymanAdventures, UbiArtPlatform.iOS)]
+        [UbiArtGameModeInfo("Rayman Adventures (iOS)", UbiArtGame.RaymanAdventures, Rayman.Platform.iOS)]
         RaymanAdventuresiOS,
 
-        [UbiArtGameModeInfo("Rayman Mini (Mac)", UbiArtGame.RaymanMini, UbiArtPlatform.Mac)]
+        [UbiArtGameModeInfo("Rayman Mini (Mac)", UbiArtGame.RaymanMini, Rayman.Platform.Mac)]
         RaymanMiniMac,
 
-        [UbiArtGameModeInfo("Child of Light (PC)", UbiArtGame.ChildOfLight, UbiArtPlatform.PC)]
+        [UbiArtGameModeInfo("Child of Light (PC)", UbiArtGame.ChildOfLight, Rayman.Platform.PC)]
         ChildOfLightPC,
 
-        [UbiArtGameModeInfo("Child of Light (PS Vita)", UbiArtGame.ChildOfLight, UbiArtPlatform.PSVita)]
+        [UbiArtGameModeInfo("Child of Light (PS Vita)", UbiArtGame.ChildOfLight, Rayman.Platform.PSVita)]
         ChildOfLightPSVita,
 
-        [UbiArtGameModeInfo("Valiant Hearts (Android)", UbiArtGame.ValiantHearts, UbiArtPlatform.Android)]
+        [UbiArtGameModeInfo("Valiant Hearts (Android)", UbiArtGame.ValiantHearts, Rayman.Platform.Android)]
         ValiantHeartsAndroid,
 
-        [UbiArtGameModeInfo("Just Dance 2017 (Wii U)", UbiArtGame.JustDance2017, UbiArtPlatform.WiiU)]
+        [UbiArtGameModeInfo("Just Dance 2017 (Wii U)", UbiArtGame.JustDance2017, Rayman.Platform.WiiU)]
         JustDance2017WiiU,
 
-        [UbiArtGameModeInfo("Gravity Falls (3DS)", UbiArtGame.GravityFalls, UbiArtPlatform.Nintendo3DS)]
+        [UbiArtGameModeInfo("Gravity Falls (3DS)", UbiArtGame.GravityFalls, Rayman.Platform.Nintendo3DS)]
         GravityFalls3DS,
     }
 }

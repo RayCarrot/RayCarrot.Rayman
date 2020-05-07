@@ -19,7 +19,7 @@ namespace RayCarrot.Rayman.OpenSpace
         /// <param name="textEncoding">The text encoding to use</param>
         /// <param name="game">The game</param>
         /// <param name="platform">The platform</param>
-        public OpenSpaceSettings(Endian endian, Encoding textEncoding, OpenSpaceGame game, OpenSpacePlatform platform) : base(endian, textEncoding)
+        public OpenSpaceSettings(Endian endian, Encoding textEncoding, OpenSpaceGame game, Platform platform) : base(endian, textEncoding)
         {
             // Set the properties
             Game = game;
@@ -53,7 +53,7 @@ namespace RayCarrot.Rayman.OpenSpace
         /// <summary>
         /// The platform
         /// </summary>
-        public OpenSpacePlatform Platform { get; }
+        public Platform Platform { get; }
 
         #endregion
 
@@ -65,24 +65,24 @@ namespace RayCarrot.Rayman.OpenSpace
         /// <param name="game">The game</param>
         /// <param name="platform">The platform</param>
         /// <returns>The settings</returns>
-        public static OpenSpaceSettings GetDefaultSettings(OpenSpaceGame game, OpenSpacePlatform platform)
+        public static OpenSpaceSettings GetDefaultSettings(OpenSpaceGame game, Platform platform)
         {
             Endian endian;
 
             // Set the byte order based on platform
             switch (platform)
             {
-                case OpenSpacePlatform.PC:
-                case OpenSpacePlatform.iOS:
-                case OpenSpacePlatform.DreamCast:
-                case OpenSpacePlatform.PlayStation2:
-                case OpenSpacePlatform.NintendoDS:
-                case OpenSpacePlatform.Nintendo3DS:
+                case Platform.PC:
+                case Platform.iOS:
+                case Platform.DreamCast:
+                case Platform.PlayStation2:
+                case Platform.NintendoDS:
+                case Platform.Nintendo3DS:
                     endian = Endian.Little;
                     break;
 
-                case OpenSpacePlatform.GameCube:
-                case OpenSpacePlatform.Nintendo64:
+                case Platform.GameCube:
+                case Platform.Nintendo64:
                     endian = Endian.Big;
                     break;
 

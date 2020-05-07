@@ -17,7 +17,7 @@ namespace RayCarrot.Rayman.UbiArt
         /// <param name="textEncoding">The text encoding to use</param>
         /// <param name="game">The game</param>
         /// <param name="platform">The platform</param>
-        public UbiArtSettings(Endian endian, Encoding textEncoding, UbiArtGame game, UbiArtPlatform platform) : base(endian, textEncoding)
+        public UbiArtSettings(Endian endian, Encoding textEncoding, UbiArtGame game, Platform platform) : base(endian, textEncoding)
         {
             Game = game;
             Platform = platform;
@@ -35,7 +35,7 @@ namespace RayCarrot.Rayman.UbiArt
         /// <summary>
         /// The platform
         /// </summary>
-        public UbiArtPlatform Platform { get; }
+        public Platform Platform { get; }
 
         #endregion
 
@@ -47,9 +47,9 @@ namespace RayCarrot.Rayman.UbiArt
         /// <param name="game">The game</param>
         /// <param name="platform">The platform</param>
         /// <returns>The settings</returns>
-        public static UbiArtSettings GetDefaultSettings(UbiArtGame game, UbiArtPlatform platform)
+        public static UbiArtSettings GetDefaultSettings(UbiArtGame game, Platform platform)
         {
-            var isLittleEndian = game == UbiArtGame.RaymanOrigins && platform == UbiArtPlatform.Nintendo3DS;
+            var isLittleEndian = game == UbiArtGame.RaymanOrigins && platform == Platform.Nintendo3DS;
 
             Encoding getEncoding()
             {
@@ -68,9 +68,9 @@ namespace RayCarrot.Rayman.UbiArt
         /// <param name="game">The game</param>
         /// <param name="platform">The platform</param>
         /// <returns>The settings</returns>
-        public static UbiArtSettings GetSaveSettings(UbiArtGame game, UbiArtPlatform platform)
+        public static UbiArtSettings GetSaveSettings(UbiArtGame game, Platform platform)
         {
-            var isLittleEndian = game == UbiArtGame.RaymanJungleRun || game == UbiArtGame.RaymanFiestaRun || (game == UbiArtGame.RaymanOrigins && platform == UbiArtPlatform.Nintendo3DS);
+            var isLittleEndian = game == UbiArtGame.RaymanJungleRun || game == UbiArtGame.RaymanFiestaRun || (game == UbiArtGame.RaymanOrigins && platform == Platform.Nintendo3DS);
 
             return new UbiArtSettings(isLittleEndian ? Endian.Little : Endian.Big, Encoding.UTF8, game, platform);
         }

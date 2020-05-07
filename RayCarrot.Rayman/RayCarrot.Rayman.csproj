@@ -107,7 +107,6 @@
     <Compile Include="UbiArt\Common\UbiArtStringID.cs" />
     <Compile Include="UbiArt\Settings\UbiArtGameMode.cs" />
     <Compile Include="OpenSpace\Settings\OpenSpaceEngineVersion.cs" />
-    <Compile Include="UbiArt\Settings\UbiArtPlatform.cs" />
     <Compile Include="UbiArt\Settings\UbiArtGame.cs" />
     <Compile Include="OpenSpace\CNT\OpenSpaceCntFileEntry.cs" />
     <Compile Include="OpenSpace\GF\OpenSpaceGFFile.cs" />
@@ -122,7 +121,7 @@
     <Compile Include="OpenSpace\Settings\OpenSpaceGame.cs" />
     <Compile Include="OpenSpace\Settings\OpenSpaceGameMode.cs" />
     <Compile Include="UbiArt\Settings\UbiArtGameModeInfoAttribute.cs" />
-    <Compile Include="OpenSpace\Settings\OpenSpacePlatform.cs" />
+    <Compile Include="Common\Platform.cs" />
     <Compile Include="UbiIni\DataModels\Enums\R2Languages.cs" />
     <Compile Include="UbiIni\DataModels\Enums\R2ParticuleRate.cs" />
     <Compile Include="UbiIni\DataModels\Enums\R3Languages.cs" />
