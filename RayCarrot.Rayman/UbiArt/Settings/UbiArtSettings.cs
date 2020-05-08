@@ -53,7 +53,7 @@ namespace RayCarrot.Rayman.UbiArt
 
             Encoding getEncoding()
             {
-                if (game != UbiArtGame.RaymanOrigins)
+                if (game != UbiArtGame.RaymanOrigins && game != UbiArtGame.RaymanJungleRun && game != UbiArtGame.RaymanFiestaRun)
                     return Encoding.UTF8;
 
                 return isLittleEndian ? Encoding.Unicode : Encoding.BigEndianUnicode;
