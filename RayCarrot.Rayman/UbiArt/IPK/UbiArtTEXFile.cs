@@ -1,5 +1,5 @@
 ﻿using RayCarrot.Binary;
-using RayCarrot.CarrotFramework.Abstractions;
+using RayCarrot.Logging;
 
 namespace RayCarrot.Rayman.UbiArt
 {
@@ -112,7 +112,7 @@ namespace RayCarrot.Rayman.UbiArt
             TextureData = s.SerializeArray<byte>(TextureData, (int)(s.Stream.Length - s.Stream.Position), name: nameof(TextureData));
 
             if (TextureData.Length != TextureSize && TextureSize != 0)
-                RCFCore.Logger?.LogDebugSource($"The TEX file length {TextureData.Length} doesn't match the set size of {TextureSize} and {TextureSize2}");
+                RL.Logger?.LogDebugSource($"The TEX file length {TextureData.Length} doesn't match the set size of {TextureSize} and {TextureSize2}");
         }
 
         #endregion

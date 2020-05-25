@@ -1,5 +1,5 @@
 ﻿using System;
-using RayCarrot.Extensions;
+using RayCarrot.Common;
 using RayCarrot.IO;
 
 namespace RayCarrot.Rayman.UbiIni

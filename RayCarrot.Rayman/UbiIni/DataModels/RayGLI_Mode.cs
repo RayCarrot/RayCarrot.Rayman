@@ -1,5 +1,5 @@
 ﻿using System;
-using RayCarrot.CarrotFramework.Abstractions;
+using RayCarrot.Logging;
 
 namespace RayCarrot.Rayman.UbiIni
 {

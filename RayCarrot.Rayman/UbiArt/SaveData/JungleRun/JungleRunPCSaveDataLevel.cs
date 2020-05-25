@@ -1,5 +1,4 @@
-﻿using System;
-using RayCarrot.Binary;
+﻿using RayCarrot.Binary;
 
 namespace RayCarrot.Rayman.UbiArt
 {

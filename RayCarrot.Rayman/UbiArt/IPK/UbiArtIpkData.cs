@@ -1,10 +1,10 @@
-﻿using RayCarrot.CarrotFramework.Abstractions;
-using RayCarrot.Extensions;
+﻿using RayCarrot.Common;
 using RayCarrot.IO;
 using System;
 using System.IO;
 using System.Linq;
 using RayCarrot.Binary;
+using RayCarrot.Logging;
 
 namespace RayCarrot.Rayman.UbiArt
 {
@@ -222,13 +222,13 @@ namespace RayCarrot.Rayman.UbiArt
 
             // NOTE: So far this only appears to be the case for the bundle_pc32.ipk file used in Child of Light
             if (Files.Length != FilesCount)
-                RCFCore.Logger?.LogWarningSource($"The initial file count {FilesCount} does not match the file array size {Files.Length}");
+                RL.Logger?.LogWarningSource($"The initial file count {FilesCount} does not match the file array size {Files.Length}");
 
             // Serialize the file entries
             Files = s.SerializeObjectArray<UbiArtIPKFileEntry>(Files, Files.Length, (s, o) => o.IPKVersion = Version, name: nameof(Files));
 
             if (s.Stream.Position != BaseOffset)
-                RCFCore.Logger?.LogWarningSource($"Offset value {BaseOffset} doesn't match file entry end offset {s.Stream.Position}");
+                RL.Logger?.LogWarningSource($"Offset value {BaseOffset} doesn't match file entry end offset {s.Stream.Position}");
         }
 
         /// <summary>

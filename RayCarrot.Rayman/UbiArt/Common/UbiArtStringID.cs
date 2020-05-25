@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Text;
 using RayCarrot.Binary;
-using RayCarrot.Extensions;
+using RayCarrot.Common;
 
 namespace RayCarrot.Rayman.UbiArt
 {

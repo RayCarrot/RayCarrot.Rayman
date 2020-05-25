@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using IniParser;
 using IniParser.Model;
-using RayCarrot.Extensions;
+using RayCarrot.Common;
 using RayCarrot.IO;
 
 namespace RayCarrot.Rayman.UbiIni

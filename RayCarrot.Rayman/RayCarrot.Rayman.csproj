@@ -139,19 +139,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="DotNetZip">
-      <Version>1.13.7</Version>
+      <Version>1.13.8</Version>
     </PackageReference>
     <PackageReference Include="ini-parser">
       <Version>2.5.2</Version>
-    </PackageReference>
-    <PackageReference Include="RayCarrot.CarrotFramework.Abstractions">
-      <Version>1.5.2</Version>
-    </PackageReference>
-    <PackageReference Include="RayCarrot.Extensions">
-      <Version>1.2.11</Version>
-    </PackageReference>
-    <PackageReference Include="RayCarrot.IO">
-      <Version>1.7.1</Version>
     </PackageReference>
     <PackageReference Include="System.Drawing.Common">
       <Version>4.7.0</Version>
@@ -161,6 +152,18 @@
     <ProjectReference Include="..\..\RayCarrot.Binary\RayCarrot.Binary\RayCarrot.Binary.csproj">
       <Project>{fbbb053c-d02e-439d-b589-320fc21dd60c}</Project>
       <Name>RayCarrot.Binary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\RayCarrot.Common\RayCarrot.Common\RayCarrot.Common.csproj">
+      <Project>{bd854370-65ef-41c0-b920-7c82dd3daa63}</Project>
+      <Name>RayCarrot.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\RayCarrot.IO\RayCarrot.IO\RayCarrot.IO.csproj">
+      <Project>{e271dc05-6629-48d1-9423-fe4957eab807}</Project>
+      <Name>RayCarrot.IO</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\RayCarrot.Logging\RayCarrot.Logging\RayCarrot.Logging.csproj">
+      <Project>{f0ba66a8-806b-464e-9a2a-b8050c453524}</Project>
+      <Name>RayCarrot.Logging</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

@@ -1,11 +1,8 @@
 ## RayCarrot.Rayman
-RayCarrot.Rayman is a helper library for Rayman managing Rayman related files.
-
-## Features
-Documentation (outdated): https://docs.google.com/document/d/1m9pN8nrC5Ybg8F-OHxXG3OM9T-UyaOg7PfTSfTKuetc/edit?usp=sharing
+RayCarrot.Rayman is a helper library for managing file and configuration data from the Rayman games.
 
 ### UbiIni Handlers
-Allows reading and writing to the data available in the common Rayman ubi.ini files
+Allows reading and writing to the data available in the common Rayman ubi.ini configuration files.
 
 ### Binary serializers/deserializers
 Allows reading and writing to supported binary files. Below is a list of the currently supported files.
@@ -16,7 +13,7 @@ Rayman 1 has been moved to [Ray1Map](https://github.com/Adsolution/Ray1Map)
 #### OpenSpace
 * Archives (.cnt)
 * Graphic files (.gf)
-* Rayman 3 save files on PC (.sav) - (WIP)
+* Rayman 3 save files on PC (.sav)
 
 #### UbiArt
 * Archives (.ipk)
@@ -29,9 +26,12 @@ Rayman 1 has been moved to [Ray1Map](https://github.com/Adsolution/Ray1Map)
 ## Dependencies
 RayCarrot.Rayman uses these main dependencies:
 
-- [RayCarrot.CarrotFramework](https://github.com/RayCarrot/Carrot-Framework)
+- [RayCarrot.Logging](https://github.com/RayCarrot/RayCarrot.Logging)
+- [RayCarrot.Common](https://github.com/RayCarrot/RayCarrot.Common)
+- [RayCarrot.IO](https://github.com/RayCarrot/RayCarrot.IO)
 - [ini-parser](https://github.com/rickyah/ini-parser)
 - [DotNetZip](https://github.com/haf/DotNetZip.Semverd)
+- [System.Drawing.Common](https://www.nuget.org/packages/System.Drawing.Common/)
 
 ## Contact
 You can contact me on the following places:
