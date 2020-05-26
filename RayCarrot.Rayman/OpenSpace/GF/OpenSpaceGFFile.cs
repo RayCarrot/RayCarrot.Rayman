@@ -674,12 +674,8 @@ namespace RayCarrot.Rayman.OpenSpace
             if (settings.Platform == Platform.iOS || settings.Game == OpenSpaceGame.TonicTroubleSpecialEdition)
                 Format = Channels == 4 ? 8888u : 888u;
 
-            // Default the mipmap count to 0
-            MipmapCount = 0;
-
             // Check if mipmaps are used
-            if (SupportsMipmaps(settings))
-                MipmapCount = s.Serialize<byte>(MipmapCount, name: nameof(MipmapCount));
+            MipmapCount = SupportsMipmaps(settings) ? s.Serialize<byte>(MipmapCount, name: nameof(MipmapCount)) : (byte)0;
 
             // Only calculate the pixel count if reading
             if (s.IsReading)
@@ -741,7 +737,6 @@ namespace RayCarrot.Rayman.OpenSpace
                     Palette = s.SerializeArray<byte>(Palette, PaletteBytesPerColor * PaletteNumColors, name: nameof(Palette));
             }
 
-            // TODO: Might be better to simply serialize the data block and then compress/decompress it somewhere else?
             // Handle the byte data serialization differently depending on if we're reading or writing due to it being compressed
             if (s.IsReading)
             {
