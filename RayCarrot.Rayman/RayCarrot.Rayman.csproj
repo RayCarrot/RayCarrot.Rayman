@@ -57,6 +57,9 @@
     <Compile Include="OpenSpace\GF\OpenSpaceGFFormatExtensions.cs" />
     <Compile Include="Common\DirectXKey.cs" />
     <Compile Include="OpenSpace\SaveData\Rayman3PCSaveDataEntry.cs" />
+    <Compile Include="OpenSpace\Save\Rayman2PCSaveData.cs" />
+    <Compile Include="OpenSpace\Save\Rayman2PCConfigData.cs" />
+    <Compile Include="OpenSpace\Save\Rayman2PCConfigSlotData.cs" />
     <Compile Include="OpenSpace\Settings\OpenSpaceSettings.cs" />
     <Compile Include="Common\ImageExtensions.cs" />
     <Compile Include="Common\GameModeBaseAttribute.cs" />
@@ -87,6 +90,8 @@
     <Compile Include="OpenSpace\Settings\OpenSpaceGameModeInfoAttribute.cs" />
     <Compile Include="Archive\ArchiveFileGenerator.cs" />
     <Compile Include="Encoder\SevenZipEncoder.cs" />
+    <Compile Include="Ray1\SaveData\Rayman1PCConfigData.cs" />
+    <Compile Include="Ray1\SaveData\R1Languages.cs" />
     <Compile Include="Ray1\SaveData\Rayman1PCSaveData.cs" />
     <Compile Include="Ray1\SaveData\Rayman1PCSaveDataLevel.cs" />
     <Compile Include="UbiArt\BinarySerializerExtensions.cs" />

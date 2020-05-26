@@ -201,9 +201,6 @@ namespace RayCarrot.Rayman.OpenSpace
                 case OpenSpaceGFFormat.Format_16bpp_BGRA_1555:
                 case OpenSpaceGFFormat.Format_16bpp_BGR_565:
 
-                    // Helper method for extracting bits
-                    static int extractBits(int number, int count, int offset2) => (((1 << count) - 1) & (number >> (offset2)));
-
                     ushort pixel = BitConverter.ToUInt16(new byte[]
                     {
                         gfPixelData[offset],
@@ -222,28 +219,28 @@ namespace RayCarrot.Rayman.OpenSpace
 
                         case OpenSpaceGFFormat.Format_16bpp_BGRA_4444:
 
-                            yield return (byte)(extractBits(pixel, 4, 0) * 17);
-                            yield return (byte)(extractBits(pixel, 4, 4) * 17);
-                            yield return (byte)(extractBits(pixel, 4, 8) * 17);
-                            yield return (byte)(extractBits(pixel, 4, 12) * 17);
+                            yield return (byte)(BitHelpers.ExtractBits(pixel, 4, 0) * 17);
+                            yield return (byte)(BitHelpers.ExtractBits(pixel, 4, 4) * 17);
+                            yield return (byte)(BitHelpers.ExtractBits(pixel, 4, 8) * 17);
+                            yield return (byte)(BitHelpers.ExtractBits(pixel, 4, 12) * 17);
 
                             break;
 
                         case OpenSpaceGFFormat.Format_16bpp_BGRA_1555:
                             const float multiple = (255 / 31f);
 
-                            yield return (byte)(extractBits(pixel, 5, 0) * multiple);
-                            yield return (byte)(extractBits(pixel, 5, 5) * multiple);
-                            yield return (byte)(extractBits(pixel, 5, 10) * multiple);
-                            yield return (byte)(extractBits(pixel, 1, 15) * 255);
+                            yield return (byte)(BitHelpers.ExtractBits(pixel, 5, 0) * multiple);
+                            yield return (byte)(BitHelpers.ExtractBits(pixel, 5, 5) * multiple);
+                            yield return (byte)(BitHelpers.ExtractBits(pixel, 5, 10) * multiple);
+                            yield return (byte)(BitHelpers.ExtractBits(pixel, 1, 15) * 255);
 
                             break;
 
                         case OpenSpaceGFFormat.Format_16bpp_BGR_565:
                         default: // 565
-                            yield return (byte)(extractBits(pixel, 5, 0) * (255 / 31f));
-                            yield return (byte)(extractBits(pixel, 6, 5) * (255 / 63f));
-                            yield return (byte)(extractBits(pixel, 5, 11) * (255 / 31f));
+                            yield return (byte)(BitHelpers.ExtractBits(pixel, 5, 0) * (255 / 31f));
+                            yield return (byte)(BitHelpers.ExtractBits(pixel, 6, 5) * (255 / 63f));
+                            yield return (byte)(BitHelpers.ExtractBits(pixel, 5, 11) * (255 / 31f));
 
                             break;
                     }
