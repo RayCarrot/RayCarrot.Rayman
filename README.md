@@ -8,7 +8,7 @@ Allows reading and writing to the data available in the common Rayman ubi.ini co
 Allows reading and writing to supported binary files. Below is a list of the currently supported files.
 
 #### Rayman 1
-Rayman 1 has been moved to [Ray1Map](https://github.com/Adsolution/Ray1Map)
+* Rayman 1 save files on PC (.sav)
 
 #### OpenSpace
 * Archives (.cnt)
