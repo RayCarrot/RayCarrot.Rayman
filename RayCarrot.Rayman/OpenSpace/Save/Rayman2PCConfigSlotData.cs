@@ -12,8 +12,7 @@ namespace RayCarrot.Rayman.OpenSpace
         /// </summary>
         public string SlotDisplayName { get; set; }
 
-        // Fourth byte is slot index
-        public byte[] Unk1 { get; set; }
+        public uint SlotIndex { get; set; }
 
         /// <summary>
         /// Handles the serialization using the specified serializer
@@ -21,8 +20,8 @@ namespace RayCarrot.Rayman.OpenSpace
         /// <param name="s">The serializer</param>
         public void Serialize(IBinarySerializer s)
         {
-            SlotDisplayName = s.SerializeString(SlotDisplayName, 8, name: nameof(SlotDisplayName));
-            Unk1 = s.SerializeArray<byte>(Unk1, 7, name: nameof(Unk1));
+            SlotDisplayName = s.SerializeString(SlotDisplayName, 11, name: nameof(SlotDisplayName));
+            SlotIndex = s.Serialize<uint>(SlotIndex, name: nameof(SlotIndex));
         }
     }
 }
