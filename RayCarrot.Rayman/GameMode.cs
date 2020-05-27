@@ -11,7 +11,7 @@ namespace RayCarrot.Rayman
     {
         #region Ray1
 
-        [Ray1GameModeInfo("Rayman (PC)", Ray1Game.Rayman1, Platform.PC)]
+        [Ray1GameModeInfo("Rayman 1 (PC)", Ray1Game.Rayman1, Platform.PC)]
         Rayman1PC,
 
         [Ray1GameModeInfo("Rayman Designer (PC)", Ray1Game.RayKit, Platform.PC)]
