@@ -94,6 +94,7 @@
     <Compile Include="Ray1\SaveData\R1Languages.cs" />
     <Compile Include="Ray1\SaveData\Rayman1PCSaveData.cs" />
     <Compile Include="Ray1\SaveData\Rayman1PCSaveDataLevel.cs" />
+    <Compile Include="Ray1\Settings\Ray1Settings.cs" />
     <Compile Include="UbiArt\BinarySerializerExtensions.cs" />
     <Compile Include="UbiArt\Common\ValuePairs\UbiArtKeyValuePair.cs" />
     <Compile Include="UbiArt\Common\ValuePairs\UbiArtObjKeyValuePair.cs" />
