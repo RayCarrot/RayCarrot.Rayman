@@ -3,7 +3,7 @@
 namespace RayCarrot.Rayman.UbiArt
 {
     /// <summary>
-    /// Attribute to use on <see cref="UbiArtGameMode"/> fields, specifying the settings and data
+    /// Attribute to use on <see cref="GameMode"/> fields, specifying the settings and data
     /// </summary>
     [AttributeUsage(AttributeTargets.Field)]
     public sealed class UbiArtGameModeInfoAttribute : GameModeBaseAttribute

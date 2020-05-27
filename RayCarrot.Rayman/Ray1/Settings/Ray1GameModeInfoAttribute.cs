@@ -3,7 +3,7 @@
 namespace RayCarrot.Rayman.Ray1
 {
     /// <summary>
-    /// Attribute to use on <see cref="Ray1GameMode"/> fields, specifying the settings and data
+    /// Attribute to use on <see cref="GameMode"/> fields, specifying the settings and data
     /// </summary>
     [AttributeUsage(AttributeTargets.Field)]
     public sealed class Ray1GameModeInfoAttribute : GameModeBaseAttribute
