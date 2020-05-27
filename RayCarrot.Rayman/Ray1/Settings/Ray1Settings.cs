@@ -15,8 +15,27 @@ namespace RayCarrot.Rayman.Ray1
         /// </summary>
         /// <param name="endian">The endianness</param>
         /// <param name="textEncoding">The text encoding to use</param>
-        public Ray1Settings(Endian endian, Encoding textEncoding) : base(endian, textEncoding)
-        { }
+        /// <param name="game">The game</param>
+        /// <param name="platform">The platform</param>
+        public Ray1Settings(Endian endian, Encoding textEncoding, Ray1Game game, Platform platform) : base(endian, textEncoding)
+        {
+            Game = game;
+            Platform = platform;
+        }
+
+        #endregion
+
+        #region Public Properties
+
+        /// <summary>
+        /// The game
+        /// </summary>
+        public Ray1Game Game { get; }
+        
+        /// <summary>
+        /// The platform
+        /// </summary>
+        public Platform Platform { get; }
 
         #endregion
 
@@ -25,8 +44,10 @@ namespace RayCarrot.Rayman.Ray1
         /// <summary>
         /// Gets the default settings
         /// </summary>
+        /// <param name="game">The game</param>
+        /// <param name="platform">The platform</param>
         /// <returns>The settings</returns>
-        public static Ray1Settings GetDefaultSettings() => new Ray1Settings(Endian.Little, Encoding.GetEncoding(437));
+        public static Ray1Settings GetDefaultSettings(Ray1Game game, Platform platform) => new Ray1Settings(Endian.Little, Encoding.GetEncoding(437), game, platform);
 
         #endregion
     }

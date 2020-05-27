@@ -26,6 +26,8 @@ namespace RayCarrot.Rayman.Ray1
         public ushort SoundVolume { get; set; }
 
         public ushort Word_22 { get; set; }
+        public byte Kit_Byte_23 { get; set; }
+        public byte Kit_Byte_24 { get; set; }
         public byte Byte_24 { get; set; }
         public byte Byte_25 { get; set; }
 
@@ -80,7 +82,11 @@ namespace RayCarrot.Rayman.Ray1
         /// <param name="s">The serializer</param>
         public void Serialize(IBinarySerializer s)
         {
-            Language = s.Serialize<R1Languages>(Language, name: nameof(Language));
+            // Get the settings
+            var settings = s.GetSettings<Ray1Settings>();
+
+            if (settings.Game == Ray1Game.Rayman1)
+                Language = s.Serialize<R1Languages>(Language, name: nameof(Language));
 
             Dword_01 = s.Serialize<uint>(Dword_01, name: nameof(Dword_01));
             Dword_05 = s.Serialize<uint>(Dword_05, name: nameof(Dword_05));
@@ -97,6 +103,13 @@ namespace RayCarrot.Rayman.Ray1
             SoundVolume = s.Serialize<ushort>(SoundVolume, name: nameof(SoundVolume));
 
             Word_22 = s.Serialize<ushort>(Word_22, name: nameof(Word_22));
+
+            if (settings.Game == Ray1Game.RayKit)
+            {
+                Kit_Byte_23 = s.Serialize<byte>(Kit_Byte_23, name: nameof(Kit_Byte_23));
+                Kit_Byte_24 = s.Serialize<byte>(Kit_Byte_24, name: nameof(Kit_Byte_24));
+            }
+
             Byte_24 = s.Serialize<byte>(Byte_24, name: nameof(Byte_24));
             Byte_25 = s.Serialize<byte>(Byte_25, name: nameof(Byte_25));
 
