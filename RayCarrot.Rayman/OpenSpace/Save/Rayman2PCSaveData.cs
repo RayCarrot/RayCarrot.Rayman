@@ -14,7 +14,9 @@ namespace RayCarrot.Rayman.OpenSpace
         
         public byte[] Unk2 { get; set; }
 
-        // TODO: This doesn't fully match - why?
+        /// <summary>
+        /// The global bit array. This contains 1440 bit flags which determine things like which Lums/cages are collected, which cutscenes have been viewed etc.
+        /// </summary>
         public bool[] GlobalBitArray { get; set; }
 
         public byte[] Unk3 { get; set; }
@@ -27,29 +29,43 @@ namespace RayCarrot.Rayman.OpenSpace
         {
             Unk1 = s.SerializeArray<byte>(Unk1, 3, name: nameof(Unk1));
             LastLevel = s.Serialize<byte>(LastLevel, name: nameof(LastLevel));
-            Unk2 = s.SerializeArray<byte>(Unk2, 12, name: nameof(Unk2));
-            GlobalBitArray = SerializeBitArray(s, GlobalBitArray, 175, name: nameof(GlobalBitArray));
+            Unk2 = s.SerializeArray<byte>(Unk2, 7, name: nameof(Unk2));
+            GlobalBitArray = SerializeUintBitArray(s, GlobalBitArray, 45, name: nameof(GlobalBitArray));
             Unk3 = s.SerializeArray<byte>(Unk3, 5, name: nameof(Unk3));
         }
 
-        // TODO: Move to RayCarrot.Logging as an extension method
-        public static bool[] SerializeBitArray(IBinarySerializer s, bool[] value, int length, string name = null)
+        /// <summary>
+        /// Serializes a bit array made as a <see cref="System.UInt32"/> array
+        /// </summary>
+        /// <param name="s">The serializer</param>
+        /// <param name="value">The value</param>
+        /// <param name="length">The length, in <see cref="System.UInt32"/></param>
+        /// <param name="name">The value name, for logging</param>
+        /// <returns>The value</returns>
+        public static bool[] SerializeUintBitArray(IBinarySerializer s, bool[] value, int length, string name = null)
         {
-            value ??= new bool[length * 8];
+            // Get the size of each value in bits
+            const int valueSize = sizeof(int) * 8;
 
-            for (int i = value.Length / 8 - 1; i >= 0; i--)
+            // Create the array if it doesn't exist
+            value ??= new bool[length * valueSize];
+
+            // Serialize every value
+            for (int i = value.Length / valueSize - 1; i >= 0; i--)
             {
-                byte v = 0;
+                int v = 0;
 
-                for (int j = 8 - 1; j >= 0; j--)
-                    BitHelpers.SetBits(v, value[i * 8 + j] ? 1 : 0, 1, j);
+                for (int j = valueSize - 1; j >= 0; j--)
+                    BitHelpers.SetBits(v, value[i * valueSize + j] ? 1 : 0, 1, j);
 
-                v = s.Serialize<byte>(v, name: $"{name}[{i}]");
+                // Serialize the value
+                v = s.Serialize<int>(v, name: $"{name}[{i}]");
 
-                for (int j = 8 - 1; j >= 0; j--)
-                    value[i * 8 + j] = BitHelpers.ExtractBits(v, 1, j) == 1;
+                for (int j = valueSize - 1; j >= 0; j--)
+                    value[i * valueSize + j] = BitHelpers.ExtractBits(v, 1, j) == 1;
             }
 
+            // Return the value
             return value;
         }
     }
