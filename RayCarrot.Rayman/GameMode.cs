@@ -5,7 +5,7 @@ using RayCarrot.Rayman.UbiArt;
 namespace RayCarrot.Rayman
 {
     /// <summary>
-    /// The OpenSpace game modes
+    /// The available game modes
     /// </summary>
     public enum GameMode
     {
