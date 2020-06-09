@@ -54,12 +54,12 @@ namespace RayCarrot.Rayman.OpenSpace
         /// <summary>
         /// The file data pointer
         /// </summary>
-        public int Pointer { get; set; }
+        public uint Pointer { get; set; }
 
         /// <summary>
         /// The file data size, in bytes
         /// </summary>
-        public int Size { get; set; }
+        public uint Size { get; set; }
 
         #endregion
 
@@ -94,8 +94,8 @@ namespace RayCarrot.Rayman.OpenSpace
             FileName = s.SerializeOpenSpaceEncryptedString(FileName, XORKey, name: nameof(FileName));
             FileXORKey = s.SerializeArray<byte>(FileXORKey, 4, name: nameof(FileXORKey));
             Checksum = s.Serialize<uint>(Checksum, name: nameof(Checksum));
-            Pointer = s.Serialize<int>(Pointer, name: nameof(Pointer));
-            Size = s.Serialize<int>(Size, name: nameof(Size));
+            Pointer = s.Serialize<uint>(Pointer, name: nameof(Pointer));
+            Size = s.Serialize<uint>(Size, name: nameof(Size));
         }
 
         #endregion

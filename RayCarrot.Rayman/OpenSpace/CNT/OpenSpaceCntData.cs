@@ -86,7 +86,7 @@ namespace RayCarrot.Rayman.OpenSpace
         /// </summary>
         /// <param name="settings">The serializer settings</param>
         /// <returns>The size in bytes</returns>
-        public int GetHeaderSize(OpenSpaceSettings settings)
+        public uint GetHeaderSize(OpenSpaceSettings settings)
         {
             // Create a temporary memory stream to determine the size
             using var stream = new MemoryStream();
@@ -95,7 +95,7 @@ namespace RayCarrot.Rayman.OpenSpace
             BinarySerializableHelpers.WriteToStream(this, stream, settings);
 
             // Get the position, which will be the size of the header
-            return (int)stream.Position;
+            return (uint)stream.Position;
         }
 
         /// <summary>
