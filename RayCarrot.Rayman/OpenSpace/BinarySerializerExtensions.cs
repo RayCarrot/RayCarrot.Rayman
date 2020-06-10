@@ -20,14 +20,8 @@ namespace RayCarrot.Rayman.OpenSpace
             // Serialize the length
             var length = s.Serialize<int>(value?.Length ?? 0, name: $"{nameof(value)}.Length");
 
-            // Begin the xor encryption
-            s.BeginXOR(xorKey);
-
-            // Serialize the string value
-            value = s.SerializeString(value, length, name: $"{nameof(value)}");
-
-            // End the xor encryption
-            s.EndXOR();
+            // Serialize the string value using the xor key
+            s.DoXOR(xorKey, () => value = s.SerializeString(value, length, name: $"{nameof(value)}"));
 
             // Return the value
             return value;

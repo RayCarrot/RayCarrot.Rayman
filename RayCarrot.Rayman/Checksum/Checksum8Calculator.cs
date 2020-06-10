@@ -8,6 +8,20 @@ namespace RayCarrot.Rayman
     public class Checksum8Calculator : IChecksumCalculator<byte>
     {
         /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="calculateForDecryptedData">Indicates if the checksum should be calculated for the decrypted data. This is ignored if the data is not encrypted.</param>
+        public Checksum8Calculator(bool calculateForDecryptedData = true)
+        {
+            CalculateForDecryptedData = calculateForDecryptedData;
+        }
+
+        /// <summary>
+        /// Indicates if the checksum should be calculated for the decrypted data. This is ignored if the data is not encrypted.
+        /// </summary>
+        public bool CalculateForDecryptedData { get; }
+
+        /// <summary>
         /// Adds a byte to the checksum
         /// </summary>
         /// <param name="b">The byte to add</param>
