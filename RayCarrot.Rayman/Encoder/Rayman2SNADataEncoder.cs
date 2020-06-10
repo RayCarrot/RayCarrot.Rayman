@@ -15,8 +15,8 @@ namespace RayCarrot.Rayman
         /// <returns>The decrypted data</returns>
         public void Decode(Stream inputStream, Stream outputStream)
         {
-            // Get the initial magic key
-            uint magic = 1790299257;
+            // Get the initial key
+            uint currentMask = 0x6AB5CC79;
 
             // Return the initial magic key
             outputStream.WriteByte(0x79);
@@ -37,13 +37,16 @@ namespace RayCarrot.Rayman
                 var b = (byte)inputStream.ReadByte();
                 
                 // Decode the byte
-                b ^= (byte)((magic >> 8) & 255);
+                b ^= (byte)((currentMask >> 8) & 0xFF);
 
-                // Return the byte
+                // Write the byte
                 outputStream.WriteByte(b);
 
                 // Update the magic key
-                magic = 16807 * (magic ^ 0x75BD924) - 0x7FFFFFFF * ((magic ^ 0x75BD924u) / 0x1F31D);
+                currentMask = 16807 * (currentMask ^ 0x75BD924) - 0x7FFFFFFF * ((currentMask ^ 0x75BD924) / 0x1F31D);
+
+                // Use this instead for the iOS version
+                //currentMask = (uint)(16807 * ((currentMask ^ 0x75BD924u) % 0x1F31D) - 2836 * ((currentMask ^ 0x75BD924u) / 0x1F31D));
             }
         }
 
