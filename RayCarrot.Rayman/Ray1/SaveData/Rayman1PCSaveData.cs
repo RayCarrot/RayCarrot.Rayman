@@ -1,4 +1,5 @@
-﻿using RayCarrot.Binary;
+﻿using System;
+using RayCarrot.Binary;
 
 namespace RayCarrot.Rayman.Ray1
 {
@@ -20,22 +21,21 @@ namespace RayCarrot.Rayman.Ray1
         // World map data for every level (last 6 are the save points)
         public Rayman1PCSaveDataLevel[] Wi_Save_Zone { get; set; }
 
-        // Flags for the powers you get from Betilla
-        public byte[] RayEvts { get; set; }
+        public RayEvtsFlags RayEvts { get; set; }
 
-        // Fist upgrades?
+        // Fist stuff
+        // Byte 12 gets set to 0xC when you enter gold fist cheat
         public byte[] Poing { get; set; }
 
-        // First byte is number of lives
-        public byte[] StatusBar { get; set; }
+        public Rayman1PCSaveDataStatusBar StatusBar { get; set; }
 
-        public byte Unk { get; set; }
+        // Always one less than actual health
+        public byte CurrentHealth { get; set; }
 
-        // 32 bytes per map (not counting Breakout)
-        // Includes flags for cages and lives in each map
+        // 32 bytes per map (not counting Breakout). Consists of 256 bits, where each is a flag for an event if it's been collected (cages & lives).
         public byte[][] SaveZone { get; set; }
 
-        // Probably 2 bytes for every bonus level, with the first 2 always being 0x00
+        // 32 bits for each world, where each bit indicates if the bonus has been completed for that map
         public byte[] BonusPerfect { get; set; }
 
         /// <summary>
@@ -55,10 +55,10 @@ namespace RayCarrot.Rayman.Ray1
             SaveName = s.SerializeString(SaveName, 4, name: nameof(SaveName));
             ContinuesCount = s.Serialize<byte>(ContinuesCount, name: nameof(ContinuesCount));
             Wi_Save_Zone = s.SerializeObjectArray<Rayman1PCSaveDataLevel>(Wi_Save_Zone, 24, name: nameof(Wi_Save_Zone));
-            RayEvts = s.SerializeArray<byte>(RayEvts, 2, name: nameof(RayEvts));
+            RayEvts = s.Serialize<RayEvtsFlags>(RayEvts, name: nameof(RayEvts));
             Poing = s.SerializeArray<byte>(Poing, 20, name: nameof(Poing));
-            StatusBar = s.SerializeArray<byte>(StatusBar, 10, name: nameof(StatusBar));
-            Unk = s.Serialize<byte>(Unk, name: nameof(Unk));
+            StatusBar = s.SerializeObject<Rayman1PCSaveDataStatusBar>(StatusBar, name: nameof(StatusBar));
+            CurrentHealth = s.Serialize<byte>(CurrentHealth, name: nameof(CurrentHealth));
 
             if (SaveZone == null)
                 SaveZone = new byte[81][];
@@ -69,6 +69,35 @@ namespace RayCarrot.Rayman.Ray1
             BonusPerfect = s.SerializeArray<byte>(BonusPerfect, 24, name: nameof(BonusPerfect));
             WorldIndex = s.Serialize<ushort>(WorldIndex, name: nameof(WorldIndex));
             FinBossLevel = s.Serialize<ushort>(FinBossLevel, name: nameof(FinBossLevel));
+        }
+
+        [Flags]
+        public enum RayEvtsFlags : ushort
+        {
+            None = 0,
+            
+            Fist = 1 << 0,
+            Hang = 1 << 1,
+
+            Helico = 1 << 2,
+            SuperHelico = 1 << 3,
+            
+            Unk_4 = 1 << 4,
+            Unk_5 = 1 << 5,
+            
+            Seed = 1 << 6,
+            Grab = 1 << 7,
+
+            Run = 1 << 8,
+
+            // Rest are for temp stuff, like Mr Dark spells etc.
+            Unk_9 = 1 << 9,
+            Unk_10 = 1 << 10,
+            Unk_11 = 1 << 11,
+            Unk_12 = 1 << 12,
+            Unk_13 = 1 << 13,
+            Unk_14 = 1 << 14,
+            Unk_15 = 1 << 15,
         }
     }
 }

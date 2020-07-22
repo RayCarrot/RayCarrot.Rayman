@@ -95,6 +95,7 @@
     <Compile Include="Ray1\SaveData\R1Languages.cs" />
     <Compile Include="Ray1\SaveData\Rayman1PCSaveData.cs" />
     <Compile Include="Ray1\SaveData\Rayman1PCSaveDataLevel.cs" />
+    <Compile Include="Ray1\SaveData\Rayman1PCSaveDataStatusBar.cs" />
     <Compile Include="Ray1\Settings\Ray1Game.cs" />
     <Compile Include="Ray1\Settings\Ray1GameModeInfoAttribute.cs" />
     <Compile Include="Ray1\Settings\Ray1Settings.cs" />
