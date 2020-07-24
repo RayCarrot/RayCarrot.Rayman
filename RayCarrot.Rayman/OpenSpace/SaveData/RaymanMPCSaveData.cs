@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using RayCarrot.Binary;
 
@@ -11,11 +12,8 @@ namespace RayCarrot.Rayman.OpenSpace
     {
         public string Header { get; set; }
 
-        // Day + (31 * (Month + (12 * Year)))
-        public uint Time1 { get; set; }
-
-        // Milliseconds + (1000 * (Second + (60 * (Minute + (60 * Hour)))))
-        public uint Time2 { get; set; }
+        public int Time1 { get; set; }
+        public int Time2 { get; set; }
 
         public uint Dword_14 { get; set; }
         public uint Dword_18 { get; set; }
@@ -30,6 +28,34 @@ namespace RayCarrot.Rayman.OpenSpace
         public Rayman3PCSaveDataEntry[] Items { get; set; }
 
         /// <summary>
+        /// The time the save was last modified
+        /// </summary>
+        public DateTime SaveTime
+        {
+            get
+            {
+                var day = Time1 % 31;
+                var calc1_1 = (Time1 - day) / 31;
+                var month = calc1_1 % 12;
+                var year = (calc1_1 - month) / 12;
+
+                var milliSeconds = Time2 % 1000;
+                var calc2_1 = (Time2 - milliSeconds) / 1000;
+                var seconds = calc2_1 % 60;
+                var calc2_2 = (calc2_1 - seconds) / 60;
+                var minute = calc2_2 % 60;
+                var hour = (calc2_2 - minute) / 60;
+
+                return new DateTime(year, month, day, hour, minute, seconds, milliSeconds);
+            }
+            set
+            {
+                Time1 = value.Day + (31 * (value.Month + (12 * value.Year)));
+                Time2 = value.Millisecond + (1000 * (value.Second + (60 * (value.Minute + (60 * value.Hour)))));
+            }
+        }
+
+        /// <summary>
         /// Handles the serialization using the specified serializer
         /// </summary>
         /// <param name="s">The serializer</param>
@@ -37,8 +63,8 @@ namespace RayCarrot.Rayman.OpenSpace
         {
             // Serialize header
             Header = s.SerializeString(Header, 12, name: nameof(Header));
-            Time1 = s.Serialize<uint>(Time1, name: nameof(Time1));
-            Time2 = s.Serialize<uint>(Time2, name: nameof(Time2));
+            Time1 = s.Serialize<int>(Time1, name: nameof(Time1));
+            Time2 = s.Serialize<int>(Time2, name: nameof(Time2));
 
             // Serialize unknown data
             Dword_14 = s.Serialize<uint>(Dword_14, name: nameof(Dword_14));
