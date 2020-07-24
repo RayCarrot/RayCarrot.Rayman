@@ -58,9 +58,10 @@
     <Compile Include="OpenSpace\GF\OpenSpaceGFFormatExtensions.cs" />
     <Compile Include="Common\DirectXKey.cs" />
     <Compile Include="OpenSpace\SaveData\Rayman3PCSaveDataEntry.cs" />
-    <Compile Include="OpenSpace\Save\Rayman2PCSaveData.cs" />
-    <Compile Include="OpenSpace\Save\Rayman2PCConfigData.cs" />
-    <Compile Include="OpenSpace\Save\Rayman2PCConfigSlotData.cs" />
+    <Compile Include="OpenSpace\SaveData\RaymanMPCSaveData.cs" />
+    <Compile Include="OpenSpace\SaveData\Rayman2PCSaveData.cs" />
+    <Compile Include="OpenSpace\SaveData\Rayman2PCConfigData.cs" />
+    <Compile Include="OpenSpace\SaveData\Rayman2PCConfigSlotData.cs" />
     <Compile Include="OpenSpace\Settings\OpenSpaceSettings.cs" />
     <Compile Include="Common\ImageExtensions.cs" />
     <Compile Include="Common\GameModeBaseAttribute.cs" />

@@ -1,4 +1,6 @@
-﻿using RayCarrot.Binary;
+﻿using System.Collections.Generic;
+using System.Linq;
+using RayCarrot.Binary;
 
 namespace RayCarrot.Rayman.OpenSpace
 {
@@ -92,9 +94,7 @@ namespace RayCarrot.Rayman.OpenSpace
         public int SetVolumeMenu { get; set; }
 
         // Contains data like the current player health etc.
-        public Rayman3PCSaveDataEntry[] DataEntries { get; set; }
-
-        public byte[] Unk2 { get; set; }
+        public Rayman3PCSaveDataEntry[] Items { get; set; }
 
         /// <summary>
         /// Handles the serialization using the specified serializer
@@ -142,9 +142,24 @@ namespace RayCarrot.Rayman.OpenSpace
             SetVolumeAmbiance = s.Serialize<int>(SetVolumeAmbiance, name: nameof(SetVolumeAmbiance));
             SetVolumeMenu = s.Serialize<int>(SetVolumeMenu, name: nameof(SetVolumeMenu));
 
-            DataEntries = s.SerializeObjectArray<Rayman3PCSaveDataEntry>(DataEntries, 3, name: nameof(DataEntries));
+            if (s.IsReading)
+            {
+                var temp = new List<Rayman3PCSaveDataEntry>();
 
-            Unk2 = s.SerializeArray<byte>(Unk2, (int)(s.Stream.Length - s.Stream.Position), name: nameof(Unk2));
+                var index = 0;
+
+                while (temp.LastOrDefault()?.KeyLength != 0)
+                {
+                    temp.Add(s.SerializeObject<Rayman3PCSaveDataEntry>(default, name: $"{Items}[{index}]"));
+                    index++;
+                }
+
+                Items = temp.ToArray();
+            }
+            else
+            {
+                s.SerializeObjectArray<Rayman3PCSaveDataEntry>(Items, Items.Length, name: nameof(Items));
+            }
         }
     }
 }
