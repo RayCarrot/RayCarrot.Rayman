@@ -1,4 +1,6 @@
-﻿using RayCarrot.Binary;
+﻿using System;
+using System.Linq;
+using RayCarrot.Binary;
 
 namespace RayCarrot.Rayman.OpenSpace
 {
@@ -17,7 +19,8 @@ namespace RayCarrot.Rayman.OpenSpace
 
         public byte ValuesCount { get; set; }
 
-        public object[] Values { get; set; }
+        public int[] Values { get; set; }
+        public string[] StringValues { get; set; }
 
         /// <summary>
         /// Handles the serialization using the specified serializer
@@ -34,34 +37,43 @@ namespace RayCarrot.Rayman.OpenSpace
             ValueType = s.Serialize<byte>(ValueType, name: nameof(ValueType));
             ValuesCount = s.Serialize<byte>(ValuesCount, name: nameof(ValuesCount));
 
-            if (Values == null || s.IsReading)
-                Values = new object[ValuesCount];
+            if (GetValueType == EntryValueTypes.String)
+            {
+                if (StringValues == null || s.IsReading)
+                    StringValues = new string[ValuesCount];
+            }
+            else
+            {
+                if (Values == null || s.IsReading)
+                    Values = new int[ValuesCount];
+            }
 
-            for (int i = 0; i < Values.Length; i++)
+            for (int i = 0; i < ValuesCount; i++)
             {
                 switch (GetValueType)
                 {
                     case EntryValueTypes.Byte:
-                        Values[i] = s.Serialize<byte>((byte)(Values[i] ?? (byte)0), name: $"{nameof(Values)}[{i}]");
+                        Values[i] = s.Serialize<byte>((byte)Values[i], name: $"{nameof(Values)}[{i}]");
                         break;
 
-                    case EntryValueTypes.UShort:
-                        Values[i] = s.Serialize<ushort>((ushort)(Values[i] ?? (ushort)0), name: $"{nameof(Values)}[{i}]");
+                    case EntryValueTypes.Short:
+                        Values[i] = s.Serialize<short>((short)Values[i], name: $"{nameof(Values)}[{i}]");
                         break;
 
-                    case EntryValueTypes.UInt:
+                    case EntryValueTypes.Int:
                     case EntryValueTypes.Unk_04:
-                        Values[i] = s.Serialize<uint>((uint)(Values[i] ?? (uint)0), name: $"{nameof(Values)}[{i}]");
-                        break;
-
-                    case EntryValueTypes.Unk_0C:
-                        Values[i] = s.SerializeArray<byte>((byte[])(Values[i] ?? (byte)0), 0xC, name: $"{nameof(Values)}[{i}]");
+                        Values[i] = s.Serialize<int>((int)Values[i], name: $"{nameof(Values)}[{i}]");
                         break;
 
                     case EntryValueTypes.String:
-                        var length = s.Serialize<byte>((byte)(Values[i] == null ? 0 : ((string)Values[i]).Length), name: $"ValueLength");
-                        Values[i] = s.SerializeString((string)Values[i], length, name: $"{nameof(Values)}[{i}]");
+                        var length = s.Serialize<byte>((byte)(StringValues[i]?.Length ?? 0), name: $"ValueLength");
+                        StringValues[i] = s.SerializeString(StringValues[i], length, name: $"{nameof(StringValues)}[{i}]");
                         break;
+
+                    default:
+                    case EntryValueTypes.Unk_0C:
+                        // An array of bytes of size 0x0C
+                        throw new NotImplementedException($"The specified save value type {GetValueType} is currently not supported");
                 }
             }
         }
@@ -69,8 +81,8 @@ namespace RayCarrot.Rayman.OpenSpace
         public enum EntryValueTypes
         {
             Byte = 1,
-            UShort = 2,
-            UInt = 3,
+            Short = 2,
+            Int = 3,
             Unk_04 = 4,
             Unk_0C = 5,
             String = 6
