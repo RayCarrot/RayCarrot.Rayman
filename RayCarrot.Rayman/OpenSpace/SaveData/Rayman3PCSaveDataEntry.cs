@@ -1,6 +1,5 @@
-﻿using System;
-using System.Linq;
-using RayCarrot.Binary;
+﻿using RayCarrot.Binary;
+using System;
 
 namespace RayCarrot.Rayman.OpenSpace
 {
@@ -61,8 +60,7 @@ namespace RayCarrot.Rayman.OpenSpace
                         break;
 
                     case EntryValueTypes.Int:
-                    case EntryValueTypes.Unk_04:
-                        Values[i] = s.Serialize<int>((int)Values[i], name: $"{nameof(Values)}[{i}]");
+                        Values[i] = s.Serialize<int>(Values[i], name: $"{nameof(Values)}[{i}]");
                         break;
 
                     case EntryValueTypes.String:
@@ -70,8 +68,10 @@ namespace RayCarrot.Rayman.OpenSpace
                         StringValues[i] = s.SerializeString(StringValues[i], length, name: $"{nameof(StringValues)}[{i}]");
                         break;
 
+                    // These are never used in save files, so ignore for now
                     default:
-                    case EntryValueTypes.Unk_0C:
+                    case EntryValueTypes.Float:
+                    case EntryValueTypes.Vector:
                         // An array of bytes of size 0x0C
                         throw new NotImplementedException($"The specified save value type {GetValueType} is currently not supported");
                 }
@@ -80,11 +80,22 @@ namespace RayCarrot.Rayman.OpenSpace
 
         public enum EntryValueTypes
         {
+            // Byte, SByte or Boolean
             Byte = 1,
+
+            // Short or UShort
             Short = 2,
+
+            // Int or UInt
             Int = 3,
-            Unk_04 = 4,
-            Unk_0C = 5,
+
+            // Float
+            Float = 4,
+
+            // Vector
+            Vector = 5,
+
+            // String
             String = 6
         }
     }
