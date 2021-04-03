@@ -16,7 +16,7 @@ namespace RayCarrot.Rayman
         /// <returns>The decrypted data</returns>
         public void Decode(Stream inputStream, Stream outputStream)
         {
-            using var zStream = new ZlibStream(inputStream, CompressionMode.Decompress);
+            using var zStream = new ZlibStream(inputStream, CompressionMode.Decompress, true);
 
             zStream.CopyTo(outputStream);
         }
@@ -29,7 +29,7 @@ namespace RayCarrot.Rayman
         /// <returns>The encrypted data</returns>
         public void Encode(Stream inputStream, Stream outputStream)
         {
-            using var zStream = new ZlibStream(inputStream, CompressionMode.Compress);
+            using var zStream = new ZlibStream(inputStream, CompressionMode.Compress, true);
 
             zStream.CopyTo(outputStream);
         }
