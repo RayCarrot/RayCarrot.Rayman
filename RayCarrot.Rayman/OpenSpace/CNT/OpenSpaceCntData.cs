@@ -1,7 +1,6 @@
-﻿using RayCarrot.Common;
+﻿using RayCarrot.Binary;
 using System;
 using System.IO;
-using RayCarrot.Binary;
 
 namespace RayCarrot.Rayman.OpenSpace
 {
@@ -60,14 +59,14 @@ namespace RayCarrot.Rayman.OpenSpace
             // Write the file contents
             foreach (var file in Files)
             {
-                // Get the bytes
-                var bytes = fileGenerator.GetBytes(file);
+                // Get the file stream
+                using var fileStream = fileGenerator.GetFileStream(file);
 
                 // Set the position to the pointer
                 stream.Position = file.Pointer;
 
                 // Write the contents from the generator
-                stream.Write(bytes);
+                fileStream.CopyTo(stream);
             }
         }
 
@@ -154,11 +153,11 @@ namespace RayCarrot.Rayman.OpenSpace
             public int Count => throw new InvalidOperationException("The count can not be retrieved for this generator");
 
             /// <summary>
-            /// Gets the bytes for the specified key
+            /// Gets the file stream for the specified key
             /// </summary>
-            /// <param name="fileEntry">The file entry to get the bytes for</param>
-            /// <returns>The bytes</returns>
-            public byte[] GetBytes(OpenSpaceCntFileEntry fileEntry)
+            /// <param name="fileEntry">The file entry to get the stream for</param>
+            /// <returns>The stream</returns>
+            public Stream GetFileStream(OpenSpaceCntFileEntry fileEntry)
             {
                 // Set the position
                 Stream.Position = fileEntry.Pointer;
@@ -170,7 +169,7 @@ namespace RayCarrot.Rayman.OpenSpace
                 Stream.Read(buffer, 0, buffer.Length);
 
                 // Return the buffer
-                return buffer;
+                return new MemoryStream(buffer);
             }
 
             /// <summary>

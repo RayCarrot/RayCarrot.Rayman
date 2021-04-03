@@ -21,6 +21,7 @@ namespace RayCarrot.Rayman.UbiArt
     Rayman Legends Challenges App (Wii U):       5        7        -        0        1        1    70107         -   2662508568        62127
     Rayman Legends (Wii U Demo):                 5        7        -        0        1        1        0         -   1182590121        48117
     Rayman Legends (Wii U):                      5        7        -        0        1        1    78992         -   2697850994        84435
+    Rayman Legends (PS3):                        5        2        -        0        1        1    79403         -   410435206         86846
     Rayman Legends (PS Vita):                    5        6        -        0        1        1        0         -   2869177618         0
     Just Dance 2017 (Wii U):                     5        8        -        0        0        0        0         -   3346979248        241478
     Valiant Hearts (Android):                    7       10        -        0        1        1        0         0   3713665533         0
@@ -271,11 +272,11 @@ namespace RayCarrot.Rayman.UbiArt
                 // Write the file contents
                 foreach (var file in Files)
                 {
-                    // Get the bytes from the generator
-                    var bytes = fileGenerator.GetBytes(file);
+                    // Get the file stream from the generator
+                    using var fileStream = fileGenerator.GetFileStream(file);
 
                     // Make sure the size matches
-                    if (bytes.Length != file.ArchiveSize)
+                    if (fileStream.Length != file.ArchiveSize)
                         throw new BinarySerializableException("The archived file size does not match the bytes retrieved from the generator");
 
                     // Handle every file offset
@@ -285,7 +286,8 @@ namespace RayCarrot.Rayman.UbiArt
                         currentStream.Position = (long)(compressBlock ? offset : (offset + BaseOffset));
 
                         // Write the bytes
-                        currentStream.Write(bytes);
+                        fileStream.CopyTo(currentStream);
+                        fileStream.Position = 0;
                     }
                 }
 
@@ -430,11 +432,11 @@ namespace RayCarrot.Rayman.UbiArt
             public int Count => IPKData.Files.Length;
 
             /// <summary>
-            /// Gets the bytes for the specified key
+            /// Gets the file stream for the specified key
             /// </summary>
-            /// <param name="fileEntry">The file entry to get the bytes for</param>
-            /// <returns>The bytes</returns>
-            public byte[] GetBytes(UbiArtIPKFileEntry fileEntry)
+            /// <param name="fileEntry">The file entry to get the stream for</param>
+            /// <returns>The stream</returns>
+            public Stream GetFileStream(UbiArtIPKFileEntry fileEntry)
             {
                 // Make sure we have offsets
                 if (fileEntry.Offsets?.Any() != true)
@@ -447,7 +449,7 @@ namespace RayCarrot.Rayman.UbiArt
                 Stream.Position = (long)(IPKData.IsBlockCompressed ? offset : (offset + IPKData.BaseOffset));
 
                 // Read the bytes into the buffer
-                return Stream.Read((int)fileEntry.ArchiveSize);
+                return new MemoryStream(Stream.Read((int)fileEntry.ArchiveSize));
             }
 
             /// <summary>

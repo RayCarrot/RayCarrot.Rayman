@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace RayCarrot.Rayman
 {
@@ -14,10 +15,10 @@ namespace RayCarrot.Rayman
         int Count { get; }
 
         /// <summary>
-        /// Gets the bytes for the specified key
+        /// Gets the file stream for the specified key
         /// </summary>
-        /// <param name="fileEntry">The file entry to get the bytes for</param>
-        /// <returns>The bytes</returns>
-        byte[] GetBytes(FileEntry fileEntry);
+        /// <param name="fileEntry">The file entry to get the stream for</param>
+        /// <returns>The stream</returns>
+        Stream GetFileStream(FileEntry fileEntry);
     }
 }
