@@ -463,10 +463,10 @@ namespace RayCarrot.Rayman.OpenSpace
             {
                 // Get the offsets for the pixel colors
                 var pixelOffset = isScaled 
-                    ? (long)(((width * widthScale) * Math.Floor((y * heightScale)) + Math.Floor((x * widthScale))) * Channels + offset)
+                    ? (long)((Width * Math.Floor((y * heightScale)) + Math.Floor((x * widthScale))) * Channels + offset)
                     : (width * y + x) * Channels + offset;
 
-                // NOTE: We reverse the Y-axis here since the .gf images are always flipper vertically
+                // NOTE: We reverse the Y-axis here since the .gf images are always flipped vertically
                 var rawOffset = (width * (height - y - 1) + x) * bmpChannels;
 
                 // Get the pixels
