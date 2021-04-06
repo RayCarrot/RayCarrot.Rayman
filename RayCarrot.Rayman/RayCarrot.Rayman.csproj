@@ -105,8 +105,9 @@
     <Compile Include="UbiArt\Common\ValuePairs\UbiArtObjKeyValuePair.cs" />
     <Compile Include="UbiArt\Common\ValuePairs\UbiArtObjKeyObjValuePair.cs" />
     <Compile Include="UbiArt\Common\ValuePairs\UbiArtKeyObjValuePair.cs" />
-    <Compile Include="UbiArt\IPK\UbiArtTEXFile.cs" />
+    <Compile Include="UbiArt\IPK\UbiArtTEXData.cs" />
     <Compile Include="Encoder\ZLibEncoder.cs" />
+    <Compile Include="UbiArt\IPK\UbiArtTEXFileData.cs" />
     <Compile Include="UbiArt\Localization\UbiArtFiestaRunLocStringValuePair.cs" />
     <Compile Include="UbiArt\Localization\UbiArtLocalizationData.cs" />
     <Compile Include="UbiArt\Localization\FiestaRunLocalizationData.cs" />

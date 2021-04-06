@@ -1,12 +1,11 @@
 ﻿using RayCarrot.Binary;
-using RayCarrot.Logging;
 
 namespace RayCarrot.Rayman.UbiArt
 {
     /// <summary>
-    /// Data for a UbiArt TEX file
+    /// UbiArt TEX data
     /// </summary>
-    public class UbiArtTEXFile : IBinarySerializable
+    public class UbiArtTEXData : IBinarySerializable
     {
         #region Public Properties
 
@@ -63,11 +62,6 @@ namespace RayCarrot.Rayman.UbiArt
 
         public uint Unknown5 { get; set; }
 
-        /// <summary>
-        /// The texture data
-        /// </summary>
-        public byte[] TextureData { get; set; }
-
         #endregion
 
         #region Public Methods
@@ -108,11 +102,6 @@ namespace RayCarrot.Rayman.UbiArt
 
             if (Version > 10)
                 Unknown5 = s.Serialize<uint>(Unknown5, name: nameof(Unknown5));
-
-            TextureData = s.SerializeArray<byte>(TextureData, (int)(s.Stream.Length - s.Stream.Position), name: nameof(TextureData));
-
-            if (TextureData.Length != TextureSize && TextureSize != 0)
-                RL.Logger?.LogDebugSource($"The TEX file length {TextureData.Length} doesn't match the set size of {TextureSize} and {TextureSize2}");
         }
 
         #endregion
