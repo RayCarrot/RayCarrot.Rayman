@@ -31,25 +31,24 @@ namespace RayCarrot.Rayman.Ray1
             var xorTable1 = revision == SaveRevision.KIT ? XORTable1_KIT : XORTable1_FAN;
             var xorTable2 = revision == SaveRevision.KIT ? XORTable2_KIT : XORTable2_FAN;
 
-            tempArray[7] ^= xorTable2[xorIndex];
-            tempArray[4] ^= xorTable1[xorIndex];
-            tempArray[16] ^= xorTable1[xorIndex];
-            tempArray[1] ^= xorTable2[xorIndex];
-            tempArray[15] ^= xorTable2[xorIndex];
-            var v6 = (byte)(tempArray[10] ^ 0x4F);
-            tempArray[10] = (byte)(v6 >> 1);
-            tempArray[15] -= 11;
-            tempArray[9] ^= 0x7C;
-            tempArray[13] ^= 0x1A;
-            tempArray[3] ^= 0x63;
-            tempArray[5] ^= 0x6F;
+            var ghostValue_3 = tempArray[7] ^ xorTable2[xorIndex];
+            var ghostValue_2 = tempArray[4] ^ xorTable1[xorIndex];
+            var ghostValue_1 = tempArray[16] ^ xorTable1[xorIndex];
+            var ghostValue_0 = tempArray[1] ^ xorTable2[xorIndex];
+            var ghostCheckValue = (tempArray[15] ^ xorTable2[xorIndex]) - 11;
 
-            if (tempArray[15] == tempArray[10] && 
-                tempArray[7] == tempArray[13] && 
-                tempArray[4] == tempArray[9] && 
-                tempArray[16] == tempArray[3] && 
-                tempArray[1] == tempArray[5])
-                return (tempArray[5] << 24) + (tempArray[3] << 16) + tempArray[13] + (tempArray[9] << 8);
+            var checkValue = (byte)((tempArray[10] ^ 0x4F) >> 1);
+            var value_3 = tempArray[9] ^ 0x7C;
+            var value_2 = tempArray[13] ^ 0x1A;
+            var value_1 = tempArray[3] ^ 0x63;
+            var value_0 = tempArray[5] ^ 0x6F;
+
+            if (ghostCheckValue == checkValue &&
+                ghostValue_3 == value_2 &&
+                ghostValue_2 == value_3 &&
+                ghostValue_1 == value_1 &&
+                ghostValue_0 == value_0)
+                return (value_0 << 24) + (value_1 << 16) + value_2 + (value_3 << 8);
             else
                 return -1;
         }
