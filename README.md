@@ -10,11 +10,13 @@ Allows reading and writing to supported binary files. Below is a list of the cur
 #### Rayman 1
 * Rayman 1 save files on PC (.sav)
 * Rayman 1 config files on PC (.cfg)
+* Rayman Designer, By his Fans & 60 Levels save files (.sct)
 
 #### OpenSpace
 * Archives (.cnt)
 * Graphic files (.gf)
 * Rayman 2 save files on PC (.sav)
+* Rayman M/Arena save files on PC (.sav)
 * Rayman 3 config files on PC (.cfg)
 * Rayman 3 save files on PC (.sav)
 
