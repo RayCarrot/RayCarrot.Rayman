@@ -170,12 +170,22 @@ namespace RayCarrot.Rayman.Ray1
 
         #endregion
 
+        #region Public Static Methods
+
+        public static char[] GetSupportedCharacters() => new char[]
+        {
+            '?', 'B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 
+            'T', 'V', 'W', 'X', 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '!',
+        };
+
+        #endregion
+
         #region Public Methods
 
         /// <summary>
         /// Decodes the password and gets the save data
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The save or null if invalid</returns>
         public R1_PS1_SaveFile Decode()
         {
             // Create a new save
@@ -186,7 +196,7 @@ namespace RayCarrot.Rayman.Ray1
 
             // Verify and decrypt the password
             if (!VerifyAndDecrypt(password))
-                throw new Exception("Password is invalid!");
+                return null;
 
             // Decode the password
             save.Process(password, true);
@@ -264,7 +274,7 @@ namespace RayCarrot.Rayman.Ray1
             }
 
             public WorldMapInfo[] WorldInfo { get; }
-            public byte[] FinBossLevel { get; set; }
+            public byte[] FinBossLevel { get; }
             public byte LivesCount { get; set; }
             public byte Continues { get; set; }
 
@@ -328,7 +338,7 @@ namespace RayCarrot.Rayman.Ray1
                 BitHelpers.CopyBits(ref finBossLevel[0], ref password[6], 1, 6, 3, isDecoding); // Skops
                 BitHelpers.CopyBits(ref finBossLevel[0], ref password[8], 1, 2, 3, isDecoding); // Mr Sax
                 BitHelpers.CopyBits(ref finBossLevel[0], ref password[6], 1, 7, 4, isDecoding); // Mr Dark
-                BitHelpers.CopyBits(ref finBossLevel[1], ref password[8], 1, 3, 4, isDecoding);
+                BitHelpers.CopyBits(ref finBossLevel[1], ref password[8], 1, 3, 4, isDecoding); // Helped The Musician
 
                 // Some flags are automatically determined based on the level index
                 finBossLevel[0] = (byte)BitHelpers.SetBits(finBossLevel[0], lvlIndex >= 4 ? 1 : 0, 1, 0); // Bzzit
@@ -352,7 +362,6 @@ namespace RayCarrot.Rayman.Ray1
                 BitHelpers.CopyBits(ref nb_continue, ref password[9], 1, 3, 4, isDecoding);
 
                 // Set data in save
-                FinBossLevel = finBossLevel;
                 LivesCount = lives;
                 Continues = nb_continue;
             }
