@@ -28,6 +28,9 @@ Allows reading and writing to supported binary files. Below is a list of the cur
 * Rayman Legends save files on PC
 * Rayman Fiesta Run save files on PC Windows 10 Edition (.dat) - (WIP)
 
+### Other
+* Rayman 1 PS1 save password encoder/decoder
+
 ## Dependencies
 RayCarrot.Rayman uses these main dependencies:
 
