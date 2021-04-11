@@ -11,7 +11,12 @@
         Rayman1,
 
         /// <summary>
-        /// RayKit
+        /// EDU/QUIZ
+        /// </summary>
+        RayEdu,
+
+        /// <summary>
+        /// KIT/FAN/60N
         /// </summary>
         RayKit
     }

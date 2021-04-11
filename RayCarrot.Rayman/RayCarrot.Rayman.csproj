@@ -92,6 +92,9 @@
     <Compile Include="OpenSpace\Settings\OpenSpaceGameModeInfoAttribute.cs" />
     <Compile Include="Archive\ArchiveFileGenerator.cs" />
     <Compile Include="Encoder\SevenZipEncoder.cs" />
+    <Compile Include="Ray1\Archive\Rayman1PCArchiveData.cs" />
+    <Compile Include="Ray1\Archive\Rayman1PCArchiveEntry.cs" />
+    <Compile Include="Ray1\Archive\Rayman1PCBaseFile.cs" />
     <Compile Include="Ray1\SaveData\R1_PS1_Password.cs" />
     <Compile Include="Ray1\SaveData\RayKitSaveData.cs" />
     <Compile Include="Ray1\SaveData\Rayman1PCConfigData.cs" />

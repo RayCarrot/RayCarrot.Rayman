@@ -8,6 +8,7 @@ Allows reading and writing to the data available in the common Rayman ubi.ini co
 Allows reading and writing to supported binary files. Below is a list of the currently supported files.
 
 #### Rayman 1
+* Archives (.dat)
 * Rayman 1 save files on PC (.sav)
 * Rayman 1 config files on PC (.cfg)
 * Rayman Designer, By his Fans & 60 Levels save files (.sct)

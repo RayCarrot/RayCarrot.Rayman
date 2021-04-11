@@ -14,8 +14,17 @@ namespace RayCarrot.Rayman
         [Ray1GameModeInfo("Rayman 1 (PC)", Ray1Game.Rayman1, Platform.PC)]
         Rayman1PC,
 
+        [Ray1GameModeInfo("Rayman Educational (PC)", Ray1Game.RayEdu, Platform.PC)]
+        RayEduPC,
+
         [Ray1GameModeInfo("Rayman Designer (PC)", Ray1Game.RayKit, Platform.PC)]
         RayKitPC,
+
+        [Ray1GameModeInfo("Rayman by his Fans (PC)", Ray1Game.RayKit, Platform.PC)]
+        RayFanPC,
+
+        [Ray1GameModeInfo("Rayman 60 Levels (PC)", Ray1Game.RayKit, Platform.PC)]
+        Ray60nPC,
 
         #endregion
 

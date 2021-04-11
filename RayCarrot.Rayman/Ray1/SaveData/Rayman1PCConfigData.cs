@@ -104,7 +104,7 @@ namespace RayCarrot.Rayman.Ray1
 
             Word_22 = s.Serialize<ushort>(Word_22, name: nameof(Word_22));
 
-            if (settings.Game == Ray1Game.RayKit)
+            if (settings.Game != Ray1Game.Rayman1)
             {
                 Kit_Byte_23 = s.Serialize<byte>(Kit_Byte_23, name: nameof(Kit_Byte_23));
                 Kit_Byte_24 = s.Serialize<byte>(Kit_Byte_24, name: nameof(Kit_Byte_24));
