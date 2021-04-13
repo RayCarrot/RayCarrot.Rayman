@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using RayCarrot.Common;
+using RayCarrot.Logging;
 
 namespace RayCarrot.Rayman.Ray1
 {
-    public class R1_PS1_Password
+    public class Rayman1PS1Password
     {
         /*
 
@@ -27,7 +28,7 @@ namespace RayCarrot.Rayman.Ray1
         /// </summary>
         /// <param name="encryptedPassword">The encrypted password</param>
         /// <param name="mode">The password mode</param>
-        public R1_PS1_Password(byte[] encryptedPassword, PasswordMode mode)
+        public Rayman1PS1Password(byte[] encryptedPassword, PasswordMode mode)
         {
             if (mode == PasswordMode.PAL)
                 throw new NotImplementedException();
@@ -41,7 +42,7 @@ namespace RayCarrot.Rayman.Ray1
         /// </summary>
         /// <param name="password">The password display version</param>
         /// <param name="mode">The password mode</param>
-        public R1_PS1_Password(string password, PasswordMode mode)
+        public Rayman1PS1Password(string password, PasswordMode mode)
         {
             if (mode == PasswordMode.PAL)
                 throw new NotImplementedException();
@@ -55,7 +56,7 @@ namespace RayCarrot.Rayman.Ray1
         /// </summary>
         /// <param name="save">The save</param>
         /// <param name="mode">The password mode</param>
-        public R1_PS1_Password(R1_PS1_SaveFile save, PasswordMode mode)
+        public Rayman1PS1Password(SaveData save, PasswordMode mode)
         {
             if (mode == PasswordMode.PAL)
                 throw new NotImplementedException();
@@ -186,10 +187,10 @@ namespace RayCarrot.Rayman.Ray1
         /// Decodes the password and gets the save data
         /// </summary>
         /// <returns>The save or null if invalid</returns>
-        public R1_PS1_SaveFile Decode()
+        public SaveData Decode()
         {
             // Create a new save
-            var save = new R1_PS1_SaveFile();
+            var save = new SaveData();
 
             // Get the password and create a new array
             var password = Password.ToArray();
@@ -259,9 +260,9 @@ namespace RayCarrot.Rayman.Ray1
 
         #region Classes
 
-        public class R1_PS1_SaveFile
+        public class SaveData
         {
-            public R1_PS1_SaveFile()
+            public SaveData()
             {
                 WorldInfo = new WorldMapInfo[24];
 
@@ -269,20 +270,44 @@ namespace RayCarrot.Rayman.Ray1
                     WorldInfo[i] = new WorldMapInfo();
 
                 WorldInfo[0].IsUnlocked = true; // First level should always be unlocked
-
-                FinBossLevel = new byte[2];
             }
 
             public WorldMapInfo[] WorldInfo { get; }
-            public byte[] FinBossLevel { get; }
+            public Rayman1FinBossLevelFlags FinBossLevel { get; set; }
             public byte LivesCount { get; set; }
             public byte Continues { get; set; }
+            public byte LevelIndex
+            {
+                get
+                {
+                    byte lvlIndex;
+                    byte lvl = 0x11;
+                    do
+                    {
+                        // Branched levels are handled separately
+                        if (lvl == 3 || lvl == 7)
+                            lvl -= 2;
+
+                        lvlIndex = lvl;
+                        lvl--;
+                    } while (!WorldInfo[lvlIndex].IsUnlocked);
+                    return lvlIndex;
+                }
+                set
+                {
+                    for (int i = 0; i <= value; i++)
+                        // Branched levels are handled separately
+                        if (i != 3 && i != 7)
+                            WorldInfo[i].IsUnlocked = true;
+                }
+            }
 
             public void Process(byte[] password, bool isDecoding)
             {
                 // Get data from save
                 var t_world_info = WorldInfo;
-                var finBossLevel = FinBossLevel;
+                var finBossLevel_0 = (byte)BitHelpers.ExtractBits((ushort)FinBossLevel, 8, 0);
+                var finBossLevel_1 = (byte)BitHelpers.ExtractBits((ushort)FinBossLevel, 8, 8);
                 var lives = LivesCount;
                 var nb_continue = Continues;
 
@@ -308,17 +333,7 @@ namespace RayCarrot.Rayman.Ray1
                 t_world_info[7].ProcessIsUnlocked(ref password[9], 2, isDecoding); // Music branch
 
                 // Get the level based on unlocked levels if we are encoding
-                byte lvlIndex;
-                byte lvl = 0x11;
-                do
-                {
-                    // Branched levels are handled separately
-                    if (lvl == 3 || lvl == 7)
-                        lvl -= 2;
-
-                    lvlIndex = lvl;
-                    lvl--;
-                } while (!t_world_info[lvlIndex].IsUnlocked);
+                byte lvlIndex = LevelIndex;
 
                 // Process level
                 BitHelpers.CopyBits(ref lvlIndex, ref password[4], 1, 0, 2, isDecoding);
@@ -328,23 +343,20 @@ namespace RayCarrot.Rayman.Ray1
                 BitHelpers.CopyBits(ref lvlIndex, ref password[0], 1, 4, 2, isDecoding);
 
                 // Unlock the levels based on the level index
-                for (int i = 0; i <= lvlIndex; i++)
-                    // Branched levels are handled separately
-                    if (i != 3 && i != 7)
-                        t_world_info[i].IsUnlocked = true;
+                LevelIndex = lvlIndex;
 
                 // Process finish boss level flags
-                BitHelpers.CopyBits(ref finBossLevel[0], ref password[9], 1, 1, 3, isDecoding); // Moskito
-                BitHelpers.CopyBits(ref finBossLevel[0], ref password[6], 1, 6, 3, isDecoding); // Skops
-                BitHelpers.CopyBits(ref finBossLevel[0], ref password[8], 1, 2, 3, isDecoding); // Mr Sax
-                BitHelpers.CopyBits(ref finBossLevel[0], ref password[6], 1, 7, 4, isDecoding); // Mr Dark
-                BitHelpers.CopyBits(ref finBossLevel[1], ref password[8], 1, 3, 4, isDecoding); // Helped The Musician
+                BitHelpers.CopyBits(ref finBossLevel_0, ref password[9], 1, 1, 3, isDecoding); // Moskito
+                BitHelpers.CopyBits(ref finBossLevel_0, ref password[6], 1, 6, 3, isDecoding); // Skops
+                BitHelpers.CopyBits(ref finBossLevel_0, ref password[8], 1, 2, 3, isDecoding); // Mr Sax
+                BitHelpers.CopyBits(ref finBossLevel_0, ref password[6], 1, 7, 4, isDecoding); // Mr Dark
+                BitHelpers.CopyBits(ref finBossLevel_1, ref password[8], 1, 3, 4, isDecoding); // Helped The Musician
 
                 // Some flags are automatically determined based on the level index
-                finBossLevel[0] = (byte)BitHelpers.SetBits(finBossLevel[0], lvlIndex >= 4 ? 1 : 0, 1, 0); // Bzzit
-                finBossLevel[0] = (byte)BitHelpers.SetBits(finBossLevel[0], lvlIndex >= 11 ? 1 : 0, 1, 3); // Mr Stone
-                finBossLevel[0] = (byte)BitHelpers.SetBits(finBossLevel[0], lvlIndex >= 12 ? 1 : 0, 1, 4); // Viking Mama
-                finBossLevel[0] = (byte)BitHelpers.SetBits(finBossLevel[0], lvlIndex >= 14 ? 1 : 0, 1, 5); // Space Mama
+                finBossLevel_0 = (byte)BitHelpers.SetBits(finBossLevel_0, lvlIndex >= 4 ? 1 : 0, 1, 0); // Bzzit
+                finBossLevel_0 = (byte)BitHelpers.SetBits(finBossLevel_0, lvlIndex >= 11 ? 1 : 0, 1, 3); // Mr Stone
+                finBossLevel_0 = (byte)BitHelpers.SetBits(finBossLevel_0, lvlIndex >= 12 ? 1 : 0, 1, 4); // Viking Mama
+                finBossLevel_0 = (byte)BitHelpers.SetBits(finBossLevel_0, lvlIndex >= 14 ? 1 : 0, 1, 5); // Space Mama
 
                 // Process lives count
                 BitHelpers.CopyBits(ref lives, ref password[3], 1, 0, 3, isDecoding);
@@ -362,8 +374,109 @@ namespace RayCarrot.Rayman.Ray1
                 BitHelpers.CopyBits(ref nb_continue, ref password[9], 1, 3, 4, isDecoding);
 
                 // Set data in save
+                FinBossLevel = (Rayman1FinBossLevelFlags)BitHelpers.SetBits((ushort)FinBossLevel, finBossLevel_0, 8, 0);
+                FinBossLevel = (Rayman1FinBossLevelFlags)BitHelpers.SetBits((ushort)FinBossLevel, finBossLevel_1, 8, 8);
                 LivesCount = lives;
                 Continues = nb_continue;
+            }
+
+            // The game calls this when generating and loading a password to make sure it's valid (0x801a1b14). We re-implement it here to make sure generated passwords will be accepted by the game.
+            public string Validate()
+            {
+                // Get the level index
+                byte level = LevelIndex;
+
+                // Make sure the level is not above the allowed range or set to any of the branched levels
+                if (level >= 18 || 1 >= (byte)(level - 2) || 1 >= (byte)(level - 6))
+                    return $"Invalid level index of {level}";
+
+                // Lives have a range of 0-99
+                if (LivesCount >= 100)
+                    return $"Invalid lives count of {LivesCount}";
+
+                // Continues have a range of 0-9
+                if (Continues >= 10)
+                    return $"Invalid continues count of {Continues}";
+
+                // Make sure bosses haven't been marked as complete if the level hasn't been reached
+                if (FinBossLevel.HasFlag(Rayman1FinBossLevelFlags.Moskito))
+                {
+                    if (!WorldInfo[3].IsUnlocked || level <= 3)
+                        return $"Moskito has been beaten under invalid circumstances";
+                }
+                else
+                {
+                    if (level >= 9)
+                        return $"Moskito has to be beaten before Twilight Gulch";
+                }
+
+                if (FinBossLevel.HasFlag(Rayman1FinBossLevelFlags.MrSax) && (!WorldInfo[7].IsUnlocked || level <= 7))
+                    return $"Mr Sax has been beaten under invalid circumstances";
+
+                if (FinBossLevel.HasFlag(Rayman1FinBossLevelFlags.HelpedMusician))
+                {
+                    if (level <= 9)
+                        return $"Helped The Musician under invalid circumstances";
+                }
+                else
+                {
+                    if (level >= 11 || WorldInfo[11].HasAllCages)
+                        return $"Hasn't helped The Musician";
+                }
+
+                if (FinBossLevel.HasFlag(Rayman1FinBossLevelFlags.MrSkops))
+                {
+                    if (level <= 15 || !FinBossLevel.HasFlag(Rayman1FinBossLevelFlags.HelpedMusician) || !FinBossLevel.HasFlag(Rayman1FinBossLevelFlags.Moskito))
+                        return $"Mr Skops has been beaten under invalid circumstances";
+                }
+                else
+                {
+                    if (level >= 17 || FinBossLevel.HasFlag(Rayman1FinBossLevelFlags.MrDark))
+                        return $"Mr Skops has to be beaten before Mr Dark";
+                }
+
+                // Jungle branch
+                if (WorldInfo[3].IsUnlocked)
+                {
+                    if (level <= 3)
+                        return $"Jungle branch should not be unlocked";
+                }
+                else
+                {
+                    if (WorldInfo[3].HasAllCages || FinBossLevel.HasFlag(Rayman1FinBossLevelFlags.Moskito))
+                        return $"Jungle branch should be unlocked";
+                }
+
+                // Music branch
+                if (WorldInfo[7].IsUnlocked)
+                {
+                    if (level <= 7)
+                        return $"Music branch should not be unlocked";
+                }
+                else
+                {
+                    if (WorldInfo[7].HasAllCages || FinBossLevel.HasFlag(Rayman1FinBossLevelFlags.MrSax))
+                        return $"Music branch should be unlocked";
+                }
+
+                for (int i = level + 1; i <= 17; i++)
+                {
+                    if (WorldInfo[i].HasAllCages)
+                        return $"Cages found in locked level {i}";
+                }
+
+                if (level > 8 && (!FinBossLevel.HasFlag(Rayman1FinBossLevelFlags.Moskito) || !WorldInfo[3].IsUnlocked))
+                    return $"Moskito has to be beaten and unlocked before Twilight Gulch";
+
+                if ((level == 17) || WorldInfo[17].HasAllCages)
+                {
+                    var cages = WorldInfo.Take(17).Count(x => x.HasAllCages);
+
+                    if (cages != 17 || !FinBossLevel.HasFlag(Rayman1FinBossLevelFlags.MrSkops) || !WorldInfo[3].IsUnlocked || !WorldInfo[7].IsUnlocked)
+                        return $"Last level has been unlocked under invalid circumstances";
+                }
+
+                return null;
             }
 
             [DebuggerDisplay("IsUnlocked = {IsUnlocked}, HasAllCages = {HasAllCages}")]

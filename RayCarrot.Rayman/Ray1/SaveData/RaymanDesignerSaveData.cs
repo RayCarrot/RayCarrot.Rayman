@@ -5,9 +5,9 @@ using RayCarrot.Binary;
 namespace RayCarrot.Rayman.Ray1
 {
     /// <summary>
-    /// The save data for Rayman Kit on PC
+    /// The save data for Rayman Designer on PC
     /// </summary>
-    public class RayKitSaveData : IBinarySerializable
+    public class RaymanDesignerSaveData : IBinarySerializable
     {
         /// <summary>
         /// The file data

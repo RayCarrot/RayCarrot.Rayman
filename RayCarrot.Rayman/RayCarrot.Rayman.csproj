@@ -95,8 +95,9 @@
     <Compile Include="Ray1\Archive\Rayman1PCArchiveData.cs" />
     <Compile Include="Ray1\Archive\Rayman1PCArchiveEntry.cs" />
     <Compile Include="Ray1\Archive\Rayman1PCBaseFile.cs" />
-    <Compile Include="Ray1\SaveData\R1_PS1_Password.cs" />
-    <Compile Include="Ray1\SaveData\RayKitSaveData.cs" />
+    <Compile Include="Ray1\SaveData\Rayman1FinBossLevelFlags.cs" />
+    <Compile Include="Ray1\SaveData\Rayman1PS1Password.cs" />
+    <Compile Include="Ray1\SaveData\RaymanDesignerSaveData.cs" />
     <Compile Include="Ray1\SaveData\Rayman1PCConfigData.cs" />
     <Compile Include="Ray1\SaveData\R1Languages.cs" />
     <Compile Include="Ray1\SaveData\Rayman1PCSaveData.cs" />

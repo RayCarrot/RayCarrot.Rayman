@@ -44,7 +44,7 @@ namespace RayCarrot.Rayman.Ray1
         public ushort WorldIndex { get; set; }
 
         // First byte is a flag for having beaten specific bosses
-        public ushort FinBossLevel { get; set; }
+        public Rayman1FinBossLevelFlags FinBossLevel { get; set; }
 
         /// <summary>
         /// Handles the serialization using the specified serializer
@@ -68,34 +68,37 @@ namespace RayCarrot.Rayman.Ray1
 
             BonusPerfect = s.SerializeArray<byte>(BonusPerfect, 24, name: nameof(BonusPerfect));
             WorldIndex = s.Serialize<ushort>(WorldIndex, name: nameof(WorldIndex));
-            FinBossLevel = s.Serialize<ushort>(FinBossLevel, name: nameof(FinBossLevel));
+            FinBossLevel = s.Serialize<Rayman1FinBossLevelFlags>(FinBossLevel, name: nameof(FinBossLevel));
         }
 
         [Flags]
         public enum RayEvtsFlags : ushort
         {
             None = 0,
-            
+
+            // Powers
             Fist = 1 << 0,
             Hang = 1 << 1,
-
             Helico = 1 << 2,
             SuperHelico = 1 << 3,
-            
+
+            // Unused?
             Unk_4 = 1 << 4,
             Unk_5 = 1 << 5,
-            
+
+            // Powers
             Seed = 1 << 6,
             Grab = 1 << 7,
-
             Run = 1 << 8,
 
-            // Rest are for temp stuff, like Mr Dark spells etc.
-            Unk_9 = 1 << 9,
-            Unk_10 = 1 << 10,
-            Unk_11 = 1 << 11,
-            Unk_12 = 1 << 12,
-            Unk_13 = 1 << 13,
+            // Temp states
+            SquishedRayman = 1 << 9,
+            Darkness = 1 << 10,
+            Unk_11 = 1 << 11, // Toggles ForceRun
+            ForceRun = 1 << 12,
+            ReverseControls = 1 << 13,
+
+            // Unused?
             Unk_14 = 1 << 14,
             Unk_15 = 1 << 15,
         }
