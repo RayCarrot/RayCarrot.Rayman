@@ -17,10 +17,7 @@ namespace RayCarrot.Rayman.Ray1
         /// </summary>
         public string SecondaryKitHeader { get; set; }
 
-        /// <summary>
-        /// Unknown value
-        /// </summary>
-        public ushort Unknown1 { get; set; }
+        public short Short_0A { get; set; }
 
         /// <summary>
         /// Handles the serialization using the specified serializer
@@ -35,7 +32,7 @@ namespace RayCarrot.Rayman.Ray1
             {
                 PrimaryKitHeader = s.SerializeString(PrimaryKitHeader, 5, name: nameof(PrimaryKitHeader));
                 SecondaryKitHeader = s.SerializeString(SecondaryKitHeader, 5, name: nameof(SecondaryKitHeader));
-                Unknown1 = s.Serialize<ushort>(Unknown1, name: nameof(Unknown1));
+                Short_0A = s.Serialize<short>(Short_0A, name: nameof(Short_0A));
             }
         }
     }
