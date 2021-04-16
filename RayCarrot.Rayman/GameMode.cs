@@ -118,6 +118,9 @@ namespace RayCarrot.Rayman
         [UbiArtGameModeInfo("Rayman Origins (PS3)", UbiArtGame.RaymanOrigins, Platform.PlayStation3)]
         RaymanOriginsPS3,
 
+        [UbiArtGameModeInfo("Rayman Origins (Xbox 360)", UbiArtGame.RaymanOrigins, Platform.Xbox360)]
+        RaymanOriginsXbox360,
+
         [UbiArtGameModeInfo("Rayman Origins (Wii)", UbiArtGame.RaymanOrigins, Platform.Wii)]
         RaymanOriginsWii,
 
@@ -135,6 +138,9 @@ namespace RayCarrot.Rayman
 
         [UbiArtGameModeInfo("Rayman Legends (PC)", UbiArtGame.RaymanLegends, Platform.PC)]
         RaymanLegendsPC,
+
+        [UbiArtGameModeInfo("Rayman Legends (Xbox 360)", UbiArtGame.RaymanLegends, Platform.Xbox360)]
+        RaymanLegendsXbox360,
 
         [UbiArtGameModeInfo("Rayman Legends (Wii U)", UbiArtGame.RaymanLegends, Platform.WiiU)]
         RaymanLegendsWiiU,

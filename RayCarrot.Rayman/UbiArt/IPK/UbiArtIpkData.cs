@@ -16,11 +16,13 @@ namespace RayCarrot.Rayman.UbiArt
     Rayman Origins (Wii):                        3        6        -        0        1        1        0         -   1698768603         0
     Rayman Origins (PS Vita):                    3        7        -        0        1        1        0         -   559042371          0
     Rayman Origins (PS3):                        3        3        -        0        1        1        0         -   1698768603         0
+    Rayman Origins (Xbox 360):                   3        1        -        0        1        1        0         -   1698768603         0
     Rayman Origins (3DS):                        4        5        -        0        1        1        0         -   1635089726         0
     Rayman Legends (PC):                         5        0        -        0        1        1        0         -   1274838019         0
     Rayman Legends Challenges App (Wii U):       5        7        -        0        1        1    70107         -   2662508568        62127
     Rayman Legends (Wii U Demo):                 5        7        -        0        1        1        0         -   1182590121        48117
     Rayman Legends (Wii U):                      5        7        -        0        1        1    78992         -   2697850994        84435
+    Rayman Legends (Xbox 360):                   5        1        -        0        1        1    79408         -   410435206          0
     Rayman Legends (PS3):                        5        2        -        0        1        1    79403         -   410435206         86846
     Rayman Legends (PS Vita):                    5        6        -        0        1        1        0         -   2869177618         0
     Just Dance 2017 (Wii U):                     5        8        -        0        0        0        0         -   3346979248        241478

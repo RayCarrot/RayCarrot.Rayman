@@ -66,6 +66,16 @@
         PlayStation4,
 
         /// <summary>
+        /// Xbox 360
+        /// </summary>
+        Xbox360,
+
+        /// <summary>
+        /// Xbox One
+        /// </summary>
+        XboxOne,
+
+        /// <summary>
         /// PC
         /// </summary>
         PC,
