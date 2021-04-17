@@ -23,6 +23,8 @@ Allows reading and writing to supported binary files. Below is a list of the cur
 
 #### UbiArt
 * Archives (.ipk)
+* Texture header (.tex)
+* Xbox 360 textures (.dds)
 * Localization files (.loc, .loc8)
 * Rayman Origins save files on PC
 * Rayman Jungle Run save files on PC (.dat)

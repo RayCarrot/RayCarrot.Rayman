@@ -111,9 +111,9 @@
     <Compile Include="UbiArt\Common\ValuePairs\UbiArtObjKeyValuePair.cs" />
     <Compile Include="UbiArt\Common\ValuePairs\UbiArtObjKeyObjValuePair.cs" />
     <Compile Include="UbiArt\Common\ValuePairs\UbiArtKeyObjValuePair.cs" />
-    <Compile Include="UbiArt\IPK\UbiArtTEXData.cs" />
+    <Compile Include="UbiArt\Textures\UbiArtTEXData.cs" />
     <Compile Include="Encoder\ZLibEncoder.cs" />
-    <Compile Include="UbiArt\IPK\UbiArtTEXFileData.cs" />
+    <Compile Include="UbiArt\Textures\UbiArtTEXFileData.cs" />
     <Compile Include="UbiArt\Localization\UbiArtFiestaRunLocStringValuePair.cs" />
     <Compile Include="UbiArt\Localization\UbiArtLocalizationData.cs" />
     <Compile Include="UbiArt\Localization\FiestaRunLocalizationData.cs" />
@@ -144,6 +144,7 @@
     <Compile Include="GameMode.cs" />
     <Compile Include="UbiArt\Settings\UbiArtGameModeInfoAttribute.cs" />
     <Compile Include="Common\Platform.cs" />
+    <Compile Include="UbiArt\Textures\UbiArtXbox360Texture.cs" />
     <Compile Include="UbiIni\DataModels\Enums\R2Languages.cs" />
     <Compile Include="UbiIni\DataModels\Enums\R2ParticuleRate.cs" />
     <Compile Include="UbiIni\DataModels\Enums\R3Languages.cs" />
