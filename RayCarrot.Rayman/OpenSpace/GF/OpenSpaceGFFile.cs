@@ -297,11 +297,11 @@ namespace RayCarrot.Rayman.OpenSpace
                 case OpenSpaceGFFormat.Format_16bpp_BGRA_4444:
                 case OpenSpaceGFFormat.Format_16bpp_BGRA_1555:
                 case OpenSpaceGFFormat.Format_16bpp_BGR_565:
-                    throw new NotImplementedException("Importing from files with 2 channels is currently not supported");
+                    throw new NotImplementedException("Importing to files with 2 channels is currently not supported");
 
                 case OpenSpaceGFFormat.Format_8bpp_BGRA_Indexed:
                 case OpenSpaceGFFormat.Format_8bpp_BGR_Indexed:
-                    throw new NotImplementedException("Importing from files with a palette is currently not supported");
+                    throw new NotImplementedException("Importing to files with a palette is currently not supported");
 
                 case OpenSpaceGFFormat.Format_8bpp_Gray:
                     yield return bgraPixelData[0];
