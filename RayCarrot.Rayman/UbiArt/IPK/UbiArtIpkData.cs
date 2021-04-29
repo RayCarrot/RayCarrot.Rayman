@@ -150,6 +150,12 @@ namespace RayCarrot.Rayman.UbiArt
 
         #endregion
 
+        #region Private Properties
+
+        private bool IsSerializingHeaderSize = false;
+
+        #endregion
+
         #region Public Static Methods
 
         /// <summary>
@@ -230,7 +236,7 @@ namespace RayCarrot.Rayman.UbiArt
             // Serialize the file entries
             Files = s.SerializeObjectArray<UbiArtIPKFileEntry>(Files, Files.Length, (s, o) => o.IPKVersion = Version, name: nameof(Files));
 
-            if (s.Stream.Position != BaseOffset)
+            if (!IsSerializingHeaderSize && s.Stream.Position != BaseOffset)
                 RL.Logger?.LogWarningSource($"Offset value {BaseOffset} doesn't match file entry end offset {s.Stream.Position}");
         }
 
@@ -354,11 +360,20 @@ namespace RayCarrot.Rayman.UbiArt
             // Create a temporary memory stream to determine the size
             using var stream = new MemoryStream();
 
-            // Serialize the header only
-            BinarySerializableHelpers.WriteToStream(this, stream, settings);
+            IsSerializingHeaderSize = true;
 
-            // Get the position, which will be the size of the header
-            return (uint)stream.Position;
+            try
+            {
+                // Serialize the header only
+                BinarySerializableHelpers.WriteToStream(this, stream, settings);
+
+                // Get the position, which will be the size of the header
+                return (uint)stream.Position;
+            }
+            finally
+            {
+                IsSerializingHeaderSize = false;
+            }
         }
 
         #endregion
