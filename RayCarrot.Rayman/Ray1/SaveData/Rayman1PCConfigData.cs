@@ -25,8 +25,7 @@ namespace RayCarrot.Rayman.Ray1
         public ushort VolumeSound { get; set; } // Options_jeu_13, set as (127 * value / 20), 0-20
 
         public ushort Options_jeu_14 { get; set; }
-        public byte Kit_Byte_23 { get; set; }
-        public byte Kit_Byte_24 { get; set; }
+        public ushort Kit_VolumeUnknown { get; set; } // Unknown volume value for the Kit games - music?
         public byte Mode_Pad { get; set; }
         public byte Port_Pad { get; set; }
 
@@ -86,10 +85,7 @@ namespace RayCarrot.Rayman.Ray1
             Options_jeu_14 = s.Serialize<ushort>(Options_jeu_14, name: nameof(Options_jeu_14));
 
             if (settings.Game != Ray1Game.Rayman1)
-            {
-                Kit_Byte_23 = s.Serialize<byte>(Kit_Byte_23, name: nameof(Kit_Byte_23));
-                Kit_Byte_24 = s.Serialize<byte>(Kit_Byte_24, name: nameof(Kit_Byte_24));
-            }
+                Kit_VolumeUnknown = s.Serialize<ushort>(Kit_VolumeUnknown, name: nameof(Kit_VolumeUnknown));
 
             Mode_Pad = s.Serialize<byte>(Mode_Pad, name: nameof(Mode_Pad));
             Port_Pad = s.Serialize<byte>(Port_Pad, name: nameof(Port_Pad));
