@@ -1,5 +1,7 @@
 ﻿namespace RayCarrot.Rayman.OpenSpace
 {
+    // NOTE: The enum member values are used to indicate which OpenSpaceGame belongs to which engine version
+
     /// <summary>
     /// The OpenSpace engine versions
     /// </summary>
