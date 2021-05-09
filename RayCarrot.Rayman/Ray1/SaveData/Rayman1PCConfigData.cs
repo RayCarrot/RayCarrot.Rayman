@@ -48,9 +48,9 @@ namespace RayCarrot.Rayman.Ray1
         public bool BackgroundOptionOn { get; set; }
         public bool ScrollDiffOn { get; set; }
 
-        public byte[] RefRam2VramNormalFix { get; set; }
-        public byte[] RefRam2VramNormal { get; set; }
-        public byte[] RefTransFondNormal { get; set; }
+        public ushort[] RefRam2VramNormalFix { get; set; }
+        public ushort[] RefRam2VramNormal { get; set; }
+        public ushort[] RefTransFondNormal { get; set; }
         public uint RefSpriteNormal { get; set; }
         public uint RefRam2VramX { get; set; }
         public uint RefVram2VramX { get; set; }
@@ -108,9 +108,9 @@ namespace RayCarrot.Rayman.Ray1
             BackgroundOptionOn = s.Serialize<bool>(BackgroundOptionOn, name: nameof(BackgroundOptionOn));
             ScrollDiffOn = s.Serialize<bool>(ScrollDiffOn, name: nameof(ScrollDiffOn));
 
-            RefRam2VramNormalFix = s.SerializeArray<byte>(RefRam2VramNormalFix, 0x10, name: nameof(RefRam2VramNormalFix));
-            RefRam2VramNormal = s.SerializeArray<byte>(RefRam2VramNormal, 0x10, name: nameof(RefRam2VramNormal));
-            RefTransFondNormal = s.SerializeArray<byte>(RefTransFondNormal, 0x10, name: nameof(RefTransFondNormal));
+            RefRam2VramNormalFix = s.SerializeArray<ushort>(RefRam2VramNormalFix, 8, name: nameof(RefRam2VramNormalFix));
+            RefRam2VramNormal = s.SerializeArray<ushort>(RefRam2VramNormal, 8, name: nameof(RefRam2VramNormal));
+            RefTransFondNormal = s.SerializeArray<ushort>(RefTransFondNormal, 8, name: nameof(RefTransFondNormal));
 
             RefSpriteNormal = s.Serialize<uint>(RefSpriteNormal, name: nameof(RefSpriteNormal));
             RefRam2VramX = s.Serialize<uint>(RefRam2VramX, name: nameof(RefRam2VramX));
