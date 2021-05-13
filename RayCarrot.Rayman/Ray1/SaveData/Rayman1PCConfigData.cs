@@ -24,8 +24,8 @@ namespace RayCarrot.Rayman.Ray1
         public ushort MusicCdActive { get; set; } // Options_jeu_12
         public ushort VolumeSound { get; set; } // Options_jeu_13, set as (127 * value / 20), 0-20
 
-        public ushort Options_jeu_14 { get; set; }
-        public ushort Kit_VolumeUnknown { get; set; } // Unknown volume value for the Kit games - music?
+        public ushort IsStero { get; set; } // 0 = Mono, 1 = Stereo
+        public ushort EDU_VoiceSound { get; set; }
         public byte Mode_Pad { get; set; }
         public byte Port_Pad { get; set; }
 
@@ -51,10 +51,10 @@ namespace RayCarrot.Rayman.Ray1
         public ushort[] RefRam2VramNormalFix { get; set; }
         public ushort[] RefRam2VramNormal { get; set; }
         public ushort[] RefTransFondNormal { get; set; }
-        public uint RefSpriteNormal { get; set; }
-        public uint RefRam2VramX { get; set; }
-        public uint RefVram2VramX { get; set; }
-        public uint RefSpriteX { get; set; }
+        public ushort[] RefSpriteNormal { get; set; }
+        public ushort[] RefRam2VramX { get; set; }
+        public ushort[] RefVram2VramX { get; set; }
+        public ushort[] RefSpriteX { get; set; }
 
         /// <summary>
         /// Handles the serialization using the specified serializer
@@ -82,10 +82,10 @@ namespace RayCarrot.Rayman.Ray1
             MusicCdActive = s.Serialize<ushort>(MusicCdActive, name: nameof(MusicCdActive));
             VolumeSound = s.Serialize<ushort>(VolumeSound, name: nameof(VolumeSound));
 
-            Options_jeu_14 = s.Serialize<ushort>(Options_jeu_14, name: nameof(Options_jeu_14));
+            IsStero = s.Serialize<ushort>(IsStero, name: nameof(IsStero));
 
             if (settings.Game != Ray1Game.Rayman1)
-                Kit_VolumeUnknown = s.Serialize<ushort>(Kit_VolumeUnknown, name: nameof(Kit_VolumeUnknown));
+                EDU_VoiceSound = s.Serialize<ushort>(EDU_VoiceSound, name: nameof(EDU_VoiceSound));
 
             Mode_Pad = s.Serialize<byte>(Mode_Pad, name: nameof(Mode_Pad));
             Port_Pad = s.Serialize<byte>(Port_Pad, name: nameof(Port_Pad));
@@ -112,10 +112,10 @@ namespace RayCarrot.Rayman.Ray1
             RefRam2VramNormal = s.SerializeArray<ushort>(RefRam2VramNormal, 8, name: nameof(RefRam2VramNormal));
             RefTransFondNormal = s.SerializeArray<ushort>(RefTransFondNormal, 8, name: nameof(RefTransFondNormal));
 
-            RefSpriteNormal = s.Serialize<uint>(RefSpriteNormal, name: nameof(RefSpriteNormal));
-            RefRam2VramX = s.Serialize<uint>(RefRam2VramX, name: nameof(RefRam2VramX));
-            RefVram2VramX = s.Serialize<uint>(RefVram2VramX, name: nameof(RefVram2VramX));
-            RefSpriteX = s.Serialize<uint>(RefSpriteX, name: nameof(RefSpriteX));
+            RefSpriteNormal = s.SerializeArray<ushort>(RefSpriteNormal, 2, name: nameof(RefSpriteNormal));
+            RefRam2VramX = s.SerializeArray<ushort>(RefRam2VramX, 2, name: nameof(RefRam2VramX));
+            RefVram2VramX = s.SerializeArray<ushort>(RefVram2VramX, 2, name: nameof(RefVram2VramX));
+            RefSpriteX = s.SerializeArray<ushort>(RefSpriteX, 2, name: nameof(RefSpriteX));
         }
     }
 }
