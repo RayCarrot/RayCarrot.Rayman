@@ -26,7 +26,7 @@ namespace RayCarrot.Rayman.Ray1
 
         public ushort IsStero { get; set; } // 0 = Mono, 1 = Stereo
         public ushort EDU_VoiceSound { get; set; }
-        public byte Mode_Pad { get; set; }
+        public bool Mode_Pad { get; set; } // Indicates if the controller setup screen has been shown
         public byte Port_Pad { get; set; }
 
         public ushort XPadMax { get; set; }
@@ -42,7 +42,7 @@ namespace RayCarrot.Rayman.Ray1
         public byte GameModeVideo { get; set; } // pci1 = 0, pci2 = 1
         public byte P486 { get; set; } // pci1 or pci2 = 0, vesa = 1
         public byte SizeScreen { get; set; } // 4/4 = 0, 3/4 = 1, 2/4 = 2, 1/4 = 3
-        public byte Frequence { get; set; } // "60" = 0, "50" = 1, "max" = 2
+        public Rayman1Freq Frequence { get; set; }
 
         public bool FixOn { get; set; } // Scores enabled
         public bool BackgroundOptionOn { get; set; }
@@ -87,7 +87,7 @@ namespace RayCarrot.Rayman.Ray1
             if (settings.Game != Ray1Game.Rayman1)
                 EDU_VoiceSound = s.Serialize<ushort>(EDU_VoiceSound, name: nameof(EDU_VoiceSound));
 
-            Mode_Pad = s.Serialize<byte>(Mode_Pad, name: nameof(Mode_Pad));
+            Mode_Pad = s.Serialize<bool>(Mode_Pad, name: nameof(Mode_Pad));
             Port_Pad = s.Serialize<byte>(Port_Pad, name: nameof(Port_Pad));
 
             XPadMax = s.Serialize<ushort>(XPadMax, name: nameof(XPadMax));
@@ -103,7 +103,7 @@ namespace RayCarrot.Rayman.Ray1
             GameModeVideo = s.Serialize<byte>(GameModeVideo, name: nameof(GameModeVideo));
             P486 = s.Serialize<byte>(P486, name: nameof(P486));
             SizeScreen = s.Serialize<byte>(SizeScreen, name: nameof(SizeScreen));
-            Frequence = s.Serialize<byte>(Frequence, name: nameof(Frequence));
+            Frequence = s.Serialize<Rayman1Freq>(Frequence, name: nameof(Frequence));
             FixOn = s.Serialize<bool>(FixOn, name: nameof(FixOn));
             BackgroundOptionOn = s.Serialize<bool>(BackgroundOptionOn, name: nameof(BackgroundOptionOn));
             ScrollDiffOn = s.Serialize<bool>(ScrollDiffOn, name: nameof(ScrollDiffOn));
