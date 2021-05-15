@@ -29,12 +29,12 @@ namespace RayCarrot.Rayman.Ray1
         public bool Mode_Pad { get; set; } // Indicates if the controller setup screen has been shown
         public byte Port_Pad { get; set; }
 
-        public ushort XPadMax { get; set; }
-        public ushort XPadMin { get; set; }
-        public ushort YPadMax { get; set; }
-        public ushort YPadMin { get; set; }
-        public ushort XPadCentre { get; set; }
-        public ushort YPadCentre { get; set; }
+        public short XPadMax { get; set; }
+        public short XPadMin { get; set; }
+        public short YPadMax { get; set; }
+        public short YPadMin { get; set; }
+        public short XPadCentre { get; set; }
+        public short YPadCentre { get; set; }
 
         public byte[] NotBut { get; set; }
         public byte[] Tab_Key { get; set; } // Left, up, right, down, jump, fist, action
@@ -90,12 +90,12 @@ namespace RayCarrot.Rayman.Ray1
             Mode_Pad = s.Serialize<bool>(Mode_Pad, name: nameof(Mode_Pad));
             Port_Pad = s.Serialize<byte>(Port_Pad, name: nameof(Port_Pad));
 
-            XPadMax = s.Serialize<ushort>(XPadMax, name: nameof(XPadMax));
-            XPadMin = s.Serialize<ushort>(XPadMin, name: nameof(XPadMin));
-            YPadMax = s.Serialize<ushort>(YPadMax, name: nameof(YPadMax));
-            YPadMin = s.Serialize<ushort>(YPadMin, name: nameof(YPadMin));
-            XPadCentre = s.Serialize<ushort>(XPadCentre, name: nameof(XPadCentre));
-            YPadCentre = s.Serialize<ushort>(YPadCentre, name: nameof(YPadCentre));
+            XPadMax = s.Serialize<short>(XPadMax, name: nameof(XPadMax));
+            XPadMin = s.Serialize<short>(XPadMin, name: nameof(XPadMin));
+            YPadMax = s.Serialize<short>(YPadMax, name: nameof(YPadMax));
+            YPadMin = s.Serialize<short>(YPadMin, name: nameof(YPadMin));
+            XPadCentre = s.Serialize<short>(XPadCentre, name: nameof(XPadCentre));
+            YPadCentre = s.Serialize<short>(YPadCentre, name: nameof(YPadCentre));
 
             NotBut = s.SerializeArray<byte>(NotBut, 4, name: nameof(NotBut));
             Tab_Key = s.SerializeArray<byte>(Tab_Key, 7, name: nameof(Tab_Key));
