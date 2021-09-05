@@ -1,5 +1,4 @@
-﻿using RayCarrot.Common;
-using System.IO;
+﻿using System.IO;
 
 namespace RayCarrot.Rayman
 {

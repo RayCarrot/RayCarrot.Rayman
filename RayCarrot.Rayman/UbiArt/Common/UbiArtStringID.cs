@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Text;
 using RayCarrot.Binary;
-using RayCarrot.Common;
 
 namespace RayCarrot.Rayman.UbiArt
 {
@@ -180,7 +179,7 @@ namespace RayCarrot.Rayman.UbiArt
 
             public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
             {
-                var v = value.CastTo<UbiArtStringID>();
+                var v = (UbiArtStringID)value;
 
                 if (destinationType == typeof(string))
                     return v.ID.ToString();

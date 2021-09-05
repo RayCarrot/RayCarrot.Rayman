@@ -1,5 +1,4 @@
 ﻿using System;
-using RayCarrot.Common;
 using RayCarrot.IO;
 
 namespace RayCarrot.Rayman.UbiIni
@@ -240,12 +239,12 @@ namespace RayCarrot.Rayman.UbiIni
         /// <summary>
         /// The formatted Video_BPP key
         /// </summary>
-        public int? FormattedVideo_BPP => Int32.TryParse(Video_BPP, out int result) ? result.CastTo<int?>() : null;
+        public int? FormattedVideo_BPP => Int32.TryParse(Video_BPP, out int result) ? (int?)result : null;
 
         /// <summary>
         /// The formatted Video_WantedQuality key
         /// </summary>
-        public int? FormattedVideo_WantedQuality => Int32.TryParse(Video_WantedQuality, out int result) ? result.CastTo<int?>() : null;
+        public int? FormattedVideo_WantedQuality => Int32.TryParse(Video_WantedQuality, out int result) ? (int?)result : null;
 
         /// <summary>
         /// The formatted Video_AutoAdjustQuality key
@@ -259,12 +258,12 @@ namespace RayCarrot.Rayman.UbiIni
         /// <summary>
         /// The formatted Camera_VerticalAxis key
         /// </summary>
-        public int? FormattedCamera_VerticalAxis => Int32.TryParse(Camera_VerticalAxis, out int result) ? result.CastTo<int?>() : null;
+        public int? FormattedCamera_VerticalAxis => Int32.TryParse(Camera_VerticalAxis, out int result) ? (int?)result : null;
 
         /// <summary>
         /// The formatted Camera_HorizontalAxis key
         /// </summary>
-        public int? FormattedCamera_HorizontalAxis => Int32.TryParse(Camera_HorizontalAxis, out int result) ? result.CastTo<int?>() : null;
+        public int? FormattedCamera_HorizontalAxis => Int32.TryParse(Camera_HorizontalAxis, out int result) ? (int?)result : null;
 
         /// <summary>
         /// The formatted TexturesCompressed key
@@ -278,7 +277,7 @@ namespace RayCarrot.Rayman.UbiIni
         /// <summary>
         /// The formatted Language key
         /// </summary>
-        public R3Languages? FormattedLanguage => Enum.TryParse(Language, out R3Languages r2Languages) ? r2Languages.CastTo<R3Languages?>() : null;
+        public R3Languages? FormattedLanguage => Enum.TryParse(Language, out R3Languages r2Languages) ? (R3Languages?)r2Languages : null;
 
         #endregion
     }

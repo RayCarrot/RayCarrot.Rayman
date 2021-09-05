@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Text;
 using RayCarrot.Binary;
-using RayCarrot.Common;
 
 namespace RayCarrot.Rayman.OpenSpace
 {
@@ -26,7 +25,7 @@ namespace RayCarrot.Rayman.OpenSpace
             Platform = platform;
 
             // Get the engine version
-            foreach (var version in EnumHelpers.GetValues<OpenSpaceEngineVersion>())
+            foreach (OpenSpaceEngineVersion version in Enum.GetValues(typeof(OpenSpaceEngineVersion)))
             {
                 if ((int) game > (int) version) 
                     continue;

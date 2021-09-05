@@ -1,5 +1,4 @@
 ﻿using System;
-using RayCarrot.Common;
 using RayCarrot.IO;
 
 namespace RayCarrot.Rayman.UbiIni
@@ -167,7 +166,7 @@ namespace RayCarrot.Rayman.UbiIni
         /// <summary>
         /// The formatted Language key
         /// </summary>
-        public RMLanguages? FormattedRMLanguage => Enum.TryParse(Language, out RMLanguages r2Languages) ? r2Languages.CastTo<RMLanguages?>() : null;
+        public RMLanguages? FormattedRMLanguage => Enum.TryParse(Language, out RMLanguages r2Languages) ? (RMLanguages?)r2Languages : null;
 
         /// <summary>
         /// The formatted GLI_Mode key
@@ -200,12 +199,12 @@ namespace RayCarrot.Rayman.UbiIni
         /// <summary>
         /// The formatted Video_BPP key
         /// </summary>
-        public int? FormattedVideo_BPP => Int32.TryParse(Video_BPP, out int result) ? result.CastTo<int?>() : null;
+        public int? FormattedVideo_BPP => Int32.TryParse(Video_BPP, out int result) ? (int?)result : null;
 
         /// <summary>
         /// The formatted Video_WantedQuality key
         /// </summary>
-        public int? FormattedVideo_WantedQuality => Int32.TryParse(Video_WantedQuality, out int result) ? result.CastTo<int?>() : null;
+        public int? FormattedVideo_WantedQuality => Int32.TryParse(Video_WantedQuality, out int result) ? (int?)result : null;
 
         /// <summary>
         /// The formatted Video_AutoAdjustQuality key
@@ -228,7 +227,7 @@ namespace RayCarrot.Rayman.UbiIni
         /// <summary>
         /// The formatted Video_RealQuality key
         /// </summary>
-        public int? FormattedVideo_RealQuality => Int32.TryParse(Video_RealQuality, out int result) ? result.CastTo<int?>() : null;
+        public int? FormattedVideo_RealQuality => Int32.TryParse(Video_RealQuality, out int result) ? (int?)result : null;
 
         #endregion
     }

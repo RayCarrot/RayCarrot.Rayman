@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using RayCarrot.Common;
 
 namespace RayCarrot.Rayman
 {

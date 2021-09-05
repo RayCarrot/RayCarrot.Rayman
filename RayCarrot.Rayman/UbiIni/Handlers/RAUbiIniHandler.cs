@@ -1,5 +1,4 @@
 ﻿using System;
-using RayCarrot.Common;
 using RayCarrot.IO;
 
 namespace RayCarrot.Rayman.UbiIni
@@ -67,17 +66,17 @@ namespace RayCarrot.Rayman.UbiIni
         /// <summary>
         /// The formatted Language key
         /// </summary>
-        public RALanguages? FormattedRALanguage => Enum.TryParse(Language, out RALanguages r2Languages) ? r2Languages.CastTo<RALanguages?>() : null;
+        public RALanguages? FormattedRALanguage => Enum.TryParse(Language, out RALanguages r2Languages) ? (RALanguages?)r2Languages : null;
 
         /// <summary>
         /// The formatted ModemQuality key
         /// </summary>
-        public int? FormattedModemQuality => Int32.TryParse(ModemQuality, out int result) ? result.CastTo<int?>() : null;
+        public int? FormattedModemQuality => Int32.TryParse(ModemQuality, out int result) ? (int?)result : null;
 
         /// <summary>
         /// The formatted UDPPort key
         /// </summary>
-        public int? FormattedUDPPort => Int32.TryParse(UDPPort, out int result) ? result.CastTo<int?>() : null;
+        public int? FormattedUDPPort => Int32.TryParse(UDPPort, out int result) ? (int?)result : null;
 
         #endregion
     }

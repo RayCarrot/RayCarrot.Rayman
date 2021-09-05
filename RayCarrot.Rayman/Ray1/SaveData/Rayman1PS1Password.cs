@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using RayCarrot.Common;
-using RayCarrot.Logging;
 
 namespace RayCarrot.Rayman.Ray1
 {
@@ -47,7 +45,7 @@ namespace RayCarrot.Rayman.Ray1
             if (mode == PasswordMode.PAL)
                 throw new NotImplementedException();
 
-            Password = password.ToLower().Select(b => (byte)PasswordDisplayTable[mode].FindItemIndex(x => (char)x == b)).ToArray();
+            Password = password.ToLower().Select(b => (byte)Array.FindIndex(PasswordDisplayTable[mode], x => (char)x == b)).ToArray();
             Mode = mode;
         }
 

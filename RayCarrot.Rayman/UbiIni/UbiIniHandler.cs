@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using IniParser;
 using IniParser.Model;
-using RayCarrot.Common;
 using RayCarrot.IO;
 
 namespace RayCarrot.Rayman.UbiIni
@@ -51,7 +50,7 @@ namespace RayCarrot.Rayman.UbiIni
                 while ((line = sr.ReadLine()) != null)
                 {
                     // Exit the loop if it's the end of the section 
-                    if (inSection && (line.IsNullOrWhiteSpace() || line.Contains('[')))
+                    if (inSection && (String.IsNullOrWhiteSpace(line) || line.Contains('[')))
                         break;
 
                     // Save the product if in the section
@@ -163,7 +162,7 @@ namespace RayCarrot.Rayman.UbiIni
                 int index = iniData.IndexOf(InstalledProductsSection, StringComparison.Ordinal) + InstalledProductsSection.Length;
 
                 // Insert the products
-                data.Insert(index, Environment.NewLine + InstalledProducts.JoinItems(Environment.NewLine));
+                data.Insert(index, Environment.NewLine + String.Join(Environment.NewLine, InstalledProducts));
 
                 // Set the new data
                 iniData = data.ToString();

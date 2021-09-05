@@ -1,5 +1,4 @@
 ﻿using System;
-using RayCarrot.Common;
 using RayCarrot.IO;
 
 namespace RayCarrot.Rayman.UbiIni
@@ -116,12 +115,12 @@ namespace RayCarrot.Rayman.UbiIni
         /// <summary>
         /// The formatted Language key
         /// </summary>
-        public R2Languages? FormattedLanguage => Enum.TryParse(Language, out R2Languages r2Languages) ? r2Languages.CastTo<R2Languages?>() : null;
+        public R2Languages? FormattedLanguage => Enum.TryParse(Language, out R2Languages r2Languages) ? (R2Languages?)r2Languages : null;
 
         /// <summary>
         /// The formatted ParticuleRate key
         /// </summary>
-        public R2ParticuleRate? FormattedParticuleRate => Enum.TryParse(ParticuleRate, out R2ParticuleRate r2ParticuleRate) ? r2ParticuleRate.CastTo<R2ParticuleRate?>() : null;
+        public R2ParticuleRate? FormattedParticuleRate => Enum.TryParse(ParticuleRate, out R2ParticuleRate r2ParticuleRate) ? (R2ParticuleRate?)r2ParticuleRate : null;
 
         #endregion
     }
