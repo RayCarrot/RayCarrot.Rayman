@@ -1,5 +1,4 @@
 ﻿using RayCarrot.Binary;
-using RayCarrot.Logging;
 using System;
 using System.IO;
 
@@ -102,11 +101,12 @@ namespace RayCarrot.Rayman
 
                     byte endChecksum = reader.EndCalculateChecksum<byte>();
 
-                    if (endChecksum != checksum)
-                        RL.Logger.LogWarningSource("Checksum failed! " + checksum + " - " + endChecksum);
+                    // TODO: Add logging when migrated to BinarySerializer
+                    //if (endChecksum != checksum)
+                    //    Logger.Warn("Checksum failed! {0} - {1}", checksum, endChecksum);
 
-                    if (outputStream.Length != decompressedSize)
-                        RL.Logger.LogWarningSource("Size mismatch! " + outputStream.Length + " - " + decompressedSize);
+                    //if (outputStream.Length != decompressedSize)
+                    //    Logger.Warn("Size mismatch! {0} - {1}", outputStream.Length, decompressedSize);
                 }
             }
         }

@@ -1,5 +1,4 @@
 ﻿using System;
-using RayCarrot.Logging;
 
 namespace RayCarrot.Rayman.UbiIni
 {
@@ -73,10 +72,9 @@ namespace RayCarrot.Rayman.UbiIni
                 };
 
             }
-            catch (Exception ex)
+            catch
             {
-                ex.HandleUnexpected("Parsing GLI_Mode from string");
-
+                // TODO: Log exception
                 return null;
             }
         }

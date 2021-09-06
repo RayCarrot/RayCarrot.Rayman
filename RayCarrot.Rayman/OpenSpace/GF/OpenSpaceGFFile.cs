@@ -4,7 +4,6 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
 using RayCarrot.Binary;
-using RayCarrot.Logging;
 
 namespace RayCarrot.Rayman.OpenSpace
 {
@@ -502,13 +501,8 @@ namespace RayCarrot.Rayman.OpenSpace
             // Get the min value
             var min = tempValues.Min();
 
-            // Save old repeat byte for logging
-            var old = RepeatByte;
-
             // Set the repeat byte to the index with the minimum value
             RepeatByte = (byte)Array.FindIndex(tempValues, x => x == min);
-
-            RL.Logger?.LogDebugSource($"The repeat byte has been updated for a .gf file from {old} to {RepeatByte}");
         }
 
         /// <summary>

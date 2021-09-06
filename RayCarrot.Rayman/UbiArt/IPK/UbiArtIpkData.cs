@@ -3,7 +3,6 @@ using System;
 using System.IO;
 using System.Linq;
 using RayCarrot.Binary;
-using RayCarrot.Logging;
 
 namespace RayCarrot.Rayman.UbiArt
 {
@@ -229,14 +228,16 @@ namespace RayCarrot.Rayman.UbiArt
             Files = s.SerializeArraySize<UbiArtIPKFileEntry, uint>(Files, name: nameof(Files));
 
             // NOTE: So far this only appears to be the case for the bundle_pc32.ipk file used in Child of Light
-            if (Files.Length != FilesCount)
-                RL.Logger?.LogWarningSource($"The initial file count {FilesCount} does not match the file array size {Files.Length}");
+            // TODO: Add logging when migrated to BinarySerializer
+            //if (Files.Length != FilesCount)
+            //    Logger.Warn("The initial file count {0} does not match the file array size {1}", FilesCount, Files.Length);
 
             // Serialize the file entries
             Files = s.SerializeObjectArray<UbiArtIPKFileEntry>(Files, Files.Length, (s, o) => o.IPKVersion = Version, name: nameof(Files));
 
-            if (!IsSerializingHeaderSize && s.Stream.Position != BaseOffset)
-                RL.Logger?.LogWarningSource($"Offset value {BaseOffset} doesn't match file entry end offset {s.Stream.Position}");
+            // TODO: Add logging when migrated to BinarySerializer
+            //if (!IsSerializingHeaderSize && s.Stream.Position != BaseOffset)
+            //    Logger.Warn("Offset value {0} doesn't match file entry end offset {1}", BaseOffset, s.Stream.Position);
         }
 
         /// <summary>
