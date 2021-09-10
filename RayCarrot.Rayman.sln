@@ -15,11 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libaries", "Libaries", "{18
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RayCarrot.Binary", "..\RayCarrot.Binary\RayCarrot.Binary\RayCarrot.Binary.csproj", "{1674932C-AAAF-4AF8-A54F-1978223D6033}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RayCarrot.Common", "..\RayCarrot.Common\RayCarrot.Common\RayCarrot.Common.csproj", "{1BB526D7-1A57-450E-9433-6BA33A15BAB0}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RayCarrot.IO", "..\RayCarrot.IO\RayCarrot.IO\RayCarrot.IO.csproj", "{A6B791D4-A6ED-432B-A906-AA01636D2965}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RayCarrot.Logging", "..\RayCarrot.Logging\RayCarrot.Logging\RayCarrot.Logging.csproj", "{26523FAC-8846-403D-A0E8-564AEBA5EB46}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,27 +31,17 @@ Global
 		{1674932C-AAAF-4AF8-A54F-1978223D6033}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1674932C-AAAF-4AF8-A54F-1978223D6033}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1674932C-AAAF-4AF8-A54F-1978223D6033}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1BB526D7-1A57-450E-9433-6BA33A15BAB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1BB526D7-1A57-450E-9433-6BA33A15BAB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1BB526D7-1A57-450E-9433-6BA33A15BAB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1BB526D7-1A57-450E-9433-6BA33A15BAB0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A6B791D4-A6ED-432B-A906-AA01636D2965}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A6B791D4-A6ED-432B-A906-AA01636D2965}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6B791D4-A6ED-432B-A906-AA01636D2965}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A6B791D4-A6ED-432B-A906-AA01636D2965}.Release|Any CPU.Build.0 = Release|Any CPU
-		{26523FAC-8846-403D-A0E8-564AEBA5EB46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{26523FAC-8846-403D-A0E8-564AEBA5EB46}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{26523FAC-8846-403D-A0E8-564AEBA5EB46}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{26523FAC-8846-403D-A0E8-564AEBA5EB46}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{1674932C-AAAF-4AF8-A54F-1978223D6033} = {18498B6B-2FC6-4EF7-B87D-24061AA985DD}
-		{1BB526D7-1A57-450E-9433-6BA33A15BAB0} = {18498B6B-2FC6-4EF7-B87D-24061AA985DD}
 		{A6B791D4-A6ED-432B-A906-AA01636D2965} = {18498B6B-2FC6-4EF7-B87D-24061AA985DD}
-		{26523FAC-8846-403D-A0E8-564AEBA5EB46} = {18498B6B-2FC6-4EF7-B87D-24061AA985DD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0D9031CD-A3C6-4319-99A8-5911365B93A6}
