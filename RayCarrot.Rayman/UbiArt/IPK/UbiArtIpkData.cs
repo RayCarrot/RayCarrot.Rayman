@@ -40,7 +40,7 @@ namespace RayCarrot.Rayman.UbiArt
     /// <summary>
     /// The archive data used for the .ipk files from UbiArt games
     /// </summary>
-    public class UbiArtIpkData : IBinarySerializableArchive<UbiArtIPKFileEntry>
+    public class UbiArtIpkData : IBinarySerializable
     {
         #region Constructor
 

@@ -7,7 +7,7 @@ namespace RayCarrot.Rayman.OpenSpace
     /// <summary>
     /// The archive data used for the .cnt files from OpenSpace games
     /// </summary>
-    public class OpenSpaceCntData : IBinarySerializableArchive<OpenSpaceCntFileEntry>
+    public class OpenSpaceCntData : IBinarySerializable
     {
         #region Public Properties
 

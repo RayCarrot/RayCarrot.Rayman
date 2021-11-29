@@ -9,7 +9,7 @@ namespace RayCarrot.Rayman.Ray1
     /// <summary>
     /// The archive data used for the .dat files from the Rayman 1 PC spin-offs
     /// </summary>
-    public class Rayman1PCArchiveData : Rayman1PCBaseFile, IBinarySerializableArchive<Rayman1PCArchiveEntry>
+    public class Rayman1PCArchiveData : Rayman1PCBaseFile, IBinarySerializable
     {
         #region Public Properties
 
