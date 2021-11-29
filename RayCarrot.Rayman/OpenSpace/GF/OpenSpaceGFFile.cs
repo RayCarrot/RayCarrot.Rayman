@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.Linq;
 using RayCarrot.Binary;
 
@@ -116,7 +115,7 @@ namespace RayCarrot.Rayman.OpenSpace
         /// Gets the sizes for all mipmap images, starting from the largest
         /// </summary>
         /// <returns>The sizes of all images</returns>
-        protected IEnumerable<Size> GetMipmapSizes()
+        public IEnumerable<Size> GetMipmapSizes()
         {
             // Get the largest size
             var width = Width;
@@ -141,7 +140,7 @@ namespace RayCarrot.Rayman.OpenSpace
         /// Gets the preferred mipmap count based on the current size
         /// </summary>
         /// <returns>The mipmap count</returns>
-        protected byte GetMipmapCount()
+        public byte GetMipmapCount()
         {
             // Get the largest size
             var width = Width;
@@ -173,7 +172,7 @@ namespace RayCarrot.Rayman.OpenSpace
         /// <param name="gfPixelData">The pixel data to get the color from</param>
         /// <param name="offset">The offset for the specific pixel in the data array</param>
         /// <returns>The color for the pixel in the BGR(A) format</returns>
-        protected IEnumerable<byte> GetGBRAPixel(OpenSpaceGFFormat format, byte[] gfPixelData, long offset)
+        public IEnumerable<byte> GetGBRAPixel(OpenSpaceGFFormat format, byte[] gfPixelData, long offset)
         {
             switch (format)
             {
@@ -270,7 +269,7 @@ namespace RayCarrot.Rayman.OpenSpace
         /// <param name="format">The .gf pixel format</param>
         /// <param name="bgraPixelData">The bitmap pixel data to get the color from, always 4 bytes</param>
         /// <returns>The color for the pixel in the .gf format</returns>
-        protected IEnumerable<byte> GetGfPixel(OpenSpaceGFFormat format, byte[] bgraPixelData)
+        public IEnumerable<byte> GetGfPixel(OpenSpaceGFFormat format, byte[] bgraPixelData)
         {
             switch (format)
             {
@@ -315,7 +314,7 @@ namespace RayCarrot.Rayman.OpenSpace
         /// Gets the current format
         /// </summary>
         /// <returns>The current format</returns>
-        protected OpenSpaceGFFormat GetFormat()
+        public OpenSpaceGFFormat GetFormat()
         {
             if (Channels == 4)
             {
@@ -362,7 +361,7 @@ namespace RayCarrot.Rayman.OpenSpace
         /// Sets the current format
         /// </summary>
         /// <param name="format">The format to set to</param>
-        protected void SetFormat(OpenSpaceGFFormat format)
+        public void SetFormat(OpenSpaceGFFormat format)
         {
             switch (format)
             {
@@ -418,73 +417,10 @@ namespace RayCarrot.Rayman.OpenSpace
             }
         }
 
-        #endregion
-
-        #region Public Methods
-
         /// <summary>
         /// Indicates if mipmaps are supported. NOTE: This currently does not count the mipmapping used in Hype.
         /// </summary>
         public bool SupportsMipmaps(OpenSpaceSettings settings) => settings.EngineVersion == OpenSpaceEngineVersion.Rayman3 && settings.Game != OpenSpaceGame.Dinosaur && settings.Game != OpenSpaceGame.LargoWinch;
-
-        /// <summary>
-        /// Converts the .gf pixel data to raw bitmap data of a specified size
-        /// </summary>
-        /// <param name="width">The image width</param>
-        /// <param name="height">The image height</param>
-        /// <param name="offset">The offset in the pixel array</param>
-        /// <returns>The raw image data</returns>
-        public RawBitmapData GetRawBitmapData(int width, int height, int offset = 0)
-        {
-            // Check if the size is scaled
-            var isScaled = Width != width || Height != height;
-
-            // Get the scale factors
-            var widthScale = Width / (double)width;
-            var heightScale = Height / (double)height;
-
-            // Get the format
-            var format = GFPixelFormat;
-
-            // Get the pixel format
-            PixelFormat pixelFormat = format.SupportsTransparency() ? PixelFormat.Format32bppArgb : PixelFormat.Format24bppRgb;
-
-            // Get the number of bitmap channels
-            var bmpChannels = Image.GetPixelFormatSize(pixelFormat) / 8;
-
-            // Create the pixel array
-            var rawPixelData = new byte[width * height * bmpChannels];
-
-            // Enumerate each pixel
-            for (uint y = 0; y < height; y++)
-            for (uint x = 0; x < width; x++)
-            {
-                // Get the offsets for the pixel colors
-                var pixelOffset = isScaled 
-                    ? (long)((Width * Math.Floor((y * heightScale)) + Math.Floor((x * widthScale))) * Channels + offset)
-                    : (width * y + x) * Channels + offset;
-
-                // NOTE: We reverse the Y-axis here since the .gf images are always flipped vertically
-                var rawOffset = (width * (height - y - 1) + x) * bmpChannels;
-
-                // Get the pixels
-                foreach (var b in GetGBRAPixel(format, PixelData, pixelOffset))
-                {
-                    rawPixelData[rawOffset] = b;
-                    rawOffset++;
-                }
-            }
-
-            // Return the raw bitmap data
-            return new RawBitmapData(width, height, rawPixelData, pixelFormat);
-        }
-
-        /// <summary>
-        /// Converts the .gf pixel data to raw bitmap data
-        /// </summary>
-        /// <param name="offset">The offset in the pixel array</param>
-        /// <returns>The raw image data</returns>
-        public RawBitmapData GetRawBitmapData(int offset = 0) => GetRawBitmapData((int)Width, (int)Height, offset);
 
         /// <summary>
         /// Updates the repeat byte to the most appropriate value, based on the main image
@@ -503,138 +439,6 @@ namespace RayCarrot.Rayman.OpenSpace
 
             // Set the repeat byte to the index with the minimum value
             RepeatByte = (byte)Array.FindIndex(tempValues, x => x == min);
-        }
-
-        /// <summary>
-        /// Converts the .gf pixel data to raw bitmap data, including for the mipmaps
-        /// </summary>
-        /// <returns>The raw bitmap data for every image, including the mipmaps</returns>
-        public IEnumerable<RawBitmapData> GetRawBitmapDatas()
-        {
-            int offset = 0;
-
-            // Return the main image
-            yield return GetRawBitmapData(offset);
-
-            // Return mipmaps
-            foreach (var mipmap in GetMipmapSizes()) 
-            {
-                // Calculate the size
-                var size = mipmap.Width * mipmap.Height * Channels;
-
-                // Make sure the size is valid
-                if (size <= 0) 
-                    continue;
-
-                // Return the bitmap
-                yield return GetRawBitmapData(mipmap.Width, mipmap.Height, offset);
-
-                // Get the offset
-                offset += size;
-            }
-        }
-
-        /// <summary>
-        /// Imports a bitmap image into the file, keeping the structure based on the properties and generating mipmaps if needed. This will reset the mipmaps, requiring them to be generated again.
-        /// </summary>
-        /// <param name="settings">The serializer settings</param>
-        /// <param name="bmp">The bitmap data to import from</param>
-        /// <param name="generateMipmaps">Indicates if mipmaps should be generated for the image</param>
-        public void ImportFromBitmap(OpenSpaceSettings settings, RawBitmapData bmp, bool generateMipmaps)
-        {
-            // Helper method for writing the pixel data
-            void WritePixelData(RawBitmapData bitmapData, long offset)
-            {
-                // Make sure the pixel format is supported
-                if (bitmapData.PixelFormat != PixelFormat.Format32bppArgb && bitmapData.PixelFormat != PixelFormat.Format24bppRgb)
-                    throw new Exception($"The bitmap pixel format {bitmapData.PixelFormat} is not supported for importing");
-
-                // Get the number of bitmap channels
-                var bmpChannels = Image.GetPixelFormatSize(bitmapData.PixelFormat) / 8;
-
-                // Get the format
-                var format = GFPixelFormat;
-
-                byte[] bmpColorData = new byte[4];
-
-                for (uint y = 0; y < bitmapData.Height; y++)
-                for (uint x = 0; x < bitmapData.Width; x++)
-                {
-                    // Get the offsets for the pixel colors
-                    var pixelOffset = (bitmapData.Width * y + x) * Channels + offset;
-
-                    // NOTE: We reverse the Y-axis here since the .gf images are always flipper vertically
-                    var rawOffset = (bitmapData.Width * (bitmapData.Height - y - 1) + x) * bmpChannels;
-
-                    // Get the bitmap color bytes for this pixel
-                    bmpColorData[0] = bitmapData.PixelData[rawOffset + 0];
-                    bmpColorData[1] = bitmapData.PixelData[rawOffset + 1];
-                    bmpColorData[2] = bitmapData.PixelData[rawOffset + 2];
-                    bmpColorData[3] = bmpChannels == 4 ? bitmapData.PixelData[rawOffset + 3] : (byte)255;
-
-                    // Get the pixels
-                    foreach (var b in GetGfPixel(format, bmpColorData))
-                    {
-                        PixelData[pixelOffset] = b;
-                        pixelOffset++;
-                    }
-                }
-            }
-
-            // Set size
-            Width = (uint)bmp.Width;
-            Height = (uint)bmp.Height;
-
-            // Set the pixel count
-            PixelCount = Width * Height;
-
-            // Update the mipmap count
-            if (generateMipmaps && SupportsMipmaps(settings))
-                MipmapCount = GetMipmapCount();
-            else
-                MipmapCount = 0;
-
-            // Enumerate each mipmap size
-            foreach (Size size in GetMipmapSizes())
-            {
-                // Get the mipmap pixel count
-                var count = (uint)(size.Width * size.Height);
-
-                // Add to the total pixel count
-                PixelCount += count;
-            }
-
-            // Create the data array
-            PixelData = new byte[Channels * PixelCount];
-
-            // Set the main pixel data
-            WritePixelData(bmp, 0);
-
-            // Keep track of the offset
-            long mipmapOffset = Width * Height * Channels;
-
-            // Generate mipmaps if available
-            if (RealMipmapCount > 0)
-            {
-                // Get the bitmap
-                using var bitmap = bmp.GetBitmap();
-
-                // Generate every mipmap
-                foreach (Size size in GetMipmapSizes())
-                {
-                    // Resize the bitmap
-                    using var resizedBmp = bitmap.ResizeImage(size.Width, size.Height, false);
-
-                    // Write the mipmap
-                    WritePixelData(new RawBitmapData(resizedBmp), mipmapOffset);
-
-                    // Increase the index
-                    mipmapOffset += size.Height * size.Width * Channels;
-                }
-            }
-
-            // Update the repeat byte
-            UpdateRepeatByte();
         }
 
         /// <summary>

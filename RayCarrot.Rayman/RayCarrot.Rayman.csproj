@@ -49,8 +49,6 @@
     <Compile Include="Common\BitHelpers.cs" />
     <Compile Include="Common\StreamExtensions.cs" />
     <Compile Include="Encoder\MultiXORDataEncoder.cs" />
-    <Compile Include="Bitmap\BitmapLock.cs" />
-    <Compile Include="Bitmap\RawBitmapData.cs" />
     <Compile Include="Encoder\Rayman12PCSaveDataEncoder.cs" />
     <Compile Include="Encoder\TonicTroubleSNADataEncoder.cs" />
     <Compile Include="OpenSpace\BinarySerializerExtensions.cs" />
@@ -63,7 +61,6 @@
     <Compile Include="OpenSpace\SaveData\Rayman2PCConfigData.cs" />
     <Compile Include="OpenSpace\SaveData\Rayman2PCConfigSlotData.cs" />
     <Compile Include="OpenSpace\Settings\OpenSpaceSettings.cs" />
-    <Compile Include="Common\ImageExtensions.cs" />
     <Compile Include="Common\GameModeBaseAttribute.cs" />
     <Compile Include="Compression\7Zip SDK\Common\CommandLineParser.cs" />
     <Compile Include="Compression\7Zip SDK\Common\CRC.cs" />
@@ -167,9 +164,6 @@
     </PackageReference>
     <PackageReference Include="ini-parser">
       <Version>2.5.2</Version>
-    </PackageReference>
-    <PackageReference Include="System.Drawing.Common">
-      <Version>5.0.2</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
