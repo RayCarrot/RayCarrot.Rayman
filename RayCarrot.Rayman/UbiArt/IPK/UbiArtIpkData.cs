@@ -150,7 +150,9 @@ namespace RayCarrot.Rayman.UbiArt
 
         #region Private Properties
 
+#pragma warning disable CS0414
         private bool IsSerializingHeaderSize = false;
+#pragma warning restore CS0414
 
         #endregion
 
