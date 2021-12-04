@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using IniParser;
 using IniParser.Model;
-using RayCarrot.IO;
 
 namespace RayCarrot.Rayman.UbiIni
 {
@@ -21,7 +20,7 @@ namespace RayCarrot.Rayman.UbiIni
         /// </summary>
         /// <param name="path">The path of the ubi.ini file</param>
         /// <param name="sectionKey">The name of the section to retrieve, usually the name of the game</param>
-        protected UbiIniHandler(FileSystemPath path, string sectionKey)
+        protected UbiIniHandler(string path, string sectionKey)
         {
             // Save the path
             Path = path;
@@ -30,7 +29,7 @@ namespace RayCarrot.Rayman.UbiIni
             SectionKey = sectionKey;
 
             // Make sure the file exists
-            if (!path.FileExists)
+            if (!File.Exists(path))
                 throw new FileNotFoundException($"The file {path} could not be found");
 
             // Save the installed products as they are not formatted following
@@ -82,7 +81,7 @@ namespace RayCarrot.Rayman.UbiIni
         /// <summary>
         /// The path of the ubi.ini file
         /// </summary>
-        private FileSystemPath Path { get; }
+        private string Path { get; }
 
         /// <summary>
         /// The installed product keys to save

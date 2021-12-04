@@ -1,5 +1,4 @@
 ﻿using System;
-using RayCarrot.IO;
 
 namespace RayCarrot.Rayman.UbiIni
 {
@@ -15,7 +14,7 @@ namespace RayCarrot.Rayman.UbiIni
         /// </summary>
         /// <param name="path">The path of the ubi.ini file</param>
         /// <param name="sectionKey">The name of the section to retrieve</param>
-        public RAUbiIniHandler(FileSystemPath path, string sectionKey) : base(path, sectionKey)
+        public RAUbiIniHandler(string path, string sectionKey) : base(path, sectionKey)
         {
         }
 
@@ -23,7 +22,7 @@ namespace RayCarrot.Rayman.UbiIni
         /// Default constructor
         /// </summary>
         /// <param name="path">The path of the ubi.ini file</param>
-        public RAUbiIniHandler(FileSystemPath path) : base(path, SectionName)
+        public RAUbiIniHandler(string path) : base(path, SectionName)
         {
 
         }

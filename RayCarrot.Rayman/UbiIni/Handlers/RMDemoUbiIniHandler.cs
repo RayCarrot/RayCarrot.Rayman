@@ -1,6 +1,4 @@
-﻿using RayCarrot.IO;
-
-namespace RayCarrot.Rayman.UbiIni
+﻿namespace RayCarrot.Rayman.UbiIni
 {
     /// <summary>
     /// Handles the Rayman M demo section of a ubi.ini file
@@ -11,7 +9,7 @@ namespace RayCarrot.Rayman.UbiIni
         /// Default constructor
         /// </summary>
         /// <param name="path">The path of the ubi.ini file</param>
-        public RMDemoUbiIniHandler(FileSystemPath path) : base(path, "Rayman M Nestle Demo")
+        public RMDemoUbiIniHandler(string path) : base(path, "Rayman M Nestle Demo")
         {
 
         }
