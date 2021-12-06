@@ -1,5 +1,5 @@
 ## RayCarrot.Rayman
-*NOTE: This library will be replaced by (BinarySerializer)[https://github.com/BinarySerializer]* libraries. It is recommended using those instead.
+*NOTE: This library will be replaced by [BinarySerializer](https://github.com/BinarySerializer) libraries. It is recommended using those instead.*
 
 RayCarrot.Rayman is a helper library for managing file and configuration data from the Rayman games.
 
