@@ -1,4 +1,6 @@
 ## RayCarrot.Rayman
+*NOTE: This library will be replaced by (BinarySerializer)[https://github.com/BinarySerializer]* libraries. It is recommended using those instead.
+
 RayCarrot.Rayman is a helper library for managing file and configuration data from the Rayman games.
 
 ### UbiIni Handlers
@@ -37,18 +39,10 @@ Allows reading and writing to supported binary files. Below is a list of the cur
 ## Dependencies
 RayCarrot.Rayman uses these main dependencies:
 
-- [RayCarrot.Logging](https://github.com/RayCarrot/RayCarrot.Logging)
-- [RayCarrot.Common](https://github.com/RayCarrot/RayCarrot.Common)
+- [RayCarrot.Binary](https://github.com/RayCarrot/RayCarrot.Binary)
 - [RayCarrot.IO](https://github.com/RayCarrot/RayCarrot.IO)
 - [ini-parser](https://github.com/rickyah/ini-parser)
 - [DotNetZip](https://github.com/haf/DotNetZip.Semverd)
-- [System.Drawing.Common](https://www.nuget.org/packages/System.Drawing.Common/)
-
-## Contact
-You can contact me on the following places:
-
-- [Twitter](https://twitter.com/RayCarrot)
-- [Email](mailto:RayCarrotMaster@gmail.com)
 
 ## Licence
 
