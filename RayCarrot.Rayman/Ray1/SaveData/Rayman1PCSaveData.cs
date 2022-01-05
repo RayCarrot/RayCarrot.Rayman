@@ -60,8 +60,7 @@ namespace RayCarrot.Rayman.Ray1
             StatusBar = s.SerializeObject<Rayman1PCSaveDataStatusBar>(StatusBar, name: nameof(StatusBar));
             CurrentHealth = s.Serialize<byte>(CurrentHealth, name: nameof(CurrentHealth));
 
-            if (SaveZone == null)
-                SaveZone = new byte[81][];
+            SaveZone ??= new byte[81][];
 
             for (int i = 0; i < SaveZone.Length; i++)
                 SaveZone[i] = s.SerializeArray<byte>(SaveZone[i], 32, name: $"{nameof(SaveZone)}[{i}]");

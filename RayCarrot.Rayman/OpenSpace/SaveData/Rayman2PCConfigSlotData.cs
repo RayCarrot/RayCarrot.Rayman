@@ -12,7 +12,7 @@ namespace RayCarrot.Rayman.OpenSpace
         /// </summary>
         public string SlotDisplayName { get; set; }
 
-        public uint SlotIndex { get; set; }
+        public int SlotIndex { get; set; }
 
         /// <summary>
         /// Handles the serialization using the specified serializer
@@ -21,7 +21,7 @@ namespace RayCarrot.Rayman.OpenSpace
         public void Serialize(IBinarySerializer s)
         {
             SlotDisplayName = s.SerializeString(SlotDisplayName, 11, name: nameof(SlotDisplayName));
-            SlotIndex = s.Serialize<uint>(SlotIndex, name: nameof(SlotIndex));
+            SlotIndex = s.Serialize<int>(SlotIndex, name: nameof(SlotIndex));
         }
     }
 }
